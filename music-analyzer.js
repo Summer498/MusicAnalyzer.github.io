@@ -1,3 +1,8 @@
+function print(msg){
+  var printable = document.querySelector(".print");
+  printable.innerHTML = "<span class=\"print\">" + msg + "</span>"
+}
+
 self.onSongleAPIReady =
   function(Songle) {
     var player =
@@ -21,7 +26,7 @@ self.onSongleAPIReady =
 
         var beatInfo2Element =
           document.querySelector(".beat .info2");
-
+        print(ev.data.beat.position)
         beatElement.className = "beat beat-" + ev.data.beat.position;
         beatInfo1Element.textContent = ev.data.beat.position;
         beatInfo2Element.textContent = ev.data.beat.count;
