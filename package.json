@@ -1,0 +1,22 @@
+{
+  "name": "musicanalyzer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "entry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Summer498/MusicAnalyzer.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Summer498/MusicAnalyzer.github.io/issues"
+  },
+  "homepage": "https://github.com/Summer498/MusicAnalyzer.github.io#readme",
+  "dependencies": {
+    "@tonaljs/tonal": "^4.6.5"
+  }
+}

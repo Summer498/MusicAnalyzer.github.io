@@ -124,7 +124,49 @@ function str_interval(interval){
     return table[interval[0]+3] + String(interval[1]);
 }
 
+const chromas_in_octave = 12;
 
+class BasicSpace {
+    constructor(){
+        const n = null
+        this.levels = [n,n,n,n,n,n,n,n,n,n,n,n]
+    }
+    get root_note(){ return this.levels.indexOf(4); }
+    get fifth_note(){ return this.levels.indexOf(3); }
+    get third_note(){
+        return this.levels.indexOf(2);
+    }
+    //TODO: implement 7th note which is in third note
+    get diatonic(){
+        var diatonic_ = [];
+        for(var i = 0; i < 7; i++){
+            if( this.levels[i]!=0 ){ diatonic_.push(i); }
+        }
+        console.assert(diatonic_.length==7);
+        return diatonic_;
+    }
+    get chromatic(){ return [0,1,2,3,4,5,6,7,8,9,10,11]; }
+
+    region_distance(k0,k1){
+        console.assert(k0 instanceof BasicSpace);
+        console.assert(k1 instanceof BasicSpace);
+        const x = k0.diatonic;
+        const y = k1.diatonic;
+        return abs(mod(y*7, 12) - mod(x*7, 12));  // 7 = 7^{-1} mod 12
+    } //TODO:
+    chord_distance(x,y){ return 0; } //TODO:
+    basicspace_distance(x,y){ return 0; } //TODO:
+
+    distance(x,y) {
+        console.assert(x instanceof BasicSpace);
+        console.assert(y instanceof BasicSpace);
+        return this.region(x,y) + this.chord_distance(x,y) + this.basicspace_distance(x,y);
+    }
+}
+
+const bs=new BasicSpace()
+bs.levels[2]=2
+console.log(bs.root_note)
 
 
 
@@ -163,15 +205,15 @@ function key_signature_test(){
 key_signature_test();
 
 // TEST
-for (abc of "abcdefg"){
-    for (accidental of ["b","","#"]){
+for (const abc of "abcdefg"){
+    for (const accidental of ["b","","#"]){
         const key = abc.toUpperCase() + accidental
         var msg = String(key_signature(key)) + " "
-        for (note of major){
+        for (const note of major){
             msg += note_symbol(mod(note + chroma(key[0].toUpperCase() + ((key.length==2)?key[1]:"")), 12), key_signature(key)) + " "
         }
 
-        for (c of "ABCDEFG"){
+        for (const c of "ABCDEFG"){
             if (msg.indexOf(c)<0){
                 msg += " " + String(false);
                 break;
@@ -192,3 +234,31 @@ console.log(major)
 console.log(major[2]) // E: M3
 console.log(minor)
 console.log(minor[[4]])  // P5
+
+!function(x,y){
+    console.log(x,y);
+    return x+y
+}(256,42)
+
+const f = (x,y,z) => x*1001;
+
+console.log(f(222,333,555))
+console.log((111,222,333,f)(99,88,66))
+
+const h1 = document.createElement("h1")
+h1.appendChild(document.createTextNode("Inserted Element"))
+document.body.insertBefore(h1, document.getElementById("insert_here"))
+
+const e = 7, n = 10, t = 2;
+const white_key = document.createElement(
+    "rect", 
+    { 
+        className: "white-key", 
+        key: e, 
+        x: "0", 
+        y: n * e, 
+        width: t, 
+        height: n 
+    }
+)
+document.body.insertBefore(white_key, document.getElementById("insert_here"))
