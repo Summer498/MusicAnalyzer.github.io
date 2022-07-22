@@ -41,6 +41,7 @@ const Alt5 = {
  * @return Basic Space of chord
  */
 const get_BS = (key, key_quality, degree, indexes = Chord_index.none, alt5 = 0) => {
+	//TODO:
 	console.assert(degree);
 	const d = degree;
 	const s = key_quality.v_add(key).v_mod(12);
@@ -54,6 +55,7 @@ const get_BS = (key, key_quality, degree, indexes = Chord_index.none, alt5 = 0) 
 	const levela = [c[0]].onehot(12);
 	return Math.v_sum(leveld, levelc, levelb, levela);
 };
+
 
 /**
  * @brief distance of region in chord distance function
