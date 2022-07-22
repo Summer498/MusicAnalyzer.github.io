@@ -187,22 +187,20 @@ for (const abc1 of "cdefgab"){
 }
 
 // TEST
-function key_signature_test(){
+(()=>{
     const correct = {
         'F':-1, 'C': 0, 'G': 1, 'Fb':4, 'Cb':-7, 'B': 5, 'F#': 6, 'Gb':-6, 'Db':-5, 'C#':7, 'G#':-4, 'E': 4,
         'd':-1, 'a': 0, 'e': 1, 'db':4, 'ab':-7, 'g#':5, 'd#': 6, 'eb':-6, 'bb':-5, 'a#':7, 'e#':-4, 'f': -4,
     }
-    const correct_numver = {5:-1, 0:0, 7:1, 1:-5, 2:2, 11:5, 10:-2, 6:6}
+    const correct2 = {5:-1, 0:0, 7:1, 1:-5, 2:2, 11:5, 10:-2, 6:6}
 
     for (const key in correct) {
         if(key_signature(key)!=correct[key]){ console.log(key, str_key_signature(correct[key]), str_key_signature(key_signature(key)), String(false)); }
     }
-    for (const key in correct_numver) {
-        if(key_signature(key)!=correct_numver[key]){ console.log(key, str_key_signature(correct_numver[key]), str_key_signature(key_signature(key)), String(false)); }
+    for (const key in correct2) {
+        if(key_signature(key)!=correct2[key]){ console.log(key, str_key_signature(correct2[key]), str_key_signature(key_signature(key)), String(false)); }
     }
-}
-
-key_signature_test();
+})();
 
 // TEST
 for (const abc of "abcdefg"){
@@ -226,25 +224,13 @@ for (const abc of "abcdefg"){
     }
 }
 
-console.log([-2,-1,0,1,2].map(e=>sgn(e)));
-console.log([-2,-1,0,1,2].map(e=>abs(e)));
-console.log([-3,-2,-1,0,1,2,3].map(e=>mod(e,3)));
-
 console.log(major)
 console.log(major[2]) // E: M3
 console.log(minor)
 console.log(minor[[4]])  // P5
 
-!function(x,y){
-    console.log(x,y);
-    return x+y
-}(256,42)
 
-const f = (x,y,z) => x*1001;
-
-console.log(f(222,333,555))
-console.log((111,222,333,f)(99,88,66))
-
+/* キーボードを描画する練習 */
 const h1 = document.createElement("h1")
 h1.appendChild(document.createTextNode("Inserted Element"))
 document.body.insertBefore(h1, document.getElementById("insert_here"))
