@@ -1,6 +1,4 @@
 export const typeOf = o => {
 	const str = Object.prototype.toString(o);
-	if (str != "[object Object]") { return str; }
-	return o.constructor;
+	return (str == "[object Object]") ? o.constructor : str;
 };
-Object.prototype.isTheType = function (typeName) { return typeOf(this) == typeOf(typeName()); };

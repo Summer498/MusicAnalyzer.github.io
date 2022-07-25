@@ -1,17 +1,18 @@
-export const max = Math.max
+import { typeOf } from "./stdlib.js";
+
+export const max = Math.max;
 // TODO: Math のすべての要素を一括で export する方法はないか?
-    // 継承するみたいに, Math が持っているすべての関数などを export したい.
+// 継承するみたいに, Math が持っているすべての関数などを export したい.
 
 export const not = b => !b;
 export const Range = (b, n, s = 1) => [...Array(n)].map((_, i) => i * s + b);
 export const Zeros = n => [...Array(n)].map(e => 0);
 export const vFunc = (a, b, f) => {
-    console.assert(a.isTheType(Array));
-    if (b.isTheType(Number)) { return a.map(e => f(e, b)); }
-    if (b.isTheType(Array)) {
-        console.assert(a.length == b.length);
-        return a.map((_, i) => f(a[i], b[i]));
-    }
+    const is_n = typeOf(b) == typeOf(Number());
+    const is_a = (typeOf(b) == typeOf(Array())) && (a.length == b.length);
+    console.assert(is_n || is_a);
+    if (is_n) { return a.map(e => f(e, b)); }
+    if (is_a) { return a.map((_, i) => f(a[i], b[i])); }
 };
 
 export const v_sum = (...arrs) => {

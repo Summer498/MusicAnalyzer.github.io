@@ -179,6 +179,7 @@ for (const abc1 of "cdefgab") {
     const correct2 = { 5: -1, 0: 0, 7: 1, 1: -5, 2: 2, 11: 5, 10: -2, 6: 6 };
 
     for (const key in correct) {
+        console.log(key)
         if (key_signature(key) != correct[key]) { console.log(key, str_key_signature(correct[key]), str_key_signature(key_signature(key)), String(false)); }
     }
     for (const key in correct2) {

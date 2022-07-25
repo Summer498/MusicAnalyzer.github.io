@@ -1,5 +1,5 @@
-import * as Math from "./math.js"
-import * as StdLib from "./stdlib.js"
+import * as Math from "./math.js";
+import * as StdLib from "./stdlib.js";
 
 const Key_quality = {
 	major: [0, 2, 4, 5, 7, 9, 11],
@@ -44,6 +44,9 @@ const get_BS = (key, key_quality, degree, indexes = Chord_index.none, alt5 = 0) 
 	//TODO:
 	console.assert(degree);
 	const d = degree;
+	console.log(key_quality)
+	console.log(key_quality.v_add(key))
+	console.log(key_quality.v_add(key).v_mod(12))
 	const s = key_quality.v_add(key).v_mod(12);
 	s[4] += alt5;
 
@@ -113,7 +116,7 @@ class _EleventhChord extends _ThirteenthChord {
 	get flat13() { return this.tones.change(6, 8); }
 	get thirteenth() { return (new _ThirteenthChord(this.root, this.degrees, this.tones)).change(6, 9); }
 	add(...tensions) {
-		const numbers = tensions.filter(e => e.isTheType(Number));
+		const numbers = tensions.filter(e => typeOf(e).== typeOf(Number()));
 		const degrees = numbers.map(e => Math.ceil((e < 7 ? e : e + 1) / 2));
 		//		return this.tones[numbers[i]] = degrees[i].v_mult(7).mod(12);
 	}
