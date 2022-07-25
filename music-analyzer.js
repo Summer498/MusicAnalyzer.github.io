@@ -4,6 +4,22 @@ function print(msg) {
 	printable.innerHTML = "<span class=\"print\">" + msg + "</span>";
 }
 
+const chordParse = chord_string => {
+	const str = chord_string;
+	const root = (str[1] == "b" || str[1] == "#") ? str.slice(0, 2) : str[0];
+	const slash = (str.indexOf("/") + 1 || str.length + 1) - 1;  // str に "/" があればその位置を返す. 無ければ str の長さを返す
+	return {
+		root: root,
+		quality: str.slice(root.length, slash),
+		base: (slash < str.length) ? str.slice(slash + 1) : root
+	};
+};
+
+const is_chord_quality_legal = (chord) => {
+	const legal_qualities = ["", "6", "7", "M7", "m7", "m", "sus2", "sus4", "add9", "aug"];
+	if (!legal_qualities.includes(chord.quality)) { console.error('illegal chord quality "' + chord.quality + '" received'); }
+};
+
 self.onSongleAPIReady = Songle => {
 	const player = new Songle.Player({ mediaElement: "#songle-yt" });
 
@@ -27,6 +43,10 @@ self.onSongleAPIReady = Songle => {
 	player.on("chordEnter", ev => {
 		const chordNameElement = document.querySelector(".chord .name");
 		chordNameElement.textContent = ev.data.chord.name;
+		const chord = ev.data.chord.name;
+		const parsed = chordParse(chord);
+		console.log(chord, parsed);
+		is_chord_quality_legal(parsed);
 	});
 
 	// 盛り上がり部分に入った
