@@ -1,9 +1,10 @@
+/*
 const Songle = require("songle-api");
 
 const player = new Songle.SyncPlayer({
 	accessToken: "YOUR-ACCESS-TOKEN-HERE", // please edit your access token
 });
-
+*/
 function print(msg) {
 	let _printable = null;
 	let printable = _printable ??= document.querySelector(".print");
@@ -26,10 +27,10 @@ const is_chord_quality_legal = (chord) => {
 	if (!legal_qualities.includes(chord.quality)) { console.error('illegal chord quality "' + chord.quality + '" received'); }
 };
 
-/*
+//*
 self.onSongleAPIReady = Songle => {
 	const player = new Songle.Player({ mediaElement: "#songle-yt" });
-*/
+//*/
 player.addPlugin(new Songle.Plugin.Beat());
 player.addPlugin(new Songle.Plugin.Chord());
 player.addPlugin(new Songle.Plugin.Chorus());
@@ -76,6 +77,6 @@ player.on("repeatSectionLeave", ev => {
 
 	document.querySelectorAll("[class*=songle-api-plugin] a").forEach(e => { e.style.color = "#e17"; });
 });
-/*
+//*
 };
-*/
+//*/
