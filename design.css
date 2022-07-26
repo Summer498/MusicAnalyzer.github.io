@@ -1,0 +1,61 @@
+body {
+    background-color: #f3f5f6;
+    font-family: sans-serif;
+    transition: 0.1s 0.1s all ease;
+  }
+  
+  a {
+    color: #e17;
+    text-decoration: none;
+  }
+  
+  section {
+    text-align: center;
+  }
+  
+  .beat {
+    font-size: 4em;
+  }
+  
+  .beat .info1 {
+    font-size: 2em;
+  }
+  
+  .beat .info2 {
+    font-size: 1em;
+  }
+  
+  .media {
+    position: fixed;
+    left: 5px;
+    bottom: 0px;
+  }
+  
+  @keyframes beat-anime-1 {
+     0% { transform: scale(1.20); }
+    25% { transform: scale(0.85); }
+    50% { transform: scale(1.00); }
+  }
+  
+  @keyframes beat-anime-2 {
+     0% { transform: scale(1.10); }
+    25% { transform: scale(0.95); }
+    50% { transform: scale(1.00); }
+  }
+  
+  @keyframes beat-anime-3 {
+     0% { transform: scale(1.10); }
+    25% { transform: scale(0.95); }
+    50% { transform: scale(1.00); }
+  }
+  
+  @keyframes beat-anime-4 {
+     0% { transform: scale(1.10); }
+    25% { transform: scale(0.95); }
+    50% { transform: scale(1.00); }
+  }
+  
+  .beat-1 { animation: beat-anime-1 0.5s; }
+  .beat-2 { animation: beat-anime-2 0.5s; }
+  .beat-3 { animation: beat-anime-3 0.5s; }
+  .beat-4 { animation: beat-anime-4 0.5s; }
