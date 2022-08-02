@@ -1,5 +1,5 @@
-import * as Math from "./math.js";
-import * as StdLib from "./stdlib.js";
+import * as Math from "../lib/math.js";
+import * as StdLib from "../lib/stdlib.js";
 
 const Key_quality = {
 	major: [0, 2, 4, 5, 7, 9, 11],
@@ -140,16 +140,16 @@ class _SeventhChord extends _AlteredSeventhChord {
 	get sharp5() { return (new _AlteredSeventhChord()).change(2, 8); }
 }
 
-class _TiradChord extends _SeventhChord {
+class _TriadChord extends _SeventhChord {
 	constructor(root, degrees, tones) { super(root, degrees, tones); }
 	get seventh() { return (new _SeventhChord()).change(3, 10); }
 	get M() { return (new _SeventhChord()).change(3, 11); }
 	get M7() { return (new _SeventhChord()).change(3, 11); }
 }
 
-class Chord extends _TiradChord {
+class Chord extends _TriadChord {
 	constructor(root) { super(root, [1, 3, 5], [root + 0, root + 4, root + 7]); }
-	get m() { return (new _TiradChord(this.root, this.degrees, this.tones)).change(1, 3); }
+	get m() { return (new _TriadChord(this.root, this.degrees, this.tones)).change(1, 3); }
 }
 
 const Cchord = (new Chord(0,)).m.seventh;
