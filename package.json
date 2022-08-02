@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Summer498/MusicAnalyzer.github.io#readme",
   "dependencies": {
-    "@tonaljs/tonal": "^4.6.5"
+    "@tonaljs/tonal": "^4.6.5",
+    "typescript": "^4.7.4"
   }
 }
