@@ -5,6 +5,7 @@
 	<meta charset="utf-8" lang="ja">
 	<meta http-equiv="content-language" content="ja">
 	<link href="design.css" rel="stylesheet" type="text/css">
+	<link href="css3.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -35,7 +36,11 @@
 <!--
 <script src="https://api.songle.jp/v2/api.js"></script>
 -->
+<!-- 
+	TODO: CDN から読み込まないようにする 
+		songle を node.js から読み込めるようにする
+-->
 <script src="./api.songle.jp/v2/api.js"></script>
-<script type="text/javascript" src="music-analyzer.js"></script>
-
+<script type="module" src="music-analyzer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
 </html>

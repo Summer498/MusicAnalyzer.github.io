@@ -1,5 +1,11 @@
+import { HTML } from "../lib/HTML.js";
+import { SVG } from "../lib/HTML.js";
+import * as Math from "../lib/math.js";
+
 const major = [0, 2, 4, 5, 7, 9, 11];
 const minor = [0, 2, 3, 5, 7, 8, 10];
+
+"use strict";
 
 function accidental_num(accidental_symbol) {
     console.assert(typeof (accidental_symbol) == "string");
@@ -179,7 +185,7 @@ for (const abc1 of "cdefgab") {
     const correct2 = { 5: -1, 0: 0, 7: 1, 1: -5, 2: 2, 11: 5, 10: -2, 6: 6 };
 
     for (const key in correct) {
-        console.log(key)
+        console.log(key);
         if (key_signature(key) != correct[key]) { console.log(key, str_key_signature(correct[key]), str_key_signature(key_signature(key)), String(false)); }
     }
     for (const key in correct2) {
@@ -216,20 +222,52 @@ console.log(minor[[4]]);  // P5
 
 
 /* キーボードを描画する練習 */
-const h1 = document.createElement("h1");
-h1.appendChild(document.createTextNode("Inserted Element"));
-document.body.insertBefore(h1, document.getElementById("insert_here"));
+const insert_here = document.getElementById("insert_here");
 
-const e = 7, n = 10, t = 2;
-const white_key = document.createElement(
-    "rect",
-    {
-        className: "white-key",
-        key: e,
-        x: "0",
-        y: n * e,
-        width: t,
-        height: n
-    }
-);
-document.body.insertBefore(white_key, document.getElementById("insert_here"));
+const octave_height = 75,
+    whitekey_width = 40,
+    whitekey_height = octave_height / 7,
+    blackkey_width = whitekey_width / 2,
+    blackkey_height = octave_height / 12;
+
+const background =
+    SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651097 + "%" }, "",
+        SVG.g({ class: "melody-background" }, "", [
+            Math.Range(3, 7).map(e =>
+                SVG.svg({ y: (6 - e) * 75 }, "",
+                    SVG.g({}, "", [
+                        Math.Range(0, 12).map(e2 => [
+                            SVG.rect({ x: 0 + "%", y: e2 * 6.25, fill: "#eeeeee", width: 100 + "%", height: 6.25, opacity: 1 - 0.5 * (e2 + (e2 < 7 ? 1 : 0)).mod(2) }),
+                            SVG.line({ x1: 0 + "%", y1: (e2 + 1) * 6.25, x2: 100 + "%", y2: (e2 + 1) * 6.25, "stroke-width": e2 == 11 ? 2 : 1 }),
+                            SVG.line({ x1: 0 + "%", y1: e2 * 6.25, x2: 100 + "%", y2: e2 * 6.25, "stroke-width": 1 }),
+                        ]),
+                    ])
+                )
+            ),
+            // たくさんの line
+        ])
+    );
+
+const piano_roll =
+    SVG.g({ class: "piano-roll" }, "", [
+        SVG.rect({ class: "shadow", x: 40, y: 0, width: 3, height: 300 }),
+        Math.Range(3, 7).map(e =>
+            SVG.svg({ y: (6 - e) * 75 }, "",
+                SVG.g({ id: "octave" }, "", [
+                    Math.Range(0, 7).map(e2 => SVG.rect({ class: "white-key", x: 0, y: e2 * whitekey_height, width: whitekey_width, height: whitekey_height })),
+                    Math.Range(0, 5).map(e2 => SVG.rect({ class: "black-key", x: 0, y: (2 * e2 + (e2 > 2 ? 2 : 1)) * blackkey_height, width: blackkey_width, height: blackkey_height })),
+                    SVG.text({ class: "label", x: 25, y: 72 }, "C" + String(e))
+                ])
+            )
+        )
+    ]);
+
+const melody_timeline =
+    SVG.svg({ width: 100 + "%", height: 300 }, "", [
+        background,
+        piano_roll
+    ]);
+
+console.log(melody_timeline);
+//document.insertBefore(white_key, insert_here);
+insert_here.appendChild(melody_timeline);
