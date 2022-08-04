@@ -1,3 +1,4 @@
+
 // TODO: Math のすべての要素をもっときれいなコードで一括で export する方法はないか?
 // 継承するみたいに, Math が持っているすべての関数などを export したい.
 // export all of Math
@@ -18,6 +19,7 @@ export const hypot = Math.hypot;
 export const trunc = Math.trunc;
 export const fround = Math.fround;
 export const cbrt = Math.cbrt;
+
 export const E = Math.E;
 export const LN10 = Math.LN10;
 export const LN2 = Math.LN2;
@@ -45,23 +47,21 @@ export const sin = Math.sin;
 export const sqrt = Math.sqrt;
 export const tan = Math.tan;
 // End of "export all of Math"
-export const not = (b) => !b;
-export const Range = (begin, end, step = 1) => [...Array(end - begin)].map((_, i) => i * step + begin);
-export const Zeros = (length) => [...Array(length)].map(e => 0);
-export const vFunc = (a, b, f) => {
-    if (b instanceof Number) {
-        return a.map(e => f(e, Number(b)));
-    }
-    if (b instanceof Array) {
-        return a.map((_, i) => f(a[i], b[i]));
-    }
-    throw TypeError("arguments of vFunc must be (a:number[], b:number, f:(a:number,b:number)=>number");
+
+export const not = (b: Boolean): Boolean => !b;
+export const Range = (begin: number, end: number, step: number = 1): number[] => [...Array(end - begin)].map((_, i) => i * step + begin);
+export const Zeros = (length: number): number[] => [...Array(length)].map(e => 0);
+export const vFunc = (a: number[], b: number | number[], f: (a: number, b: number) => number) => {
+    if (b instanceof Number) { return a.map(e => f(e, Number(b))); }
+    if (b instanceof Array) { return a.map((_, i) => f(a[i], b[i])); }
+    throw TypeError("arguments of vFunc must be (a:number[], b:number, f:(a:number,b:number)=>number")
 };
-export const v_sum = (...arrs) => {
-    let s = Zeros(arrs[0].length);
+export const v_sum = (...arrs: number[][]) => {
+    let s: number[] = Zeros(arrs[0].length);
     arrs.forEach(arr => s = s.v_add(arr));
     return s;
 };
+
 /**
  * @brief generate array
  * @param n count of elements
@@ -69,10 +69,27 @@ export const v_sum = (...arrs) => {
  * @return generated array
  * @detail Given n = 5, f = i=>10*i, genArr generates [0,10,20,30,40]
  */
-export const genArr = (n, f) => [...Array(n)].map((_, i) => f(i));
-Number.prototype.mod = function (m) { return (Number(this) % m + m) % m; };
-Boolean.prototype.toNumber = function () { return this ? 1 : 0; };
-Array.prototype.onehot = function (n = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
+export const genArr = (n: number, f: (i: number) => number) => [...Array(n)].map((_, i) => f(i));
+declare global {
+    interface Number { mod: (m: number) => number }
+    interface Boolean { toNumber: () => number }
+    interface Array<T> {
+        onehot: (n: number) => number[]
+        onehotInMod: (n: number) => number[]
+        remove: (rmv: number[]) => T[]
+        ringShift: (b: number) => T[]
+        change: (i: number, v: T) => T[]
+        v_add: (b: number | number[]) => number[]
+        v_sub: (b: number | number[]) => number[]
+        v_mult: (b: number | number[]) => number[]
+        v_div: (b: number | number[]) => number[]
+        v_mod: (b: number | number[]) => number[]
+        v_get: (b: number[]) => T[]
+    }
+}
+Number.prototype.mod = function (m: number): number { return (Number(this) % m + m) % m; };
+Boolean.prototype.toNumber = function (): number { return this ? 1 : 0; };
+Array.prototype.onehot = function (n: number = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
 Array.prototype.onehotInMod = function (m = 1) { return this.v_mod(m).onehot(m); };
 Array.prototype.remove = function (rmv) { return this.filter(e => not(rmv.includes(e))); };
 Array.prototype.ringShift = function (b) {
