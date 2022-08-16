@@ -52,7 +52,7 @@ export const not = (b: Boolean): Boolean => !b;
 export const Range = (begin: number, end: number, step: number = 1): number[] => [...Array(end - begin)].map((_, i) => i * step + begin);
 export const Zeros = (length: number): number[] => [...Array(length)].map(e => 0);
 export const vFunc = (a: number[], b: number | number[], f: (a: number, b: number) => number) => {
-    if (b instanceof Number) { return a.map(e => f(e, Number(b))); }
+    if ("number" == typeof b) { return a.map(e => f(e, Number(b))); }
     if (b instanceof Array) { return a.map((_, i) => f(a[i], b[i])); }
     throw TypeError("arguments of vFunc must be (a:number[], b:number, f:(a:number,b:number)=>number")
 };
@@ -87,6 +87,7 @@ declare global {
         v_get: (b: number[]) => T[]
     }
 }
+
 Number.prototype.mod = function (m: number): number { return (Number(this) % m + m) % m; };
 Boolean.prototype.toNumber = function (): number { return this ? 1 : 0; };
 Array.prototype.onehot = function (n: number = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
@@ -103,3 +104,5 @@ Array.prototype.v_mult = function (b) { return vFunc(this, b, (a, b) => a * b); 
 Array.prototype.v_div = function (b) { return vFunc(this, b, (a, b) => a / b); };
 Array.prototype.v_mod = function (b) { return vFunc(this, b, (a, b) => a.mod(b)); };
 Array.prototype.v_get = function (b) { return b.map(e => this[e]); };
+//TODO: プロトタイプに直接メソッドを追加しないようにする
+// class Vector とか作る
