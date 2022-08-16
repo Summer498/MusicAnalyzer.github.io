@@ -1,6 +1,8 @@
+// import { Tonal } from "@tonaljs/tonal";
 import { HTML } from "../lib/HTML.js";
 import { SVG } from "../lib/HTML.js";
 import * as Math from "../lib/math.js";
+import {} from "../lib/TPS2.js"
 
 const major = [0, 2, 4, 5, 7, 9, 11];
 const minor = [0, 2, 3, 5, 7, 8, 10];
@@ -271,3 +273,47 @@ const melody_timeline =
 console.log(melody_timeline);
 //document.insertBefore(white_key, insert_here);
 insert_here.appendChild(melody_timeline);
+
+/**
+ * @param {string[]} codes
+ * @return {String[]}
+ */
+const chord2roman = (codes) => {
+    const key = "C"
+    const codes2 = ["CMaj7", "Dm7", "G7"]
+    // TODO: キーを求める = TPS の出番
+    return Tonal.Progression.toRomanNumerals(key, codes);
+};
+
+/* SongleWidget を使う練習 */
+window.onload =
+    function () {
+        var songleWidgetElement =
+            SongleWidgetAPI.createSongleWidgetElement({
+                api: "songle-widget-api-example",
+                url: "www.youtube.com/watch?v=PqJNc9KVIZE"
+            });
+
+        document.body.appendChild(songleWidgetElement);
+    };
+
+window.onSongleWidgetReady =
+    function (apiKey, e) {
+        // 入力補完用アダプタ
+        // TODO: songleWidget.song.scene.chords[0].name が動くようにする
+        class SongleWidget {
+            constructor(songleWidet) { this.songleWidet = songleWidet; }
+            get volume() { return this.songleWidet.volume; }
+            set volume(val) { this.songleWidet.volume = val; }
+        }
+        const songleWidet = new SongleWidget(e);
+
+        songleWidet.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
+        songleWidet.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
+        const chords = e.song.scene.chords.map(e => e.name); // コードをすべて取り出す
+        console.log(chords);
+        console.log(chord2roman(chords))
+        console.log(e.song.scene.notes.map(e => e.pitch), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
+        console.log(e.song.scene.notes.map(e => e.number), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
+        console.log(e);
+    };
