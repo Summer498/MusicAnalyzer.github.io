@@ -9,24 +9,6 @@ function print(msg) {
 	printable.innerHTML = "<span class=\"print\">" + msg + "</span>";
 }
 
-// TODO: Obsolete:
-const chordParse = chord_string => {
-	const str = chord_string;
-	const root = (str[1] == "b" || str[1] == "#") ? str.slice(0, 2) : str[0];
-	const slash = (str.indexOf("/") + 1 || str.length + 1) - 1;  // str に "/" があればその位置を返す. 無ければ str の長さを返す
-	return {
-		root: root,
-		quality: str.slice(root.length, slash),
-		base: (slash < str.length) ? str.slice(slash + 1) : root
-	};
-};
-
-// TODO: Obsolete:
-const isChordQualityLegal = (chord) => {
-	const legal_qualities = ["", "6", "7", "M7", "m7", "m", "sus2", "sus4", "add9", "aug"];
-	if (!legal_qualities.includes(chord.quality)) { throw Error('illegal chord quality "' + chord.quality + '" received'); }
-};
-
 const getChordTone = (chord_string) => {
 	if (chord_string == "N") { return []; }
 	const before_slash = chord_string.indexOf("/");
@@ -97,22 +79,26 @@ body.appendChild(melody_timeline);
 
 
 
-class moveObject {
+class MoveObject {
 	update() { }
 }
 
-class note extends moveObject {
+class Note extends MoveObject {
+	get speed() { return 10; }
+	get x() { return this.rect.x.baseVal.value; }
 	constructor(x, y, width, height) {
 		super();
 		this.rect = SVG.rect({ class: "note", x: x, y: y, width: width, height: height });
 		melody_timeline.appendChild(this.rect);
 	}
 	update() {
-		this.rect.x -= 1;
-		console.log(this.rect.x)
+		this.rect.setAttribute("x", this.x - this.speed);
+	}
+	//TODO:
+	noticeToRemove() {
+		movableObjectsQueue;
 	}
 }
-
 
 self.onSongleAPIReady = Songle => {
 	const player = new Songle.Player({ mediaElement: "#songle-yt" });
@@ -146,24 +132,25 @@ self.onSongleAPIReady = Songle => {
 		// 自作関数によるパース
 		chordNameElement.textContent = ev.data.chord.name;
 		const chord = ev.data.chord.name;
+		/*
 		const parsed = chordParse(chord);
 		console.log(chord, parsed);
 		isChordQualityLegal(parsed);
-
+		*/
 		// Tonal.js に渡してパース
 		const chord_tone = getChordTone(chord);
 		const chord_tone_number = chord_tone.map(e => Tonal.Midi.toMidi(e + "4"));
 		console.log(chord_tone);
 		console.log(chord_tone_number);
 		chord_tone_number.forEach(e => {
+			/*
 			melody_timeline.appendChild(
 				SVG.rect({ class: "note", x: 0, y: black_key_height * (e - 36), width: 100, height: black_key_height })
 			);
-			movableObjectsQueue.push(new note(500, black_key_height * (e - 36), 100, black_key_height));
+			*/
+			movableObjectsQueue.push(new Note(500, black_key_height * (e - 36), 100, black_key_height));
 		});
-		console.log(movableObjectsQueue)
-		// TODO: on コードの構成音を取得できるようにする
-
+		console.log(movableObjectsQueue);
 	});
 
 
@@ -196,4 +183,8 @@ self.onSongleAPIReady = Songle => {
 
 
 const movableObjectsQueue = [];
-movableObjectsQueue.forEach(e => e.update());
+
+!(function mainRoutine() {
+	movableObjectsQueue.forEach(e => e.update());
+	setTimeout(mainRoutine, 1000 / 60);
+})();
