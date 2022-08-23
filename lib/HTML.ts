@@ -5,13 +5,13 @@ type attribute = { [key: string]: string }
 
 declare global {
 	interface Element {
-		set: (attributes: attribute) => Element
+		setAttributes: (attributes: attribute) => Element
 		setText: (text: string) => Element
-		append: (elements: recurrentArray<Element>) => Element
+		appendChildren: (elements: recurrentArray<Element>) => Element
 	}
 }
 
-Element.prototype.set = function (attributes) {
+Element.prototype.setAttributes = function (attributes) {
 	for (const key in attributes) { this.setAttribute(key, attributes[key]); }
 	return this;
 }
@@ -19,8 +19,8 @@ Element.prototype.setText = function (text) {
 	this.appendChild(document.createTextNode(text));
 	return this;
 }
-Element.prototype.append = function (elements) {
-	for (const e of Arraying(elements)) { this.appendChild(e); }
+Element.prototype.appendChildren = function (nodes:recurrentArray<Element>) {
+	for (const node of Arraying(nodes)) { this.appendChild(node); }
 	return this;
 }
 
@@ -93,4 +93,6 @@ export class HTML {
 	static h6(attributes: attribute={}, text: string = "", children: recurrentArray<Element> = []) { return htmlElement("h6", attributes, text, children) }
 	static ol(attributes: attribute={}, text: string = "", children: recurrentArray<Element> = []) { return htmlElement("ol", attributes, text, children) }
 	static li(attributes: attribute={}, text: string = "", children: recurrentArray<Element> = []) { return htmlElement("li", attributes, text, children) }
+	static script(attributes: attribute={}, text: string = "", children: recurrentArray<Element> = []) { return htmlElement("script", attributes, text, children) }
+	static link(attributes: attribute={}, text: string = "", children: recurrentArray<Element> = []) { return htmlElement("link", attributes, text, children) }
 }

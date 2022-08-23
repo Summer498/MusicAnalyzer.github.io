@@ -49,7 +49,7 @@ export const tan = Math.tan;
 // End of "export all of Math"
 
 export const not = (b: Boolean): Boolean => !b;
-export const Range = (begin: number, end: number, step: number = 1): number[] => [...Array(end - begin)].map((_, i) => i * step + begin);
+export const Range = (begin: number, end: number, step: number = 1): number[] => [...Array(Math.abs(end - begin))].map((_, i) => i * step + begin);
 export const Zeros = (length: number): number[] => [...Array(length)].map(e => 0);
 export const vFunc = (a: number[], b: number | number[], f: (a: number, b: number) => number) => {
     if ("number" == typeof b) { return a.map(e => f(e, Number(b))); }
@@ -86,6 +86,16 @@ declare global {
         v_mod: (b: number | number[]) => number[]
         v_get: (b: number[]) => T[]
     }
+}
+
+export const matTrans = (matrix: number[][]) => Range(0, matrix[0].length).map(i => Range(0, matrix.length).map(j => matrix[j][i]))
+export const forAll = <T>(set: T[], condition: (element: T) => boolean) => {
+    for (const e of set) if (condition(e) == false) return false;
+    return true;
+}
+export const forSome = <T>(set: T[], condition: (element: T) => boolean) => {
+    for (const e of set) if (condition(e)) return true;
+    return false;
 }
 
 Number.prototype.mod = function (m: number): number { return (Number(this) % m + m) % m; };
