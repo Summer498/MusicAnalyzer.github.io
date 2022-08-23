@@ -1,8 +1,70 @@
-// import { Tonal } from "@tonaljs/tonal";
+import { TreeModel } from "../lib/Tree.js";  // Tree のインポートを外部ファイルに任せる
+import { Tonal } from "../lib/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
+import { Songle } from "../lib/Songle.js";  // Songle のインポートを外部ファイルに任せる
+import { SongleWidgetAPI } from "../lib/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
 import { HTML } from "../lib/HTML.js";
 import { SVG } from "../lib/HTML.js";
 import * as Math from "../lib/math.js";
-import {} from "../lib/TPS2.js"
+// import { } from "../lib/TPS.js";
+import { dynamicLogViterbi, logViterbi } from "../lib/Graph.js";
+import { viterbi } from "../lib/Graph.js";
+
+const initial_probabilities = [0.6, 0.4];
+const initial_log_probabilities = initial_probabilities.map(e => Math.log(e));
+const transition_probabilities = [
+    [0.7, 0.3],
+    [0.4, 0.6],
+];
+const transition_log_probabilities = transition_probabilities.map(e => e.map(e => Math.log(e)));
+const emission_probabilities = [
+    [0.5, 0.4, 0.1],
+    [0.1, 0.3, 0.6],
+];
+const emission_log_probabilities = emission_probabilities.map(e => e.map(e => Math.log(e)));
+const observation_sequence = [0, 1, 2];
+const dynamic_log_most_likely = dynamicLogViterbi(
+    initial_log_probabilities,
+    (t0, t1, p0) => transition_log_probabilities,
+    (t, s0) => emission_log_probabilities,
+    observation_sequence
+);
+const log_most_likely = logViterbi(
+    initial_log_probabilities,
+    transition_log_probabilities,
+    emission_log_probabilities,
+    observation_sequence
+);
+console.log(Math.exp(dynamic_log_most_likely.log_probability), dynamic_log_most_likely.trace);
+console.log(Math.exp(log_most_likely.log_probability), log_most_likely.trace);
+console.log(viterbi(
+    initial_probabilities,
+    transition_probabilities,
+    emission_probabilities,
+    observation_sequence
+));
+
+// import stylesheets
+HTML.head.appendChildren([
+    /*
+    HTML.link({rel:"stylesheet",href:"css0.css",type:"text/css"}),
+    HTML.link({rel:"stylesheet",href:"css1.css",type:"text/css"}),
+    HTML.link({rel:"stylesheet",href:"css2.css",type:"text/css"}),
+    */
+    HTML.link({ rel: "stylesheet", href: "css3.css", type: "text/css" }),
+    /*
+    HTML.link({rel:"stylesheet",href:"css4.css",type:"text/css"}),
+    */
+]);
+
+/*
+// import scripts
+HTML.head.appendChildren([
+]);
+*/
+// === END import ===
+
+
+
 
 const major = [0, 2, 4, 5, 7, 9, 11];
 const minor = [0, 2, 3, 5, 7, 8, 10];
@@ -273,17 +335,20 @@ const melody_timeline =
 console.log(melody_timeline);
 //document.insertBefore(white_key, insert_here);
 insert_here.appendChild(melody_timeline);
+/* キーボードを描画する練習 */
 
+/* コードからローマ数字表記を求める */
 /**
  * @param {string[]} codes
  * @return {String[]}
  */
 const chord2roman = (codes) => {
-    const key = "C"
-    const codes2 = ["CMaj7", "Dm7", "G7"]
+    const key = "C";  // TODO: キーを求める
+    const codes2 = ["CMaj7", "Dm7", "G7"];
     // TODO: キーを求める = TPS の出番
     return Tonal.Progression.toRomanNumerals(key, codes);
 };
+
 
 /* SongleWidget を使う練習 */
 window.onload =
@@ -312,7 +377,7 @@ window.onSongleWidgetReady =
         songleWidet.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
         const chords = e.song.scene.chords.map(e => e.name); // コードをすべて取り出す
         console.log(chords);
-        console.log(chord2roman(chords))
+        console.log(chord2roman(chords));
         console.log(e.song.scene.notes.map(e => e.pitch), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
         console.log(e.song.scene.notes.map(e => e.number), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
         console.log(e);
