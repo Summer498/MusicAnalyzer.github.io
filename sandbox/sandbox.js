@@ -43,6 +43,7 @@ console.log(viterbi(
     observation_sequence
 ));
 
+// TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
 HTML.head.appendChildren([
     /*
