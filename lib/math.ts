@@ -1,6 +1,9 @@
 
 // TODO: Math のすべての要素をもっときれいなコードで一括で export する方法はないか?
 // 継承するみたいに, Math が持っているすべての関数などを export したい.
+
+import { hasSameValue } from "./stdlib.js";
+
 // export all of Math
 export const clz32 = Math.clz32;
 export const imul = Math.imul;
@@ -98,6 +101,7 @@ export const forSome = <T>(set: T[], condition: (element: T) => boolean) => {
     return false;
 }
 
+export const sameArray = <T>(arr1: T[], arr2: T[]) => hasSameValue(arr1, arr2);
 Number.prototype.mod = function (m: number): number { return (Number(this) % m + m) % m; };
 Boolean.prototype.toNumber = function (): number { return this ? 1 : 0; };
 Array.prototype.onehot = function (n: number = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
