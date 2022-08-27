@@ -5,14 +5,17 @@ import { SVG } from "./lib/HTML.js";
 //TODO: もっとスマートに書く
 function print(msg) {
 	let _printable = null;
-	let printable = _printable ??= document.querySelector(".print");
-	printable.innerHTML = "<span class=\"print\">" + msg + "</span>";
+	const getPrintable = () => {
+		_printable ??= document.querySelector(".print");
+		return _printable;
+	};
+	getPrintable().innerHTML = "<span class=\"print\">" + msg + "</span>";
 }
 
 const getChordTone = (chord_string) => {
 	if (chord_string == "N") { return []; }
 	const before_slash = chord_string.indexOf("/");
-	const body_length = (before_slash >= 0) ? before_slash : chord_string.length;
+	const body_length = before_slash >= 0 ? before_slash : chord_string.length;
 	const body = chord_string.slice(0, body_length);
 	const base = chord_string.slice(body_length + 1);
 	const notes = Tonal.Chord.get(body).notes;
@@ -29,11 +32,11 @@ const getChordTone = (chord_string) => {
 
 /* HTML の描画 */
 const body = HTML.body;
-const octave_height = 75,
-	white_key_width = 40,
-	white_key_height = octave_height / 7,
-	black_key_width = white_key_width / 2,
-	black_key_height = octave_height / 12;
+const octave_height = 75;
+const white_key_width = 40;
+const white_key_height = octave_height / 7;
+const black_key_width = white_key_width / 2;
+const black_key_height = octave_height / 12;
 
 const background =
 	SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651097 + "%" }, "",
@@ -42,8 +45,12 @@ const background =
 				SVG.svg({ y: (6 - e) * 75 }, "",
 					SVG.g({}, "", [
 						Math.Range(0, 12).map(e2 => [
-							SVG.rect({ x: 0 + "%", y: e2 * 6.25, fill: "#ffffff", width: 100 + "%", height: 6.25, opacity: (e2 * 7).mod(12) < 7 ? 0 : 1 }),
-							SVG.line({ x1: 0 + "%", y1: (e2 + 1) * 6.25, x2: 100 + "%", y2: (e2 + 1) * 6.25, "stroke-width": e2 == 11 ? 2 : 1 }),
+							SVG.rect({
+								x: 0 + "%", y: e2 * 6.25, fill: "#ffffff", width: 100 + "%", height: 6.25, opacity: (e2 * 7).mod(12) < 7 ? 0 : 1
+							}),
+							SVG.line({
+								x1: 0 + "%", y1: (e2 + 1) * 6.25, x2: 100 + "%", y2: (e2 + 1) * 6.25, "stroke-width": e2 == 11 ? 2 : 1
+							}),
 							SVG.line({ x1: 0 + "%", y1: e2 * 6.25, x2: 100 + "%", y2: e2 * 6.25, "stroke-width": 1 }),
 						]),
 					])
@@ -60,7 +67,9 @@ const piano_roll =
 			SVG.svg({ y: (6 - e) * 75 }, "",
 				SVG.g({ id: "octave" }, "", [
 					Math.Range(0, 7).map(e2 => SVG.rect({ class: "white-key", x: 0, y: e2 * white_key_height, width: white_key_width, height: white_key_height })),
-					Math.Range(0, 5).map(e2 => SVG.rect({ class: "black-key", x: 0, y: (2 * e2 + (e2 > 2 ? 2 : 1)) * black_key_height, width: black_key_width, height: black_key_height })),
+					Math.Range(0, 5).map(e2 => SVG.rect({
+						class: "black-key", x: 0, y: (2 * e2 + (e2 > 2 ? 2 : 1)) * black_key_height, width: black_key_width, height: black_key_height
+					})),
 					SVG.text({ class: "label", x: 25, y: 72 }, "C" + String(e))
 				])
 			)

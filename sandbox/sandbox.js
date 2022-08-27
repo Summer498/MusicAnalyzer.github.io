@@ -36,23 +36,24 @@ const major = [0, 2, 4, 5, 7, 9, 11];
 const minor = [0, 2, 3, 5, 7, 8, 10];
 
 // TEST
-for (const abc1 of "cdefgab") {
-    for (const accidental1 of ["b", "", "#"]) {
-        const note1 = abc1.toUpperCase() + accidental1;
-
-        var msg = note1 + ": ";
-        for (const abc2 of "cdefgab") {
-            for (const accidental2 of ["b", "", "#"]) {
-                const note2 = abc2.toUpperCase() + accidental2;
-                msg += note2 + str_interval(interval(note1, note2)) + " ";
+!(() => {
+    let msg = note1 + ": ";
+    for (const abc1 of "cdefgab") {
+        for (const accidental1 of ["b", "", "#"]) {
+            const note1 = abc1.toUpperCase() + accidental1;
+            for (const abc2 of "cdefgab") {
+                for (const accidental2 of ["b", "", "#"]) {
+                    const note2 = abc2.toUpperCase() + accidental2;
+                    msg += note2 + str_interval(interval(note1, note2)) + " ";
+                }
             }
+            // console.log(msg);
         }
-        // console.log(msg);
     }
-}
+})();
 
 // TEST
-(() => {
+!(() => {
     const correct = {
         'F': -1, 'C': 0, 'G': 1, 'Fb': 4, 'Cb': -7, 'B': 5, 'F#': 6, 'Gb': -6, 'Db': -5, 'C#': 7, 'G#': -4, 'E': 4,
         'd': -1, 'a': 0, 'e': 1, 'db': 4, 'ab': -7, 'g#': 5, 'd#': 6, 'eb': -6, 'bb': -5, 'a#': 7, 'e#': -4, 'f': -4,
@@ -72,23 +73,25 @@ for (const abc1 of "cdefgab") {
 })();
 
 // TEST
-for (const abc of "abcdefg") {
-    for (const accidental of ["b", "", "#"]) {
-        for (const is_minor of [false, true]) {
-            const scale = is_minor ? minor : major;
-            const key = (is_minor ? abc : abc.toUpperCase()) + accidental;
-            var msg = "";
-            for (const note of scale) {
-                msg += note_symbol((note + chroma(key[0].toUpperCase() + ((key.length == 2) ? key[1] : ""))).mod(12), keySignature(key)) + " ";
+!(() => {
+    let msg = "";
+    for (const abc of "abcdefg") {
+        for (const accidental of ["b", "", "#"]) {
+            for (const is_minor of [false, true]) {
+                const scale = is_minor ? minor : major;
+                const key = (is_minor ? abc : abc.toUpperCase()) + accidental;
+                for (const note of scale) {
+                    msg += note_symbol((note + chroma(key[0].toUpperCase() + (key.length == 2 ? key[1] : ""))).mod(12), keySignature(key)) + " ";
+                }
+                if (!Math.forAll("ABCDEFG", c => msg.includes(c))) { throw new Error("Generated scale must include all letter of A to G"); }
+                if (msg.includes('#') && msg.includes('b')) { throw new Error("Generated scale must not include both of # and b"); }
             }
-            if (!Math.forAll("ABCDEFG", c => msg.includes(c))) { throw new Error("Generated scale must include all letter of A to G"); }
-            if (msg.includes('#') && msg.includes('b')) { throw new Error("Generated scale must not include both of # and b"); }
         }
     }
-}
+})();
 
-if (!Math.sameArray(major, [0, 2, 4, 5, 7, 9, 11])) throw new Error("major scale is wrong");
-if (!Math.sameArray(minor, [0, 2, 3, 5, 7, 8, 10])) throw new Error("minor scale is wrong");
+if (!Math.sameArray(major, [0, 2, 4, 5, 7, 9, 11])) { throw new Error("major scale is wrong"); }
+if (!Math.sameArray(minor, [0, 2, 3, 5, 7, 8, 10])) { throw new Error("minor scale is wrong"); }
 
 const bs = new BasicSpace();
 bs.levels[2] = 2;
@@ -101,11 +104,11 @@ console.log(bs.root_note);
 /* キーボードを描画する練習 */
 const insert_here = document.getElementById("insert_here");
 
-const octave_height = 75,
-    whitekey_width = 40,
-    whitekey_height = octave_height / 7,
-    blackkey_width = whitekey_width / 2,
-    blackkey_height = octave_height / 12;
+const octave_height = 75;
+const whitekey_width = 40;
+const whitekey_height = octave_height / 7;
+const blackkey_width = whitekey_width / 2;
+const blackkey_height = octave_height / 12;
 
 const background =
     SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651097 + "%" }, "",
@@ -152,7 +155,7 @@ insert_here.appendChild(melody_timeline);
 /* SongleWidget を使う練習 */
 window.onload =
     function () {
-        var songleWidgetElement =
+        const songleWidgetElement =
             SongleWidgetAPI.createSongleWidgetElement({
                 api: "songle-widget-api-example",
                 url: "www.youtube.com/watch?v=PqJNc9KVIZE"
@@ -219,9 +222,9 @@ const viterbied = viterbi(
     emission_probabilities,
     observation_sequence
 );
-if (!hasSameValue(dynamic_log_viterbi, log_viterbi)) throw new Error("Both result of dynamicLogViterbi and logViterbi must be same value. ");
-if (Math.exp(log_viterbi.log_probability) != viterbied.probability) throw new Error("logViterbi(...).log_probability must be equal to Math.log(viterbi(...).probability) . ");
-if (!Math.sameArray(log_viterbi.trace, viterbied.trace)) throw new Error("logViterbi(...).trace and viterbi(...).trace must be same value");
+if (!hasSameValue(dynamic_log_viterbi, log_viterbi)) { throw new Error("Both result of dynamicLogViterbi and logViterbi must be same value. "); }
+if (Math.exp(log_viterbi.log_probability) != viterbied.probability) { throw new Error("logViterbi(...).log_probability must be equal to Math.log(viterbi(...).probability) . "); }
+if (!Math.sameArray(log_viterbi.trace, viterbied.trace)) { throw new Error("logViterbi(...).trace and viterbi(...).trace must be same value"); }
 
 
 
