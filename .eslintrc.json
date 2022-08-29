@@ -29,13 +29,13 @@
     "no-sequences": "warn",
     "no-multi-assign": "warn",
     "no-global-assign": "warn",
-    "no-return-assign":"warn",
+    "no-return-assign": "warn",
     "no-extra-parens": ["warn", "all"],
     "no-unexpected-multiline": "warn",
     "no-unreachable": "warn",
     "one-var": ["warn", "never"],
     "semi": ["error", "always"],
-    "switch-colon-spacing":"warn",
+    "switch-colon-spacing": "warn",
     "prefer-const": [
       "error",
       {
@@ -44,5 +44,21 @@
       }
     ],
     "vars-on-top": "warn"
-  }
+  },
+  "overrides": [
+    // for TypeScript
+    {
+      "files": ["**/*.ts"],
+      "plugins": ["@typescript-eslint"],
+      "extends": [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+      }
+    }
+  ]
 }
