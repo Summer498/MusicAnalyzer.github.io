@@ -1,6 +1,5 @@
-import { NamedTupleMember } from "../node_modules/typescript/lib/typescript.js";
 import * as Math from "./math.js";
-import * as StdLib from "./stdlib.js";
+import { getChordInfo } from "./TonalEx.js";
 
 export const Key_quality = {
 	major: [0, 2, 4, 5, 7, 9, 11],
@@ -37,16 +36,16 @@ export const Alt5 = {
  * @param {number} key key in which chord is (key is like Chroma.Fsharp)
  * @param {number[]} key_quality key in which chord is (key_quality is like Key_quality.major)
  * @param {number} degree degree of chord in the key (degree is in {1,2,...,7})
- * @param {{rmv:(number|never)[],add:(number|never)[]}} indexes indexes of chord: one of {0, 6, 7, 9} (default:0)
+ * @param {{rmv:(number|never)[],add:(number|never)[]}} chord_index indexes of chord: one of {0, 6, 7, 9} (default:0)
  * @param {number} alt5 of chord in the key: one of {-1, 0, 1} (default:0)
  * @return {number[]} Basic Space of chord
  */
-export const get_BS = (
+export const getBasicSpace = (
 	key: number,
 	key_quality: number[],
 	degree: number,
-	indexes: { rmv: (number | never)[], add: (number | never)[] } = Chord_index.none,
-	alt5: number = 0
+	chord_index: { rmv: (number | never)[], add: (number | never)[] } = Chord_index.none,
+	alt5 = 0
 ) => {
 	//TODO:
 	console.assert(degree !== undefined);
@@ -57,7 +56,7 @@ export const get_BS = (
 	const s = key_quality.v_add(key).v_mod(12);
 	s[4] += alt5;
 
-	const code_tone = Math.genArr(3, i => 2 * i + 1).remove(indexes.rmv).concat(indexes.add);
+	const code_tone = Math.genArr(3, i => 2 * i + 1).remove(chord_index.rmv).concat(chord_index.add);
 	const c = s.v_get(code_tone.v_add(d - 2).v_mod(7));
 	const leveld = s.onehot(12);
 	const levelc = c.onehot(12);
@@ -73,7 +72,7 @@ export const get_BS = (
  * @param {number} dst pitch class of destination region's tonic 
  * @return {number} difference between src and dst in chromatic circle of fifth
  */
-export const region_dist = (src: number, dst: number) => ((dst - src) * 7).mod(12);
+export const regionDist = (src: number, dst: number) => ((dst - src) * 7).mod(12);
 
 /**
  * @brief distance of root in chord distance function
@@ -81,7 +80,7 @@ export const region_dist = (src: number, dst: number) => ((dst - src) * 7).mod(1
  * @param {number} dst pitch class of destination chord's root 
  * @return {number} difference between src and dst in diatonic circle of fifth
  */
-export const root_dist = (src: number, dst: number) => ((dst - src) * 3).mod(7);
+export const rootDist = (src: number, dst: number) => ((dst - src) * 3).mod(7);
 
 /**
  * @brief distance of BS in chord distance function
@@ -89,14 +88,14 @@ export const root_dist = (src: number, dst: number) => ((dst - src) * 3).mod(7);
  * @param {number[]} dst pitch class of destination chord's BS 
  * @return {number} count of additional pitch class in dst from src
  */
-export const BS_dist = (src: number[], dst: number[]) => {
+export const basicSpaceDist = (src: number[], dst: number[]) => {
 	let sum = 0;
-	dst.v_sub(src).map(e => sum += Math.max(0, e));
+	dst.v_sub(src).map(e => { sum += Math.max(0, e); return sum; });
 	return sum;
 };
 
 
-export const chord_dist = (
+export const chordDist = (
 	src: {
 		key: number,
 		quality: number[],
@@ -113,22 +112,29 @@ export const chord_dist = (
 	}
 ) => {
 	// TODO: 遠隔調の例外処理
-	return region_dist(src.key, dst.key)
-		+ root_dist(src.degree, dst.degree)
-		+ BS_dist(
-			get_BS(src.key, src.quality, src.degree, src.indexes, src.alt5),
-			get_BS(dst.key, dst.quality, dst.degree, dst.indexes, dst.alt5)
-		)
+	return regionDist(src.key, dst.key)
+		+ rootDist(src.degree, dst.degree)
+		+ basicSpaceDist(
+			getBasicSpace(src.key, src.quality, src.degree, src.indexes, src.alt5),
+			getBasicSpace(dst.key, dst.quality, dst.degree, dst.indexes, dst.alt5)
+		);
 };
 // TODO: もう少し Tonaljs friendly に書く
 
-// TODO: テストは分離する
-const Cmaj = get_BS(Chroma.C, Key_quality.major, 1);
-const Gmaj = get_BS(Chroma.C, Key_quality.major, 5);
-const G7 = get_BS(Chroma.C, Key_quality.major, 5, Chord_index.seventh);
-const F46 = get_BS(Chroma.C, Key_quality.major, 4, Chord_index.added46);
-console.log(Cmaj, Gmaj, G7, F46);
-console.log(BS_dist(Cmaj, Gmaj));
-console.log(BS_dist(Gmaj, Cmaj));
-console.log(BS_dist(Cmaj, G7));
-console.log(BS_dist(G7, Cmaj));
+
+// END: 古いやつ
+
+
+
+
+export const getKeyIncludesTheChord = (chord_string: string) => {
+
+	return undefined;
+};
+
+export const newGetDistance = (src_chord_string:string, dst_chord_string:string):number=>{
+	const src = src_chord_string;
+	const dst = dst_chord_string;
+
+	return -99; //dummy
+};
