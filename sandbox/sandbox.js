@@ -10,6 +10,7 @@ import { dynamicLogViterbi, logViterbi } from "../lib/Graph.js";
 import { viterbi } from "../lib/Graph.js";
 import { hasSameValue } from "../lib/stdlib.js";
 import { str_interval, interval, keySignature, note_symbol, chroma, BasicSpace, str_key_signature } from "./temporaryLib.js";
+import { getChordInfo, noneChordObj } from "../lib/TonalEx.js";
 
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
@@ -37,10 +38,10 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
 
 // TEST
 !(() => {
-    let msg = note1 + ": ";
     for (const abc1 of "cdefgab") {
         for (const accidental1 of ["b", "", "#"]) {
             const note1 = abc1.toUpperCase() + accidental1;
+            let msg = note1 + ": ";
             for (const abc2 of "cdefgab") {
                 for (const accidental2 of ["b", "", "#"]) {
                     const note2 = abc2.toUpperCase() + accidental2;
@@ -74,12 +75,12 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
 
 // TEST
 !(() => {
-    let msg = "";
     for (const abc of "abcdefg") {
         for (const accidental of ["b", "", "#"]) {
             for (const is_minor of [false, true]) {
                 const scale = is_minor ? minor : major;
                 const key = (is_minor ? abc : abc.toUpperCase()) + accidental;
+                let msg = "";
                 for (const note of scale) {
                     msg += note_symbol((note + chroma(key[0].toUpperCase() + (key.length == 2 ? key[1] : ""))).mod(12), keySignature(key)) + " ";
                 }
@@ -93,10 +94,11 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
 if (!Math.sameArray(major, [0, 2, 4, 5, 7, 9, 11])) { throw new Error("major scale is wrong"); }
 if (!Math.sameArray(minor, [0, 2, 3, 5, 7, 8, 10])) { throw new Error("minor scale is wrong"); }
 
+/*
 const bs = new BasicSpace();
 bs.levels[2] = 2;
 console.log(bs.root_note);
-
+*/
 
 
 
@@ -178,13 +180,17 @@ window.onSongleWidgetReady =
         songleWidet.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
         songleWidet.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
         const chords = e.song.scene.chords.map(e => e.name); // コードをすべて取り出す
-        /*
+        //*
         console.log(chords);
-        console.log(chord2roman(chords));
-        console.log(e.song.scene.notes.map(e => e.pitch), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
-        console.log(e.song.scene.notes.map(e => e.number), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
+        console.log(chord2roman(chords));  // Cキーを基準としたローマ数字を呼び出すだけのダミー関数
+        console.log("Tonal.Chord.get(chords):", chords.map(e => {
+            if (e === "N") { return noneChordObj; }
+            return getChordInfo(e);
+        }));
+        // console.log(e.song.scene.notes.map(e => e.pitch), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
+        // console.log(e.song.scene.notes.map(e => e.number), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
         console.log(e);
-        */
+        //*/
     };
 
 

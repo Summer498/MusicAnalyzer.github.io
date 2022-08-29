@@ -1,6 +1,7 @@
 import * as Math from "./lib/math.js";
 import { HTML } from "./lib/HTML.js";
 import { SVG } from "./lib/HTML.js";
+import { getChordNotes } from "./lib/TonalEx.js";
 
 //TODO: もっとスマートに書く
 function print(msg) {
@@ -12,18 +13,7 @@ function print(msg) {
 	getPrintable().innerHTML = "<span class=\"print\">" + msg + "</span>";
 }
 
-const getChordTone = (chord_string) => {
-	if (chord_string == "N") { return []; }
-	const before_slash = chord_string.indexOf("/");
-	const body_length = before_slash >= 0 ? before_slash : chord_string.length;
-	const body = chord_string.slice(0, body_length);
-	const base = chord_string.slice(body_length + 1);
-	const notes = Tonal.Chord.get(body).notes;
-	if (notes.length == 0) { throw Error('illegal chord symbol "' + chord_string + '" received'); }
-	if (base == '' || notes.includes(base)) { return notes; }
-	notes.push(base);
-	return notes;
-};
+const getChordTone = getChordNotes;
 
 
 
