@@ -51,17 +51,17 @@ export const sqrt = Math.sqrt;
 export const tan = Math.tan;
 // End of "export all of Math"
 
-export const not = (b: Boolean): Boolean => !b;
-export const Range = (begin: number, end: number, step: number = 1): number[] => [...Array(Math.abs(end - begin))].map((_, i) => i * step + begin);
-export const Zeros = (length: number): number[] => [...Array(length)].map(e => 0);
+export const not = (b: boolean): boolean => !b;
+export const Range = (begin: number, end: number, step = 1): number[] => [...Array(Math.abs(end - begin))].map((_, i) => i * step + begin);
+export const Zeros = (length: number): number[] => [...Array(length)].map(e => 0);  // eslint-disable-line @typescript-eslint/no-unused-vars
 export const vFunc = (a: number[], b: number | number[], f: (a: number, b: number) => number) => {
     if ("number" == typeof b) { return a.map(e => f(e, Number(b))); }
     if (b instanceof Array) { return a.map((_, i) => f(a[i], b[i])); }
-    throw TypeError("arguments of vFunc must be (a:number[], b:number, f:(a:number,b:number)=>number")
+    throw TypeError("arguments of vFunc must be (a:number[], b:number, f:(a:number,b:number)=>number");
 };
 export const v_sum = (...arrs: number[][]) => {
     let s: number[] = Zeros(arrs[0].length);
-    arrs.forEach(arr => s = s.v_add(arr));
+    arrs.forEach(arr => { s = s.v_add(arr); });
     return s;
 };
 
@@ -91,27 +91,27 @@ declare global {
     }
 }
 
-export const matTrans = (matrix: number[][]) => Range(0, matrix[0].length).map(i => Range(0, matrix.length).map(j => matrix[j][i]))
+export const matTrans = (matrix: number[][]) => Range(0, matrix[0].length).map(i => Range(0, matrix.length).map(j => matrix[j][i]));
 export const forAll = <T>(set: T[], condition: (element: T) => boolean) => {
-    for (const e of set) if (condition(e) == false) return false;
+    for (const e of set) { if (condition(e) == false) { return false; } }
     return true;
-}
+};
 export const forSome = <T>(set: T[], condition: (element: T) => boolean) => {
-    for (const e of set) if (condition(e)) return true;
+    for (const e of set) { if (condition(e)) { return true; } }
     return false;
-}
+};
 
 export const sameArray = <T>(arr1: T[], arr2: T[]) => hasSameValue(arr1, arr2);
 Number.prototype.mod = function (m: number): number { return (Number(this) % m + m) % m; };
 Boolean.prototype.toNumber = function (): number { return this ? 1 : 0; };
-Array.prototype.onehot = function (n: number = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
+Array.prototype.onehot = function (n = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
 Array.prototype.onehotInMod = function (m = 1) { return this.v_mod(m).onehot(m); };
 Array.prototype.remove = function (rmv) { return this.filter(e => not(rmv.includes(e))); };
 Array.prototype.ringShift = function (b) {
-    const l = this.length, bm = b.mod(l);
+    const l = this.length; const bm = b.mod(l);
     return this.concat(this).slice(l - bm, 2 * l - bm);
 };
-Array.prototype.change = function (i, v) { return this[i] = v, this; };
+Array.prototype.change = function (i, v) { this[i] = v; return this; };
 Array.prototype.v_add = function (b) { return vFunc(this, b, (a, b) => a + b); };
 Array.prototype.v_sub = function (b) { return vFunc(this, b, (a, b) => a - b); };
 Array.prototype.v_mult = function (b) { return vFunc(this, b, (a, b) => a * b); };

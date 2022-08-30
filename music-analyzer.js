@@ -78,6 +78,14 @@ body.appendChild(melody_timeline);
 
 
 
+const movableObjectsQueue = [];
+
+!(function mainRoutine() {
+	movableObjectsQueue.forEach(e => e.update());
+	setTimeout(mainRoutine, 1000 / 60);
+})();
+
+
 class MoveObject {
 	update() { }
 }
@@ -138,7 +146,7 @@ self.onSongleAPIReady = Songle => {
 		*/
 		// Tonal.js に渡してパース
 		const chord_tone = getChordTone(chord);
-		const chord_tone_number = chord_tone.map(e => Tonal.Midi.toMidi(e + "4"));
+		const chord_tone_number = chord_tone.map(e => Tonal.Midi.toMidi(e + "4"));  // eslint-disable-line no-undef
 		console.log(chord_tone);
 		console.log(chord_tone_number);
 		chord_tone_number.forEach(e => {
@@ -181,9 +189,3 @@ self.onSongleAPIReady = Songle => {
 };
 
 
-const movableObjectsQueue = [];
-
-!(function mainRoutine() {
-	movableObjectsQueue.forEach(e => e.update());
-	setTimeout(mainRoutine, 1000 / 60);
-})();
