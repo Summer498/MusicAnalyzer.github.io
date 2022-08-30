@@ -1,6 +1,8 @@
+import { getChordInfo } from "./TonalEx.js";
 import { 
     rootDistance, 
-    regionDistance,
+    regionDistance, 
+    newGetDistance,
 } from "./TPS.js";
 
 /*
@@ -29,3 +31,27 @@ for (let i = 0; i < 7; i++) {
     }
 }
 
+{
+    const c_info = getChordInfo("C");
+    const dm_info = getChordInfo("Dm");
+    const e_info = getChordInfo("E");
+    const fm_info = getChordInfo("Fm");
+    const g_info = getChordInfo("G");
+    const am_info = getChordInfo("Am");
+    console.log(newGetDistance(
+        { key: 'C', chord_object: c_info },
+        { key: 'C', chord_object: g_info }
+    ));
+    console.log(newGetDistance(
+        { key: 'C', chord_object: dm_info },
+        { key: 'C', chord_object: am_info }
+    ));
+    console.log(newGetDistance(
+        { key: 'C', chord_object: c_info },
+        { key: 'C', chord_object: e_info }
+    ));
+    console.log(newGetDistance(
+        { key: 'C', chord_object: dm_info },
+        { key: 'C', chord_object: fm_info }
+    ));
+}

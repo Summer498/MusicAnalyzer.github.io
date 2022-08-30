@@ -1,5 +1,7 @@
 import * as Math from "./math.js";
-import { getChordInfo } from "./TonalEx.js";
+import { ChordObject, getChordInfo } from "./TonalEx.js";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare let Tonal: any;  // txt/script タイプの JavaScript から外部定義されている.
 
 export const Key_quality = {
 	major: [0, 2, 4, 5, 7, 9, 11],
@@ -128,16 +130,44 @@ export const chordDist = (
 // END: 古いやつ
 
 
-
+const major_keys = ['Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B',].map(key => Tonal.Scale.get(key + " major"));
+const minor_keys = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#',].map(key => Tonal.Scale.get(key + " minor"));
+const keys = major_keys.concat(minor_keys);
 
 export const getKeyIncludesTheChord = (chord_string: string) => {
-
-	return undefined;
+	const chord_notes = getChordInfo(chord_string)._notes;
+	const keys_includes_the_chord = keys.filter(key => Math.forAll(chord_notes, (note) => Tonal.Pcset.isNoteIncludedIn(key.notes)(note)));
+	return keys_includes_the_chord.map(key => {
+		return { name: key.name.replace('aeolian', 'minor'), tonic: key.tonic, notes: key.notes };
+	});
 };
 
-export const newGetDistance = (src_chord_string:string, dst_chord_string:string):number=>{
+type ChordInfo = {
+	key: string;
+	chord_object: ChordObject;
+};
+
+export const newGetDistance = (src_chord_string: ChordInfo, dst_chord_string: ChordInfo): number => {
 	const src = src_chord_string;
 	const dst = dst_chord_string;
+	console.log(src, dst);
+	const region_dist = regionDistance(
+		Tonal.Note.chroma(src.key),
+		Tonal.Note.chroma(dst.key)
+	);
+	console.log("region_dist", region_dist);
+	const root_dist = rootDistance(
+		Tonal.Interval.distance(src.key, src.chord_object.tonic)[0],
+		Tonal.Interval.distance(dst.key, dst.chord_object.tonic)[0]
+	);
+	console.log("root_dist", root_dist);
+	// TODO: ベーシックスペース間のを求める
+		// TODO: ベーシックスペースを求める
 
 	return -99; //dummy
+};
+
+const getMostLikelyChordProgression = (chord_progression: string[]) => {
+	const possible_keys = chord_progression.forEach(chord => getKeyIncludesTheChord(chord));
+	return undefined;
 };
