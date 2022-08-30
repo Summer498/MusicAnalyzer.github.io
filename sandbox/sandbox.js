@@ -10,7 +10,7 @@ import { dynamicLogViterbi, logViterbi } from "../lib/Graph.js";
 import { viterbi } from "../lib/Graph.js";
 import { hasSameValue } from "../lib/stdlib.js";
 import { str_interval, interval, keySignature, note_symbol, chroma, BasicSpace, str_key_signature } from "./temporaryLib.js";
-import { getChordInfo, noneChordObj } from "../lib/TonalEx.js";
+import { getChordInfo, ChordObject } from "../lib/TonalEx.js";
 
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
@@ -180,11 +180,11 @@ window.onSongleWidgetReady =
         songleWidet.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
         songleWidet.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
         const chords = e.song.scene.chords.map(e => e.name); // コードをすべて取り出す
-        //*
+        /*
         console.log(chords);
         console.log(chord2roman(chords));  // Cキーを基準としたローマ数字を呼び出すだけのダミー関数
         console.log("Tonal.Chord.get(chords):", chords.map(e => {
-            if (e === "N") { return noneChordObj; }
+            if (e === "N") { return ChordObject.none; }
             return getChordInfo(e);
         }));
         // console.log(e.song.scene.notes.map(e => e.pitch), "ドキュメントには書いてあるが実際は取れない"); // ドキュメントには書いてあるが実際は取れない
