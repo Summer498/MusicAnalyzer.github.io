@@ -48,7 +48,7 @@ export function str_key_signature(key_signature) {
 // ノートナンバーとキーからシンボルを得る
 export function note_symbol(note, key_signature = 0) {
     if (isNaN(note) == true) {throw new TypeError("note must be number");}
-    if (isNaN(key_signature) == true) {throw new TypeError("note must be number");};
+    if (isNaN(key_signature) == true) {throw new TypeError("note must be number");}
     const symbol = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"][note.mod(12)];
 
     if (key_signature < 0) {
@@ -95,7 +95,7 @@ export function inv_interval(interval) {
     console.assert(typeof interval == "object");
     console.assert(isNaN(interval[0]) == false);
     console.assert(isNaN(interval[1]) == false);
-    if (interval[1] in [2, 3, 6, 7]) { return [1 - interval[0], 9 - interval[1]]; };
+    if (interval[1] in [2, 3, 6, 7]) { return [1 - interval[0], 9 - interval[1]]; }
     return [-interval[0], 9 - interval[1]];
 }
 
@@ -104,47 +104,3 @@ export function str_interval(interval) {
     const table = [1, 4, 5, 8].indexOf(interval[1]) >= 0 ?["ddd", "dd", "d", "P", "A", "AA", "AAA"] :["ddd", "dd", "d", "m", "M", "A", "AA", "AAA"];
     return table[interval[0] + 3] + String(interval[1]);
 }
-
-const chromas_in_octave = 12;
-
-export class BasicSpace {
-    constructor() {
-        const n = null;
-        this.levels = [n, n, n, n, n, n, n, n, n, n, n, n];
-    }
-    get root_note() { return this.levels.indexOf(4); }
-    get fifth_note() { return this.levels.indexOf(3); }
-    get third_note() {
-        return this.levels.indexOf(2);
-    }
-    //TODO: implement 7th note which is in third note
-    get diatonic() {
-        const diatonic_ = [];
-        for (let i = 0; i < 7; i++) {
-            if (this.levels[i] != 0) { diatonic_.push(i); }
-        }
-        console.assert(diatonic_.length == 7);
-        return diatonic_;
-    }
-    get chromatic() { return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; }
-
-    region_distance(k0, k1) {
-        console.assert(k0 instanceof BasicSpace);
-        console.assert(k1 instanceof BasicSpace);
-        const x = k0.diatonic;
-        const y = k1.diatonic;
-        return Math.abs((y * 7).mod(12) - (x * 7).mod(12));  // 7 = 7^{-1} mod 12
-    } //TODO:
-    chord_distance(x, y) { return 0; } //TODO:
-    basicspace_distance(x, y) { return 0; } //TODO:
-
-    distance(x, y) {
-        console.assert(x instanceof BasicSpace);
-        console.assert(y instanceof BasicSpace);
-        return this.region(x, y) + this.chord_distance(x, y) + this.basicspace_distance(x, y);
-    }
-}
-
-
-
-

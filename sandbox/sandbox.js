@@ -9,7 +9,7 @@ import * as Math from "../lib/math.js";
 import { dynamicLogViterbi, logViterbi } from "../lib/Graph.js";
 import { viterbi } from "../lib/Graph.js";
 import { hasSameValue } from "../lib/stdlib.js";
-import { str_interval, interval, keySignature, note_symbol, chroma, BasicSpace, str_key_signature } from "./temporaryLib.js";
+import { str_interval, interval, keySignature, note_symbol, chroma, str_key_signature } from "./temporaryLib.js";
 import { getChordInfo, ChordObject } from "../lib/TonalEx.js";
 
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
@@ -94,11 +94,6 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
 if (!Math.sameArray(major, [0, 2, 4, 5, 7, 9, 11])) { throw new Error("major scale is wrong"); }
 if (!Math.sameArray(minor, [0, 2, 3, 5, 7, 8, 10])) { throw new Error("minor scale is wrong"); }
 
-/*
-const bs = new BasicSpace();
-bs.levels[2] = 2;
-console.log(bs.root_note);
-*/
 
 
 
@@ -167,19 +162,10 @@ window.onload =
     };
 
 window.onSongleWidgetReady =
-    function (apiKey, e) {
-        // 入力補完用アダプタ
-        // TODO: songleWidget.song.scene.chords[0].name が動くようにする
-        class SongleWidget {
-            constructor(songleWidet) { this.songleWidet = songleWidet; }
-            get volume() { return this.songleWidet.volume; }
-            set volume(val) { this.songleWidet.volume = val; }
-        }
-        const songleWidet = new SongleWidget(e);
-
-        songleWidet.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
-        songleWidet.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
-        const chords = e.song.scene.chords.map(e => e.name); // コードをすべて取り出す
+    function (apiKey, songleWidget) {
+        songleWidget.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
+        songleWidget.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
+        const chords = songleWidget.song.scene.chords.map(e => e.name); // コードをすべて取り出す
         /*
         console.log(chords);
         console.log(chord2roman(chords));  // Cキーを基準としたローマ数字を呼び出すだけのダミー関数
