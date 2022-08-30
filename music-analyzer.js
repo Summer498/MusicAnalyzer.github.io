@@ -1,7 +1,7 @@
 import * as Math from "./lib/math.js";
 import { HTML } from "./lib/HTML.js";
 import { SVG } from "./lib/HTML.js";
-import { getChordInfo } from "./lib/TonalEx.js";
+import { getChordInfo, ChordObject } from "./lib/TonalEx.js";
 
 //TODO: もっとスマートに書く
 function print(msg) {
@@ -13,8 +13,10 @@ function print(msg) {
 	getPrintable().innerHTML = "<span class=\"print\">" + msg + "</span>";
 }
 
-const getChordTone = getChordInfo;
-
+const getChordTone = (chord) => {
+	if(chord=="N") {return ChordObject.none;}
+	return getChordInfo(chord);
+};
 
 
 
@@ -145,7 +147,7 @@ self.onSongleAPIReady = Songle => {
 		isChordQualityLegal(parsed);
 		*/
 		// Tonal.js に渡してパース
-		const chord_tone = getChordTone(chord);
+		const chord_tone = getChordTone(chord).notes;
 		const chord_tone_number = chord_tone.map(e => Tonal.Midi.toMidi(e + "4"));  // eslint-disable-line no-undef
 		console.log(chord_tone);
 		console.log(chord_tone_number);
