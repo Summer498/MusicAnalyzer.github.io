@@ -74,19 +74,36 @@ export const v_sum = (...arrs: number[][]) => {
  */
 export const genArr = (n: number, f: (i: number) => number) => [...Array(n)].map((_, i) => f(i));
 declare global {
-    interface Number { mod: (m: number) => number }
-    interface Boolean { toNumber: () => number }
+    interface Number {
+        /** @deprecated */
+        mod: (m: number) => number
+    }
+    interface Boolean {
+        /** @deprecated */
+        toNumber: () => number
+    }
     interface Array<T> {
+        /** @deprecated */
         onehot: (n: number) => number[]
+        /** @deprecated */
         onehotInMod: (n: number) => number[]
+        /** @deprecated */
         remove: (rmv: number[]) => T[]
+        /** @deprecated */
         ringShift: (b: number) => T[]
+        /** @deprecated */
         change: (i: number, v: T) => T[]
+        /** @deprecated */
         v_add: (b: number | number[]) => number[]
+        /** @deprecated */
         v_sub: (b: number | number[]) => number[]
+        /** @deprecated */
         v_mult: (b: number | number[]) => number[]
+        /** @deprecated */
         v_div: (b: number | number[]) => number[]
+        /** @deprecated */
         v_mod: (b: number | number[]) => number[]
+        /** @deprecated */
         v_get: (b: number[]) => T[]
     }
 }
@@ -102,21 +119,57 @@ export const forSome = <T>(set: T[], condition: (element: T) => boolean) => {
 };
 
 export const sameArray = <T>(arr1: T[], arr2: T[]) => hasSameValue(arr1, arr2);
-Number.prototype.mod = function (m: number): number { return (Number(this) % m + m) % m; };
-Boolean.prototype.toNumber = function (): number { return this ? 1 : 0; };
-Array.prototype.onehot = function (n = 0) { return [...Array(Math.max(Math.max(...this) + 1, n))].map((_, i) => this.includes(i).toNumber()); };
+
+/** @brief avoid bug from negative value */
+export const mod = (n: number, m: number): number => (Number(n) % m + m) % m;
+/** @deprecated */
+Number.prototype.mod = function (m: number): number { return mod(Number(this), m); };
+export const bool2number = (b: boolean) => b ? 1 : 0;
+/** @deprecated */
+Boolean.prototype.toNumber = function (): number { return bool2number(Boolean(this)); };
+export const onehot = (array: number[], n = 0) => [...Array(Math.max(Math.max(...array) + 1, n))].map((_, i) => array.includes(i).toNumber());
+/** @deprecated */
+Array.prototype.onehot = function (n = 0) { return onehot(this, n); };
+export const onehotInMod = (array: number[], m = 1) => array.v_mod(m).onehot(m);
+/** @deprecated */
 Array.prototype.onehotInMod = function (m = 1) { return this.v_mod(m).onehot(m); };
-Array.prototype.remove = function (rmv) { return this.filter(e => not(rmv.includes(e))); };
-Array.prototype.ringShift = function (b) {
-    const l = this.length; const bm = b.mod(l);
-    return this.concat(this).slice(l - bm, 2 * l - bm);
+export const removeFromArray = (array: unknown[], rmv: unknown[]) => array.filter(e => not(rmv.includes(e)));
+/** @deprecated */
+Array.prototype.remove = function (rmv) { return removeFromArray(this, rmv); };
+
+export const ringShift = (array: unknown[], b: number) => {
+    const l = array.length; const bm = b.mod(l);
+    return array.concat(this).slice(l - bm, 2 * l - bm);
 };
+/** @deprecated */
+Array.prototype.ringShift = function (b) { return ringShift(this, b); };
+
+/** @deprecated this method is only do:  this[i] = v*/
 Array.prototype.change = function (i, v) { this[i] = v; return this; };
-Array.prototype.v_add = function (b) { return vFunc(this, b, (a, b) => a + b); };
-Array.prototype.v_sub = function (b) { return vFunc(this, b, (a, b) => a - b); };
-Array.prototype.v_mult = function (b) { return vFunc(this, b, (a, b) => a * b); };
-Array.prototype.v_div = function (b) { return vFunc(this, b, (a, b) => a / b); };
-Array.prototype.v_mod = function (b) { return vFunc(this, b, (a, b) => a.mod(b)); };
+
+export const v_add = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a + b);
+/** @deprecated */
+Array.prototype.v_add = function (b) { return v_add(this, b); };
+
+export const v_sub = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a - b);
+/** @deprecated */
+Array.prototype.v_sub = function (b) { return v_sub(this, b); };
+
+export const v_mult = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a * b);
+/** @deprecated */
+Array.prototype.v_mult = function (b) { return v_mult(this, b); };
+
+export const v_div = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a / b);
+/** @deprecated */
+Array.prototype.v_div = function (b) { return v_div(this, b); };
+
+export const v_mod = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a.mod(b));
+/** @deprecated */
+Array.prototype.v_mod = function (b) { return v_mod(this, b); };
+
+export const v_get = (array: unknown[], indexes: number[]) => indexes.map(e => array[e]);
+/** @deprecated */
 Array.prototype.v_get = function (b) { return b.map(e => this[e]); };
+
 //TODO: プロトタイプに直接メソッドを追加しないようにする
 // class Vector とか作る
