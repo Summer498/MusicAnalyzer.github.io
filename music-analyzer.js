@@ -1,7 +1,7 @@
 import * as Math from "./lib/math.js";
 import { HTML } from "./lib/HTML.js";
 import { SVG } from "./lib/HTML.js";
-import { getChordNotes } from "./lib/TonalEx.js";
+import { getChordInfo } from "./lib/TonalEx.js";
 
 //TODO: もっとスマートに書く
 function print(msg) {
@@ -13,7 +13,7 @@ function print(msg) {
 	getPrintable().innerHTML = "<span class=\"print\">" + msg + "</span>";
 }
 
-const getChordTone = getChordNotes;
+const getChordTone = getChordInfo;
 
 
 
