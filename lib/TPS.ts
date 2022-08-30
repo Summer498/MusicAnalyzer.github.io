@@ -161,7 +161,7 @@ export const newGetDistance = (src_chord_string: ChordInfo, dst_chord_string: Ch
 		Tonal.Interval.distance(dst.key, dst.chord_object.tonic)[0]
 	);
 	console.log("root_dist", root_dist);
-	// TODO: ベーシックスペース間のを求める
+	// TODO: ベーシックスペース間の距離を求める
 		// TODO: ベーシックスペースを求める
 
 	return -99; //dummy
