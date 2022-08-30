@@ -11,6 +11,7 @@
     "ecmaVersion": 13,
     "sourceType": "module"
   },
+  "extends":["eslint:recommended"],
   "rules": {
     "block-scoped-var": "warn",
     "curly": "warn",
@@ -33,6 +34,7 @@
     "no-extra-parens": ["warn", "all"],
     "no-unexpected-multiline": "warn",
     "no-unreachable": "warn",
+    "no-use-before-define":"warn",
     "one-var": ["warn", "never"],
     "semi": ["error", "always"],
     "switch-colon-spacing": "warn",
