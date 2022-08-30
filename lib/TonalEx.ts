@@ -1,4 +1,5 @@
-declare let Tonal: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare let Tonal: any;  // txt/script タイプの JavaScript から外部定義されている.
 
 export class ChordObject {
     readonly _tonic: string;
@@ -49,8 +50,7 @@ export const getChordInfo = (chord_string: string): ChordObject => {
         );
     if (chord_string === "") { return ChordObject.none; }
     if (chord.empty) { throw Error('illegal chord symbol "' + chord_string + '" received'); }
-    if (root == '' || notes.includes(root)) { }
-    else { notes.push(root); }
+    if (root != '' && !notes.includes(root)) { notes.push(root); }
 
     return chord_object;
 };
