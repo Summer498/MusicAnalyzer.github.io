@@ -72,15 +72,18 @@ export const getBasicSpace = (
  * @param {number} dst pitch class of destination region's tonic 
  * @return {number} difference between src and dst in chromatic circle of fifth
  */
-export const regionDist = (src: number, dst: number) => ((dst - src) * 7).mod(12);
-
+export const regionDistance = (src: number, dst: number) => {
+	return Math.abs(((dst - src) * 7 + 6).mod(12) - 6);
+};
 /**
  * @brief distance of root in chord distance function
  * @param {number} src pitch class of source chord's root 
  * @param {number} dst pitch class of destination chord's root 
  * @return {number} difference between src and dst in diatonic circle of fifth
  */
-export const rootDist = (src: number, dst: number) => ((dst - src) * 3).mod(7);
+export const rootDistance = (src: number, dst: number) => {
+	return Math.abs(((dst - src) * 3 + 3).mod(7) - 3);
+};
 
 /**
  * @brief distance of BS in chord distance function
@@ -112,8 +115,8 @@ export const chordDist = (
 	}
 ) => {
 	// TODO: 遠隔調の例外処理
-	return regionDist(src.key, dst.key)
-		+ rootDist(src.degree, dst.degree)
+	return regionDistance(src.key, dst.key)
+		+ rootDistance(src.degree, dst.degree)
 		+ basicSpaceDist(
 			getBasicSpace(src.key, src.quality, src.degree, src.indexes, src.alt5),
 			getBasicSpace(dst.key, dst.quality, dst.degree, dst.indexes, dst.alt5)
