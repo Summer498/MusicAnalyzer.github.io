@@ -3,6 +3,97 @@ import { ChordObject, getChordInfo } from "./TonalEx.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Tonal: any;  // txt/script タイプの JavaScript から外部定義されている.
 
+/*
+type ChordInfo = {
+	key: string;
+	chord_object: ChordObject;
+};
+*/
+
+class ChordInfo {
+	readonly key: string;
+	readonly chord_object: ChordObject;
+	constructor(
+		key: string,
+		chord_object: ChordObject
+	) {
+		this.key = key;
+		this.chord_object = chord_object;
+	}
+}
+
+/**
+ * @brief distance of region in chord distance function
+ * @param {number} src pitch class of source region's tonic 
+ * @param {number} dst pitch class of destination region's tonic 
+ * @return {number} difference between src and dst in chromatic circle of fifth
+ */
+ export const regionDistance = (src: number, dst: number) => {
+	return Math.abs(((dst - src) * 7 + 6).mod(12) - 6);
+};
+/**
+ * @brief distance of root in chord distance function
+ * @param {number} src pitch class of source chord's root 
+ * @param {number} dst pitch class of destination chord's root 
+ * @return {number} difference between src and dst in diatonic circle of fifth
+ */
+export const rootDistance = (src: number, dst: number) => {
+	return Math.abs(((dst - src) * 3 + 3).mod(7) - 3);
+};
+
+const get_basic_space = (chord: string) => {
+	return undefined;
+};
+
+const basicSpaceDistance = (src_chord: ChordInfo, dst_chord: ChordInfo) => {
+	// TODO:
+	return 0;
+};
+
+export const newGetDistance = (src_chord_string: ChordInfo, dst_chord_string: ChordInfo): number => {
+	const src = src_chord_string;
+	const dst = dst_chord_string;
+	console.log(src, dst);
+	const region_dist = regionDistance(
+		Tonal.Note.chroma(src.key),
+		Tonal.Note.chroma(dst.key)
+	);
+	console.log("region_dist", region_dist);
+	const root_dist = rootDistance(
+		Tonal.Interval.distance(src.key, src.chord_object.tonic)[0],
+		Tonal.Interval.distance(dst.key, dst.chord_object.tonic)[0]
+	);
+	console.log("root_dist", root_dist);
+	const basic_space_dist = basicSpaceDistance(src, dst);
+	console.log("basic_space_dist", basic_space_dist);
+	// TODO: ベーシックスペース間の距離を求める
+	// TODO: ベーシックスペースを求める
+
+	return -99; //dummy
+};
+
+const major_keys = ['Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B',].map(key => Tonal.Scale.get(key + " major"));
+const minor_keys = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#',].map(key => Tonal.Scale.get(key + " minor"));
+const keys = major_keys.concat(minor_keys);
+
+export const getKeyIncludesTheChord = (chord_string: string) => {
+	const chord_notes = getChordInfo(chord_string)._notes;
+	const keys_includes_the_chord = keys.filter(key => Math.forAll(chord_notes, (note) => Tonal.Pcset.isNoteIncludedIn(key.notes)(note)));
+	return keys_includes_the_chord.map(key => {
+		return { name: key.name.replace('aeolian', 'minor'), tonic: key.tonic, notes: key.notes };
+	});
+};
+
+const getMostLikelyChordProgression = (chord_progression: string[]) => {
+	const possible_keys = chord_progression.forEach(chord => getKeyIncludesTheChord(chord));
+	return undefined;
+};
+
+
+
+
+// BEGIN: 古いやつ
+
 export const Key_quality = {
 	major: [0, 2, 4, 5, 7, 9, 11],
 	minor: [0, 2, 3, 5, 7, 8, 10]
@@ -67,26 +158,6 @@ export const getBasicSpace = (
 	return Math.v_sum(leveld, levelc, levelb, levela);
 };
 
-
-/**
- * @brief distance of region in chord distance function
- * @param {number} src pitch class of source region's tonic 
- * @param {number} dst pitch class of destination region's tonic 
- * @return {number} difference between src and dst in chromatic circle of fifth
- */
-export const regionDistance = (src: number, dst: number) => {
-	return Math.abs(((dst - src) * 7 + 6).mod(12) - 6);
-};
-/**
- * @brief distance of root in chord distance function
- * @param {number} src pitch class of source chord's root 
- * @param {number} dst pitch class of destination chord's root 
- * @return {number} difference between src and dst in diatonic circle of fifth
- */
-export const rootDistance = (src: number, dst: number) => {
-	return Math.abs(((dst - src) * 3 + 3).mod(7) - 3);
-};
-
 /**
  * @brief distance of BS in chord distance function
  * @param {number[]} src pitch class of source chord's BS
@@ -98,7 +169,6 @@ export const basicSpaceDist = (src: number[], dst: number[]) => {
 	dst.v_sub(src).map(e => { sum += Math.max(0, e); return sum; });
 	return sum;
 };
-
 
 export const chordDist = (
 	src: {
@@ -129,45 +199,3 @@ export const chordDist = (
 
 // END: 古いやつ
 
-
-const major_keys = ['Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B',].map(key => Tonal.Scale.get(key + " major"));
-const minor_keys = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#',].map(key => Tonal.Scale.get(key + " minor"));
-const keys = major_keys.concat(minor_keys);
-
-export const getKeyIncludesTheChord = (chord_string: string) => {
-	const chord_notes = getChordInfo(chord_string)._notes;
-	const keys_includes_the_chord = keys.filter(key => Math.forAll(chord_notes, (note) => Tonal.Pcset.isNoteIncludedIn(key.notes)(note)));
-	return keys_includes_the_chord.map(key => {
-		return { name: key.name.replace('aeolian', 'minor'), tonic: key.tonic, notes: key.notes };
-	});
-};
-
-type ChordInfo = {
-	key: string;
-	chord_object: ChordObject;
-};
-
-export const newGetDistance = (src_chord_string: ChordInfo, dst_chord_string: ChordInfo): number => {
-	const src = src_chord_string;
-	const dst = dst_chord_string;
-	console.log(src, dst);
-	const region_dist = regionDistance(
-		Tonal.Note.chroma(src.key),
-		Tonal.Note.chroma(dst.key)
-	);
-	console.log("region_dist", region_dist);
-	const root_dist = rootDistance(
-		Tonal.Interval.distance(src.key, src.chord_object.tonic)[0],
-		Tonal.Interval.distance(dst.key, dst.chord_object.tonic)[0]
-	);
-	console.log("root_dist", root_dist);
-	// TODO: ベーシックスペース間の距離を求める
-		// TODO: ベーシックスペースを求める
-
-	return -99; //dummy
-};
-
-const getMostLikelyChordProgression = (chord_progression: string[]) => {
-	const possible_keys = chord_progression.forEach(chord => getKeyIncludesTheChord(chord));
-	return undefined;
-};
