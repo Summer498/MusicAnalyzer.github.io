@@ -11,7 +11,7 @@
     "ecmaVersion": 13,
     "sourceType": "module"
   },
-  "extends":["eslint:recommended"],
+  // "extends":["eslint:recommended"],
   "rules": {
     "block-scoped-var": "warn",
     "curly": "warn",
@@ -46,7 +46,8 @@
         "ignoreReadBeforeAssign": true
       }
     ],
-    "vars-on-top": "warn"
+    "vars-on-top": "warn",
+    "yoda":"error"
   },
   "overrides": [
     // for TypeScript
