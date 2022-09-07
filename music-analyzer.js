@@ -1,7 +1,7 @@
-import * as Math from "./lib/math.js";
-import { HTML } from "./lib/HTML.js";
-import { SVG } from "./lib/HTML.js";
-import { getChordInfo, ChordObject } from "./lib/TonalEx.js";
+import * as Math from "./lib/Math/Math.js";
+import { HTML } from "./lib/HTML/HTML.js";
+import { SVG } from "./lib/HTML/HTML.js";
+import { getChordInfo, ChordObject } from "./lib/TonalEx/TonalEx.js";
 
 //TODO: もっとスマートに書く
 function print(msg) {

@@ -1,5 +1,4 @@
-import { forSome as forSome, matTrans, Range } from "./math.js";
-import { Zeros } from "./math.js";
+import { forSome, matTrans, Range, Zeros } from "../Math/Math.js";
 
 //TODO: 未実装
 class Tree {

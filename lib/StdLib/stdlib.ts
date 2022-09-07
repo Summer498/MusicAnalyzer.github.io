@@ -18,7 +18,7 @@ export const hasSameValue = (o1: any, o2: any) => {
     if (Object.keys(o1).length != Object.keys(o2).length) {return false;}
     for (const key in o1) {
         if (!(key in o2)) {return false;}
-        if ("object" === typeof o1[key]) {
+        if (typeof o1[key] === "object") {
             if (!hasSameValue(o1[key], o2[key])) {return false;}  // deep check
         } else if (o1[key] != o2[key]) {return false;}
     }

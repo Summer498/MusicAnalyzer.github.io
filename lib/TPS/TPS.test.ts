@@ -1,4 +1,4 @@
-import { getChordInfo } from "./TonalEx.js";
+import { getChordInfo } from "../TonalEx/TonalEx.js";
 import { 
     rootDistance, 
     regionDistance, 

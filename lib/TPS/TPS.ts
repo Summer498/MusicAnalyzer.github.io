@@ -1,5 +1,5 @@
-import * as Math from "./math.js";
-import { ChordObject, getChordInfo } from "./TonalEx.js";
+import * as Math from "../Math/Math.js";
+import { ChordObject, getChordInfo } from "../TonalEx/TonalEx.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let Tonal: any;  // txt/script タイプの JavaScript から外部定義されている.
 

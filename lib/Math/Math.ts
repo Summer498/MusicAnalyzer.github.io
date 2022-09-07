@@ -2,7 +2,7 @@
 // TODO: Math のすべての要素をもっときれいなコードで一括で export する方法はないか?
 // 継承するみたいに, Math が持っているすべての関数などを export したい.
 
-import { hasSameValue } from "./stdlib.js";
+import { hasSameValue } from "../StdLib/stdlib.js";
 
 // export all of Math
 export const clz32 = Math.clz32;
@@ -55,7 +55,7 @@ export const not = (b: boolean): boolean => !b;
 export const Range = (begin: number, end: number, step = 1): number[] => [...Array(Math.abs(end - begin))].map((_, i) => i * step + begin);
 export const Zeros = (length: number): number[] => [...Array(length)].map(e => 0);  // eslint-disable-line @typescript-eslint/no-unused-vars
 export const vFunc = (a: number[], b: number | number[], f: (a: number, b: number) => number) => {
-    if ("number" == typeof b) { return a.map(e => f(e, Number(b))); }
+    if (typeof b == "number") { return a.map(e => f(e, Number(b))); }
     if (b instanceof Array) { return a.map((_, i) => f(a[i], b[i])); }
     throw TypeError("arguments of vFunc must be (a:number[], b:number, f:(a:number,b:number)=>number");
 };

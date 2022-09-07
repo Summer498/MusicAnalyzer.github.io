@@ -1,5 +1,4 @@
-import { Arraying } from "./stdlib.js";
-import { recurrentArray } from "./stdlib.js";
+import { Arraying, recurrentArray } from "../StdLib/stdlib.js";
 
 type attribute = { [key: string]: string }
 

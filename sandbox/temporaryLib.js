@@ -1,5 +1,5 @@
-import { HTML } from "../lib/HTML.js";
-import * as Math from "../lib/math.js";
+import { HTML } from "../lib/HTML/HTML.js";
+import * as Math from "../lib/Math/Math.js";
 "use strict";
 
 export function accidental_num(accidental_symbol) {
@@ -12,7 +12,7 @@ export function accidental_num(accidental_symbol) {
 export function chroma(note) {
     console.assert(typeof note == "string");
     const len = note.length;
-    console.assert(1 <= len && len < 3);
+    console.assert(len >= 1 && len < 3);
     const char_num = "C1D3EF6G8A0B".indexOf(note[0]);
     console.assert(char_num >= 0);
 
@@ -22,7 +22,7 @@ export function chroma(note) {
 export function keySignature(key) {
     console.assert(typeof key == "string" || isNaN(key) == false);
     const len = key.length;
-    console.assert(1 <= len && len < 3);
+    console.assert(len >= 1 && len < 3);
     if (isNaN(key) == false) { return (key * 7 + 5).mod(12) - 5; }
     else {
         const capital_key = key[0].toUpperCase() + (len >= 2 ? key[1] : "");  // 先頭を大文字に変換

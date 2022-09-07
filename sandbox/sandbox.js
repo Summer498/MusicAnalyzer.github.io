@@ -1,16 +1,14 @@
 // テスト関数をまとめておくところ
-import { TreeModel } from "../lib/Tree.js";  // Tree のインポートを外部ファイルに任せる
-import { Tonal } from "../lib/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
-import { Songle } from "../lib/Songle.js";  // Songle のインポートを外部ファイルに任せる
-import { SongleWidgetAPI } from "../lib/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
-import { HTML } from "../lib/HTML.js";
-import { SVG } from "../lib/HTML.js";
-import * as Math from "../lib/math.js";
-import { dynamicLogViterbi, logViterbi } from "../lib/Graph.js";
-import { viterbi } from "../lib/Graph.js";
-import { hasSameValue } from "../lib/stdlib.js";
+import { TreeModel } from "../lib/adapters/Tree.js";  // Tree のインポートを外部ファイルに任せる
+import { Tonal } from "../lib/adapters/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
+import { Songle } from "../lib/adapters/Songle.js";  // Songle のインポートを外部ファイルに任せる
+import { SongleWidgetAPI } from "../lib/adapters/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
+import { HTML, SVG } from "../lib/HTML/HTML.js";
+import * as Math from "../lib/Math/Math.js";
+import { dynamicLogViterbi, logViterbi, viterbi } from "../lib/Graph/Graph.js";
+import { hasSameValue } from "../lib/StdLib/stdlib.js";
 import { str_interval, interval, keySignature, note_symbol, chroma, str_key_signature } from "./temporaryLib.js";
-import { getChordInfo, ChordObject } from "../lib/TonalEx.js";
+import { getChordInfo, ChordObject } from "../lib/TonalEx/TonalEx.js";
 
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
