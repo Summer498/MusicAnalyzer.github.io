@@ -3,6 +3,7 @@ import { TreeModel } from "../lib/adapters/Tree.js";  // Tree のインポート
 import { Tonal } from "../lib/adapters/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
 import { Songle } from "../lib/adapters/Songle.js";  // Songle のインポートを外部ファイルに任せる
 import { SongleWidgetAPI } from "../lib/adapters/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
+
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import * as Math from "../lib/Math/Math.js";
 import { dynamicLogViterbi, logViterbi, viterbi } from "../lib/Graph/Graph.js";
@@ -35,7 +36,7 @@ const major = [0, 2, 4, 5, 7, 9, 11];
 const minor = [0, 2, 3, 5, 7, 8, 10];
 
 // TEST
-!(() => {
+(() => {
     for (const abc1 of "cdefgab") {
         for (const accidental1 of ["b", "", "#"]) {
             const note1 = abc1.toUpperCase() + accidental1;
@@ -52,7 +53,7 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
 })();
 
 // TEST
-!(() => {
+(() => {
     const correct = {
         'F': -1, 'C': 0, 'G': 1, 'Fb': 4, 'Cb': -7, 'B': 5, 'F#': 6, 'Gb': -6, 'Db': -5, 'C#': 7, 'G#': -4, 'E': 4,
         'd': -1, 'a': 0, 'e': 1, 'db': 4, 'ab': -7, 'g#': 5, 'd#': 6, 'eb': -6, 'bb': -5, 'a#': 7, 'e#': -4, 'f': -4,
@@ -65,6 +66,7 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
         }
     }
     for (const key in correct2) {
+        console.log("correct2["+key+"] = " + correct2[key]);
         if (keySignature(key) != correct2[key]) {
             throw new Error("On key " + key + " received value: " + str_key_signature(keySignature(key)) + " but correct is: " + str_key_signature(correct2[key]));
         }
@@ -72,7 +74,7 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
 })();
 
 // TEST
-!(() => {
+(() => {
     for (const abc of "abcdefg") {
         for (const accidental of ["b", "", "#"]) {
             for (const is_minor of [false, true]) {
