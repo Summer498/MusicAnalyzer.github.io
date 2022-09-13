@@ -1,29 +1,34 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare let Tonal: any;  // txt/script タイプの JavaScript から外部定義されている.
+import { Chord, Pcset } from "../adapters/Tonal.js";
 
 export class ChordObject {
-    readonly _tonic: string;
-    readonly _notes: string[];
-    readonly _root: string;
-    readonly _symbol: string;
+    readonly #tonic: string;
+    readonly #notes: string[];
+    readonly #root: string;
+    readonly #symbol: string;
     constructor(
         tonic: string,
         notes: string[],
         root: string,
         symbol: string
     ) {
-        this._tonic = tonic;
-        this._notes = notes;
-        this._root = root;
-        this._symbol = symbol;
+        this.#tonic = tonic;
+        this.#notes = notes;
+        this.#root = root;
+        this.#symbol = symbol;
     }
-    static get none(){
+    static get none() {
         return new ChordObject('', [], '', '');
     }
-    get tonic() { return this._tonic; }
-    get notes() { return this._notes; }
-    get root() { return this._root; }
-    get symbol() { return this._symbol; }
+    get tonic() { return this.#tonic; }
+    get notes() { return this.#notes; }
+    get notes_pcset() {
+        return Pcset.get(this.notes);
+    }
+    get root() { return this.#root; }
+    get root_pcset() {
+        return Pcset.get([this.root]);
+    }
+    get symbol() { return this.#symbol; }
 }
 
 const getBodyAndRoot = (chord_string: string) => {
@@ -38,7 +43,8 @@ const getBodyAndRoot = (chord_string: string) => {
 export const getChordInfo = (chord_string: string): ChordObject => {
     const body_and_root = getBodyAndRoot(chord_string);
     const root = body_and_root.root;
-    const chord = Tonal.Chord.get(body_and_root.body);
+    const chord = Chord.get(body_and_root.body);
+    if (chord.tonic == null) { throw new TypeError("tonic must not be null"); }
     const notes: string[] = chord.notes;
     const tonic: string = chord.tonic;
     const chord_object
