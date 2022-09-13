@@ -66,7 +66,6 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
         }
     }
     for (const key in correct2) {
-        console.log("correct2["+key+"] = " + correct2[key]);
         if (keySignature(key) != correct2[key]) {
             throw new Error("On key " + key + " received value: " + str_key_signature(keySignature(key)) + " but correct is: " + str_key_signature(correct2[key]));
         }
