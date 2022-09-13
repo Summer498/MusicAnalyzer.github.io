@@ -1,5 +1,5 @@
 /*
-export { Tonal, Chord, Pcset, Note, Interval, Scale, } from "@tonaljs/tonal";
+export { Tonal, Chord, Pcset, Note, Interval, Scale, Midi } from "@tonaljs/tonal";
 //*/
 
 //*
@@ -12,4 +12,5 @@ export const Pcset = Tonal.Pcset;
 export const Note = Tonal.Note;
 export const Interval = Tonal.Interval;
 export const Scale = Tonal.Scale;
+export const Midi = Tonal.Midi;
 //*/

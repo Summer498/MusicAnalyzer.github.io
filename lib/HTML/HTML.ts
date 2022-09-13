@@ -1,6 +1,6 @@
 import { Arraying, recurrentArray } from "../StdLib/stdlib.js";
 
-type attribute = { [key: string]: string }
+type attribute = { [key: string]: string | number }
 
 declare global {
 	interface Element {
@@ -11,7 +11,7 @@ declare global {
 }
 
 Element.prototype.setAttributes = function (attributes) {
-	for (const key in attributes) { this.setAttribute(key, attributes[key]); }
+	for (const key in attributes) { this.setAttribute(key, String(attributes[key])); }
 	return this;
 };
 Element.prototype.setText = function (text) {
@@ -29,7 +29,7 @@ function setComponentsToElement<T extends Element>(
 	text = "",
 	children: recurrentArray<Element> = []
 ) {
-	for (const key in attributes) { element.setAttribute(key, attributes[key]); }
+	for (const key in attributes) { element.setAttribute(key, String(attributes[key])); }
 	element.appendChild<Text>(document.createTextNode(text));
 	Arraying(children).forEach(child => element.appendChild(child));
 	return element;
