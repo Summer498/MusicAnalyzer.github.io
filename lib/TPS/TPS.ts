@@ -1,6 +1,8 @@
 import * as Math from "../Math/Math.js";
 import { RomanChord } from "../TonalEx/TonalEx.js";
-import { Note, Interval, Scale_default, Pcset_default, Chord_default } from "../adapters/Tonal.js";
+import { Note, Interval, Scale_default, Pcset_default, Chord_default, Chord, Scale } from "../adapters/Tonal.js";
+import { castToNumber, excludeNull, excludeUndefined } from "../StdLib/stdlib.js";
+import { chroma } from "../../sandbox/temporaryLib.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 /**
@@ -13,21 +15,15 @@ export const regionDistance_in_chroma_number = (src: number, dst: number) => {
 	return Math.abs(((dst - src) * 7 + 6).mod(12) - 6);
 };
 
-export const regionDistance = (src: RomanChord, dst: RomanChord) => {
-	const src_tonic = src.scale.tonic;
-	const dst_tonic = dst.scale.tonic;
-	if (src_tonic == null) { throw new TypeError("src_chroma must not be null"); }
-	if (dst_tonic == null) { throw new TypeError("src_chroma must not be null"); }
-	const src_chroma = Note.chroma(src_tonic);
-	const dst_chroma = Note.chroma(dst_tonic);
-	if (src_chroma == undefined) {
-		console.log(src.scale);
-		throw new TypeError("src_chroma must not be undefined");
-	}
-	if (dst_chroma == undefined) {
-		console.log(dst.scale);
-		throw new TypeError("dst_chroma must not be undefined");
-	}
+export const regionDistance = (src: Scale, dst: Scale) => {
+	const src_chroma = chroma(
+		excludeUndefined(
+			excludeNull(src.tonic)
+		));
+	const dst_chroma = chroma(
+		excludeUndefined(
+			excludeNull(dst.tonic)
+		));
 
 	const region_dist = regionDistance_in_chroma_number(src_chroma, dst_chroma);
 	return region_dist;
@@ -43,22 +39,16 @@ export const rootDistance_in_chroma_number = (src: number, dst: number) => {
 	return Math.abs(Math.mod((dst - src) * 3 + 3, 7) - 3);
 };
 
-export const rootDistance = (src: RomanChord, dst: RomanChord) => {
-	const src_tonic = src.chord.tonic;
-	const dst_tonic = dst.chord.tonic;
-	if (src_tonic == null) { throw TypeError("src_tonic must not be null"); }
-	if (dst_tonic == null) { throw TypeError("src_tonic must not be null"); }
-	const src_degree = Number(Interval.distance(src.scale, src_tonic)[0]);
-	const dst_degree = Number(Interval.distance(dst.scale, dst_tonic)[0]);
-	if (src_degree < 1 || 7 < src_degree
-		|| dst_degree < 1 || 7 < dst_degree) {
-		throw new Error("Unexpected Value received");
+export const rootDistance = (src: Chord, dst: Chord) => {
+	const interval = castToNumber(
+		Interval.distance(
+			excludeNull(src.tonic),
+			excludeNull(dst.tonic)
+		).slice(0, 1));
+	if (interval < 1 || 7 < interval) {
+		throw new TypeError("interval must be in range [1,7]");
 	}
-	const root_dist = rootDistance_in_chroma_number(
-		src_degree,
-		dst_degree
-	);
-	return root_dist;
+	return Math.abs(Math.mod((interval - 1) * 3 + 3, 7) - 3);
 };
 
 const basicSpaceDistance = (src_chord: RomanChord, dst_chord: RomanChord) => {
@@ -83,9 +73,9 @@ export const getDistance = (src_chord_string: RomanChord, dst_chord_string: Roma
 	const src = src_chord_string;
 	const dst = dst_chord_string;
 	console.log(src, dst);
-	const region_dist = regionDistance(src, dst);
+	const region_dist = regionDistance(src.scale, dst.scale);
 	console.log("region_dist", region_dist);
-	const root_dist = rootDistance(src, dst);
+	const root_dist = rootDistance(src.chord, dst.chord);
 	console.log("root_dist", root_dist);
 	const basic_space_dist = basicSpaceDistance(src, dst);
 	console.log("basic_space_dist", basic_space_dist);
@@ -148,6 +138,7 @@ export const Key_quality = {
 	minor: [0, 2, 3, 5, 7, 8, 10]
 };
 
+/*
 export const Chroma = {
 	Cflat: 11, C: 0, Csharp: 1,
 	Dflat: 1, D: 2, Dsharp: 3,
@@ -157,6 +148,7 @@ export const Chroma = {
 	Aflat: 8, A: 9, Asharp: 10,
 	Bflat: 10, B: 11, Bsharp: 0,
 };
+*/
 
 export const Chord_index = {
 	none: { rmv: [], add: [] },
