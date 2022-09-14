@@ -1,8 +1,7 @@
 import * as Math from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
-import { getChordInfo, ChordObject } from "./lib/TonalEx/TonalEx.js";
-import { Midi } from "./lib/adapters/Tonal.js";
+import { Chord_default, Midi } from "./lib/adapters/Tonal.js";
 import { BeatEvent, SongleConstructor, ChordEvent, SectionEvent } from "./lib/adapters/Songle.js";
 interface SongleWindow extends Window {
 	onSongleAPIReady: any;
@@ -20,8 +19,8 @@ function print(msg: string) {
 }
 
 const getChordTone = (chord: string) => {
-	if (chord == "N") { return ChordObject.none; }
-	return getChordInfo(chord);
+	if (chord == "N") { return Chord_default.get(""); }
+	return Chord_default.get(chord);
 };
 
 

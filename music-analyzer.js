@@ -1,8 +1,7 @@
 import * as Math from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
-import { getChordInfo, ChordObject } from "./lib/TonalEx/TonalEx.js";
-import { Midi } from "./lib/adapters/Tonal.js";
+import { Chord_default, Midi } from "./lib/adapters/Tonal.js";
 //TODO: もっとスマートに書く
 function print(msg) {
     let _printable = null;
@@ -14,9 +13,9 @@ function print(msg) {
 }
 const getChordTone = (chord) => {
     if (chord == "N") {
-        return ChordObject.none;
+        return Chord_default.get("");
     }
-    return getChordInfo(chord);
+    return Chord_default.get(chord);
 };
 /* HTML の描画 */
 const body = HTML.body;

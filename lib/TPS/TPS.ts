@@ -1,26 +1,7 @@
 import * as Math from "../Math/Math.js";
-import { ChordObject, getChordInfo } from "../TonalEx/TonalEx.js";
+import { RomanChord } from "../TonalEx/TonalEx.js";
+import { Note, Interval, Scale_default, Pcset_default, Chord_default } from "../adapters/Tonal.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare let Tonal: any;  // txt/script タイプの JavaScript から外部定義されている.
-
-/*
-type ChordInfo = {
-	key: string;
-	chord_object: ChordObject;
-};
-*/
-
-class ChordInfo {
-	readonly key: string;
-	readonly chord_object: ChordObject;
-	constructor(
-		key: string,
-		chord_object: ChordObject
-	) {
-		this.key = key;
-		this.chord_object = chord_object;
-	}
-}
 
 /**
  * @brief distance of region in chord distance function
@@ -28,41 +9,83 @@ class ChordInfo {
  * @param {number} dst pitch class of destination region's tonic 
  * @return {number} difference between src and dst in chromatic circle of fifth
  */
- export const regionDistance = (src: number, dst: number) => {
+export const regionDistance_in_chroma_number = (src: number, dst: number) => {
 	return Math.abs(((dst - src) * 7 + 6).mod(12) - 6);
 };
+
+export const regionDistance = (src: RomanChord, dst: RomanChord) => {
+	const src_tonic = src.scale.tonic;
+	const dst_tonic = dst.scale.tonic;
+	if (src_tonic == null) { throw new TypeError("src_chroma must not be null"); }
+	if (dst_tonic == null) { throw new TypeError("src_chroma must not be null"); }
+	const src_chroma = Note.chroma(src_tonic);
+	const dst_chroma = Note.chroma(dst_tonic);
+	if (src_chroma == undefined) {
+		console.log(src.scale);
+		throw new TypeError("src_chroma must not be undefined");
+	}
+	if (dst_chroma == undefined) {
+		console.log(dst.scale);
+		throw new TypeError("dst_chroma must not be undefined");
+	}
+
+	const region_dist = regionDistance_in_chroma_number(src_chroma, dst_chroma);
+	return region_dist;
+};
+
 /**
  * @brief distance of root in chord distance function
  * @param {number} src pitch class of source chord's root 
  * @param {number} dst pitch class of destination chord's root 
  * @return {number} difference between src and dst in diatonic circle of fifth
  */
-export const rootDistance = (src: number, dst: number) => {
-	return Math.abs(((dst - src) * 3 + 3).mod(7) - 3);
+export const rootDistance_in_chroma_number = (src: number, dst: number) => {
+	return Math.abs(Math.mod((dst - src) * 3 + 3, 7) - 3);
 };
 
-const get_basic_space = (chord: string) => {
-	return undefined;
+export const rootDistance = (src: RomanChord, dst: RomanChord) => {
+	const src_tonic = src.chord.tonic;
+	const dst_tonic = dst.chord.tonic;
+	if (src_tonic == null) { throw TypeError("src_tonic must not be null"); }
+	if (dst_tonic == null) { throw TypeError("src_tonic must not be null"); }
+	const src_degree = Number(Interval.distance(src.scale, src_tonic)[0]);
+	const dst_degree = Number(Interval.distance(dst.scale, dst_tonic)[0]);
+	if (src_degree < 1 || 7 < src_degree
+		|| dst_degree < 1 || 7 < dst_degree) {
+		throw new Error("Unexpected Value received");
+	}
+	const root_dist = rootDistance_in_chroma_number(
+		src_degree,
+		dst_degree
+	);
+	return root_dist;
 };
 
-const basicSpaceDistance = (src_chord: ChordInfo, dst_chord: ChordInfo) => {
+const basicSpaceDistance = (src_chord: RomanChord, dst_chord: RomanChord) => {
 	// TODO:
 	return 0;
 };
 
-export const newGetDistance = (src_chord_string: ChordInfo, dst_chord_string: ChordInfo): number => {
+
+const get_basic_space = (chord: RomanChord) => {
+	const level_a = Math.Zeros(12);
+	const level_b = Math.Zeros(12);
+	const level_c = Math.Zeros(12);
+	const level_d = Math.Zeros(12);
+	const root = chord.chord.root;
+
+
+	const basic_space = Math.v_sum(level_a, level_b, level_c, level_d);
+	return basic_space;
+};
+
+export const getDistance = (src_chord_string: RomanChord, dst_chord_string: RomanChord): number => {
 	const src = src_chord_string;
 	const dst = dst_chord_string;
 	console.log(src, dst);
-	const region_dist = regionDistance(
-		Tonal.Note.chroma(src.key),
-		Tonal.Note.chroma(dst.key)
-	);
+	const region_dist = regionDistance(src, dst);
 	console.log("region_dist", region_dist);
-	const root_dist = rootDistance(
-		Tonal.Interval.distance(src.key, src.chord_object.tonic)[0],
-		Tonal.Interval.distance(dst.key, dst.chord_object.tonic)[0]
-	);
+	const root_dist = rootDistance(src, dst);
 	console.log("root_dist", root_dist);
 	const basic_space_dist = basicSpaceDistance(src, dst);
 	console.log("basic_space_dist", basic_space_dist);
@@ -72,22 +95,48 @@ export const newGetDistance = (src_chord_string: ChordInfo, dst_chord_string: Ch
 	return -99; //dummy
 };
 
-const major_keys = ['Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B',].map(key => Tonal.Scale.get(key + " major"));
-const minor_keys = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#',].map(key => Tonal.Scale.get(key + " minor"));
+
+// 最も尤もらしいコード進行を見つける
+const major_keys = ['Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B',].map(key => Scale_default.get(key + " major"));
+const minor_keys = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#',].map(key => Scale_default.get(key + " minor"));
 const keys = major_keys.concat(minor_keys);
 
-export const getKeyIncludesTheChord = (chord_string: string) => {
-	const chord_notes = getChordInfo(chord_string)._notes;
-	const keys_includes_the_chord = keys.filter(key => Math.forAll(chord_notes, (note) => Tonal.Pcset.isNoteIncludedIn(key.notes)(note)));
+export const getScaleIncludesTheChord = (chord_string: string) => {
+	const chord_notes = Chord_default.get(chord_string).notes;
+	const keys_includes_the_chord = keys.filter(key => Math.forAll(chord_notes, (note) => Pcset_default.isNoteIncludedIn(key.notes)(note)));
 	return keys_includes_the_chord.map(key => {
 		return { name: key.name.replace('aeolian', 'minor'), tonic: key.tonic, notes: key.notes };
 	});
 };
 
 const getMostLikelyChordProgression = (chord_progression: string[]) => {
-	const possible_keys = chord_progression.forEach(chord => getKeyIncludesTheChord(chord));
+	const possible_keys = chord_progression.forEach(chord => getScaleIncludesTheChord(chord));
 	return undefined;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -187,8 +236,8 @@ export const chordDist = (
 	}
 ) => {
 	// TODO: 遠隔調の例外処理
-	return regionDistance(src.key, dst.key)
-		+ rootDistance(src.degree, dst.degree)
+	return regionDistance_in_chroma_number(src.key, dst.key)
+		+ rootDistance_in_chroma_number(src.degree, dst.degree)
 		+ basicSpaceDist(
 			getBasicSpace(src.key, src.quality, src.degree, src.indexes, src.alt5),
 			getBasicSpace(dst.key, dst.quality, dst.degree, dst.indexes, dst.alt5)

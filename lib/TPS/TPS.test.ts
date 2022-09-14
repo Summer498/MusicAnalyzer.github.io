@@ -1,8 +1,9 @@
-import { getChordInfo } from "../TonalEx/TonalEx.js";
-import { 
-    rootDistance, 
-    regionDistance, 
-    newGetDistance,
+import { Chord_default, Scale_default } from "../adapters/Tonal.js";
+import { RomanChord, } from "../TonalEx/TonalEx.js";
+import {
+    rootDistance_in_chroma_number,
+    regionDistance_in_chroma_number,
+    getDistance,
 } from "./TPS.js";
 
 /*
@@ -20,38 +21,30 @@ console.log(basicSpaceDist(G7, Cmaj));
 // Range test for regionDistance
 for (let i = 0; i < 12; i++) {
     for (let j = 0; j < 12; j++) {
-        if (regionDistance(i, j) > 6) { throw new Error("regionDistance must be in range [0, 6]. received is regionDistance(" + i + "," + j + ") = " + regionDistance(i, j)); }
+        if (regionDistance_in_chroma_number(i, j) > 6) { throw new Error("regionDistance must be in range [0, 6]. received is regionDistance(" + i + "," + j + ") = " + regionDistance_in_chroma_number(i, j)); }
     }
 }
 
 // Range tes for root Distances
 for (let i = 0; i < 7; i++) {
     for (let j = 0; j < 7; j++) {
-        if (rootDistance(i, j) > 3) { throw new Error("rootDistance must be in range [0, 3] received is rootDistance(" + i + "," + j + ") = " + rootDistance(i, j)); }
+        if (rootDistance_in_chroma_number(i, j) > 3) { throw new Error("rootDistance must be in range [0, 3] received is rootDistance(" + i + "," + j + ") = " + rootDistance_in_chroma_number(i, j)); }
     }
 }
 
-{
-    const c_info = getChordInfo("C");
-    const dm_info = getChordInfo("Dm");
-    const e_info = getChordInfo("E");
-    const fm_info = getChordInfo("Fm");
-    const g_info = getChordInfo("G");
-    const am_info = getChordInfo("Am");
-    console.log(newGetDistance(
-        { key: 'C', chord_object: c_info },
-        { key: 'C', chord_object: g_info }
-    ));
-    console.log(newGetDistance(
-        { key: 'C', chord_object: dm_info },
-        { key: 'C', chord_object: am_info }
-    ));
-    console.log(newGetDistance(
-        { key: 'C', chord_object: c_info },
-        { key: 'C', chord_object: e_info }
-    ));
-    console.log(newGetDistance(
-        { key: 'C', chord_object: dm_info },
-        { key: 'C', chord_object: fm_info }
-    ));
-}
+console.log(getDistance(
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("G"))
+));
+console.log(getDistance(
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("Dm")),
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("Am"))
+));
+console.log(getDistance(
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("E"))
+));
+console.log(getDistance(
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("Dm")),
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("Fm"))
+));
