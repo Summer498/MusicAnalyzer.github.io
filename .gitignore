@@ -3,3 +3,4 @@ songle-api
 hidden
 node_modules
 .vscode
+lib/adapters/*tonaljs
