@@ -1,73 +1,72 @@
 import * as Math from "../Math/Math.js";
-import { RomanChord } from "../TonalEx/TonalEx.js";
-import { Note, Interval, Scale_default, Pcset_default, Chord_default, Chord, Scale } from "../adapters/Tonal.js";
-import { castToNumber, excludeNull, excludeUndefined } from "../StdLib/stdlib.js";
-import { chroma } from "../../sandbox/temporaryLib.js";
+import { getIntervalDegree, getNonNullableChroma, RomanChord } from "../TonalEx/TonalEx.js";
+import { Scale_default, Pcset_default, Chord_default, Chord, Scale } from "../adapters/Tonal.js";
+import { assertNonNullable } from "../StdLib/stdlib.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-/**
- * @brief distance of region in chord distance function
- * @param {number} src pitch class of source region's tonic 
- * @param {number} dst pitch class of destination region's tonic 
- * @return {number} difference between src and dst in chromatic circle of fifth
- */
-export const regionDistance_in_chroma_number = (src: number, dst: number) => {
-	return Math.abs(((dst - src) * 7 + 6).mod(12) - 6);
+const regionDistance_in_chroma_number = (src: number, dst: number) => {
+	return Math.abs(Math.mod((dst - src) * 7 + 6, 12) - 6);
 };
 
 export const regionDistance = (src: Scale, dst: Scale) => {
-	const src_chroma = chroma(
-		excludeUndefined(
-			excludeNull(src.tonic)
-		));
-	const dst_chroma = chroma(
-		excludeUndefined(
-			excludeNull(dst.tonic)
-		));
+	const src_chroma = getNonNullableChroma(assertNonNullable(src.tonic));
+	const dst_chroma = getNonNullableChroma(assertNonNullable(dst.tonic));
 
 	const region_dist = regionDistance_in_chroma_number(src_chroma, dst_chroma);
 	return region_dist;
 };
 
-/**
- * @brief distance of root in chord distance function
- * @param {number} src pitch class of source chord's root 
- * @param {number} dst pitch class of destination chord's root 
- * @return {number} difference between src and dst in diatonic circle of fifth
- */
-export const rootDistance_in_chroma_number = (src: number, dst: number) => {
+const rootDistance_in_chroma_number = (src: number, dst: number) => {
 	return Math.abs(Math.mod((dst - src) * 3 + 3, 7) - 3);
 };
 
 export const rootDistance = (src: Chord, dst: Chord) => {
-	const interval = castToNumber(
-		Interval.distance(
-			excludeNull(src.tonic),
-			excludeNull(dst.tonic)
-		).slice(0, 1));
-	if (interval < 1 || 7 < interval) {
-		throw new TypeError("interval must be in range [1,7]");
-	}
-	return Math.abs(Math.mod((interval - 1) * 3 + 3, 7) - 3);
+	const interval = getIntervalDegree(
+		assertNonNullable(src.tonic),
+		assertNonNullable(dst.tonic)
+	);
+	const dist_in_circle_of_3rd = Math.mod((interval - 1) * 3, 7);
+	return Math.min(dist_in_circle_of_3rd, 7 - dist_in_circle_of_3rd);
 };
+
+const get_basic_space = (roman: RomanChord) => {
+	if (roman.scale.empty) {
+		console.log(`chord: ${roman.scale}`);
+		throw new Error("scale must not be empty");
+	}
+	if (roman.chord.empty) {
+		console.log(`chord: ${roman.chord}`);
+		throw new Error("chord must not be empty");
+	}
+	const onehot = Math.getOnehot;
+	const chroma = getNonNullableChroma;
+
+	const level_root = onehot([chroma(roman.chord.root)], 12);
+
+	const fifths = roman.chord.notes.filter(note => getIntervalDegree(roman.chord.root, note) == 5);
+	if (fifths.length != 1) {
+		console.log(`chord.note: ${roman.chord.notes}`);
+		throw new Error("received chord must have just one 5th code.");
+	}
+	const level_power = onehot([chroma(fifths[0])], 12);
+
+	const notes_chroma = roman.chord.notes.map(note => chroma(note));
+	const level_chord = onehot(notes_chroma, 12);
+
+	// TODO: 借用和音に伴うスケール構成音の変異をどう扱うか?
+	const scale_chroma = roman.scale.notes.map(note => chroma(note));
+	const level_scale = onehot(scale_chroma, 12);
+
+	const basic_space = Math.v_sum(level_root, level_power, level_chord, level_scale);
+	return basic_space;
+};
+
 
 const basicSpaceDistance = (src_chord: RomanChord, dst_chord: RomanChord) => {
 	// TODO:
 	return 0;
 };
 
-
-const get_basic_space = (chord: RomanChord) => {
-	const level_a = Math.Zeros(12);
-	const level_b = Math.Zeros(12);
-	const level_c = Math.Zeros(12);
-	const level_d = Math.Zeros(12);
-	const root = chord.chord.root;
-
-
-	const basic_space = Math.v_sum(level_a, level_b, level_c, level_d);
-	return basic_space;
-};
 
 export const getDistance = (src_chord_string: RomanChord, dst_chord_string: RomanChord): number => {
 	const src = src_chord_string;
@@ -128,11 +127,10 @@ const getMostLikelyChordProgression = (chord_progression: string[]) => {
 
 
 
-
-
-
+// c-spell:disable
+/* eslint-disable deprecation/deprecation */
 // BEGIN: 古いやつ
-
+/** @deprecated */
 export const Key_quality = {
 	major: [0, 2, 4, 5, 7, 9, 11],
 	minor: [0, 2, 3, 5, 7, 8, 10]
@@ -150,6 +148,7 @@ export const Chroma = {
 };
 */
 
+/** @deprecated */
 export const Chord_index = {
 	none: { rmv: [], add: [] },
 	seventh: { rmv: [], add: [7] },
@@ -158,6 +157,7 @@ export const Chord_index = {
 	added46: { rmv: [3, 5], add: [4, 6] },
 };
 
+/** @deprecated */
 export const Alt5 = {
 	dim5: -1,
 	none: 0,
@@ -174,6 +174,7 @@ export const Alt5 = {
  * @param {number} alt5 of chord in the key: one of {-1, 0, 1} (default:0)
  * @return {number[]} Basic Space of chord
  */
+/** @deprecated */
 export const getBasicSpace = (
 	key: number,
 	key_quality: number[],
@@ -205,12 +206,14 @@ export const getBasicSpace = (
  * @param {number[]} dst pitch class of destination chord's BS 
  * @return {number} count of additional pitch class in dst from src
  */
+/** @deprecated */
 export const basicSpaceDist = (src: number[], dst: number[]) => {
 	let sum = 0;
 	dst.v_sub(src).map(e => { sum += Math.max(0, e); return sum; });
 	return sum;
 };
 
+/** @deprecated */
 export const chordDist = (
 	src: {
 		key: number,

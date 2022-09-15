@@ -1,4 +1,5 @@
 import { Chord_default, Scale_default } from "../adapters/Tonal.js";
+import { mod } from "../Math/Math.js";
 import { RomanChord, } from "../TonalEx/TonalEx.js";
 import {
     getDistance,
@@ -31,7 +32,7 @@ const chromaToScale = [
 for (let i = 0; i < 21; i++) {
     for (let j = 0; j < 21; j++) {
         const distance = regionDistance(
-            Scale_default.get( `${chromaToScale[i]} major`),
+            Scale_default.get(`${chromaToScale[i]} major`),
             Scale_default.get(chromaToScale[j] + " major")
         );
         if (distance < -6 || 6 < distance) {
@@ -42,14 +43,25 @@ for (let i = 0; i < 21; i++) {
 
 // Range tes for root Distances
 const AtoG = ["A", "B", "C", "D", "E", "F", "G"];
-for (let i = 0; i < 7; i++) {
-    for (let j = 0; j < 7; j++) {
+for (let i = 0; i < 21; i++) {
+    for (let j = 0; j < 21; j++) {
         const distance = rootDistance(
-            Chord_default.get(AtoG[i]),
-            Chord_default.get(AtoG[j])
+            Chord_default.get(chromaToScale[i]),
+            Chord_default.get(chromaToScale[j])
         );
         if (distance < -3 || 3 < distance) {
             throw new Error("rootDistance must be in range [0, 3] received is rootDistance(" + i + "," + j + ") = " + distance);
+        }
+        const diff
+            = AtoG.indexOf(chromaToScale[i].slice(0, 1))
+            - AtoG.indexOf(chromaToScale[j].slice(0, 1));
+        const correctDistance = ((diff) => {
+            const dist_in_circle_of_3rd = mod(diff * 3, 7);
+            return Math.min(dist_in_circle_of_3rd, 7 - dist_in_circle_of_3rd);
+        })(diff);
+        if (distance !== correctDistance) {
+            console.log(`i: ${chromaToScale[i]}, j: ${chromaToScale[j]}, ${distance} !== ${correctDistance}`);
+            throw new Error("distance value is wrong");
         }
     }
 }
