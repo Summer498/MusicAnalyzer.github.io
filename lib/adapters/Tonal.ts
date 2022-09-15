@@ -10,27 +10,16 @@ export { Scale } from "@tonaljs/scale";
 export { ScaleType } from "@tonaljs/scale-type";
 export { TimeSignature } from "@tonaljs/time-signature";
 
-import Chord_default from "@tonaljs/chord";
-export { Chord_default };
-import ChordType_default from "@tonaljs/chord-type";
-export { ChordType_default };
-import DurationValue_default from "@tonaljs/duration-value";
-export { DurationValue_default };
-import Key_default from "@tonaljs/key";
-export { Key_default };
-import Mode_default from "@tonaljs/mode";
-export { Mode_default };
-import Pcset_default from "@tonaljs/pcset";
-export { Pcset_default };
-import RomanNumeral_default from "@tonaljs/roman-numeral";
-export { RomanNumeral_default };
-import Scale_default from "@tonaljs/scale";
-export { Scale_default };
-import ScaleType_default from "@tonaljs/scale-type";
-export { ScaleType_default };
-import TimeSignature_default from "@tonaljs/time-signature";
-export { TimeSignature_default };
-
+export { default as Chord_default } from "@tonaljs/chord";
+export { default as ChordType_default } from "@tonaljs/chord-type";
+export { default as DurationValue_default } from "@tonaljs/duration-value";
+export { default as Key_default } from "@tonaljs/key";
+export { default as Mode_default } from "@tonaljs/mode";
+export { default as Pcset_default } from "@tonaljs/pcset";
+export { default as RomanNumeral_default } from "@tonaljs/roman-numeral";
+export { default as Scale_default } from "@tonaljs/scale";
+export { default as ScaleType_default } from "@tonaljs/scale-type";
+export { default as TimeSignature_default } from "@tonaljs/time-signature";
 
 export {
     Array,
@@ -84,6 +73,8 @@ export {
 
 //*/
 
+// --------------------------------------------------
+
 //*
 export interface Named {
     readonly name: string;
@@ -102,17 +93,6 @@ export interface ChordType extends Pcset {
     name: string;
     quality: ChordQuality;
     aliases: string[];
-}
-export declare type NoteWithOctave = string;
-export declare type PcName = string;
-export declare type NoteName = NoteWithOctave | PcName;
-export interface Chord extends ChordType {
-    tonic: string | null;
-    type: string;
-    root: string;
-    rootDegree: number;
-    symbol: string;
-    notes: NoteName[];
 }
 declare type Fraction = [number, number];
 export interface DurationValue {
@@ -144,6 +124,18 @@ export interface Pitch {
     readonly alt: number;
     readonly oct?: number;
     readonly dir?: Direction;
+}
+export declare type NoteWithOctave = string;
+export declare type PcName = string;
+export declare type NoteName = NoteWithOctave | PcName;
+export declare type NoteLiteral = NoteName | Pitch | Named;
+export interface Chord extends ChordType {
+    tonic: string | null;
+    type: string;
+    root: string;
+    rootDegree: number;
+    symbol: string;
+    notes: NoteName[];
 }
 export interface RomanNumeral extends Pitch, Named {
     readonly empty: boolean;
