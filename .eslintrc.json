@@ -7,7 +7,6 @@
   "env": {
     "browser": true
   },
-  "plugins": ["deprecation"],
   "parserOptions": {
     "ecmaVersion": 13,
     "sourceType": "module"
@@ -16,7 +15,6 @@
   "rules": {
     "block-scoped-var": "warn",
     "curly": "warn",
-    "deprecation/deprecation": "warn",
     "init-declarations": ["off", "always"],
     "multiline-ternary": ["warn", "never"],
     "no-lone-blocks": "warn",
@@ -55,7 +53,10 @@
     // for TypeScript
     {
       "files": ["**/*.ts"],
-      "plugins": ["@typescript-eslint"],
+      "plugins": [
+        "@typescript-eslint",
+        "deprecation"
+      ],
       "extends": [
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended"
@@ -65,7 +66,9 @@
         "sourceType": "module",
         "project": "./tsconfig.json"
       },
-      "rules": {}
+      "rules": {
+        "deprecation/deprecation": "warn"
+      }
     }
   ]
 }
