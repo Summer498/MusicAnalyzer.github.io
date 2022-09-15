@@ -29,7 +29,7 @@ export const keySignature = (key) => {
     const capital_key = key[0].toUpperCase() + (len >= 2 ? key[1] : ""); // 先頭を大文字に変換
     // minor なら 3 半音下げる
     const base = "abcdefg".indexOf(key[0]) >= 0 ? -3 : 0;
-    const accidental_cnt = (chroma(capital_key) * 7 + base + 5).mod(12) - 5;
+    const accidental_cnt = Math.mod(chroma(capital_key) * 7 + base + 5, 12) - 5;
     const input_accidental = len == 2 ? accidental_num(key[1]) : 0;
     // 調号が 5 つより多い場合, 入力されたキーの調号に合わせて#,bを付ける. e.g.)#5 -> b7
     if (Math.abs(accidental_cnt) >= 5) {

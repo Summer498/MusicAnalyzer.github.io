@@ -67,7 +67,7 @@ const minor = [0, 2, 3, 5, 7, 8, 10];
                 const key = (is_minor ? abc : abc.toUpperCase()) + accidental;
                 let msg = "";
                 for (const note of scale) {
-                    msg += note_symbol((note + chroma(key[0].toUpperCase() + (key.length == 2 ? key[1] : ""))).mod(12), keySignature(key)) + " ";
+                    msg += note_symbol(Math.mod(note + chroma(key[0].toUpperCase() + (key.length == 2 ? key[1] : "")), 12), keySignature(key)) + " ";
                 }
                 if (!Math.forAll(["A", "B", "C", "D", "E", "F", "G"], c => msg.includes(c))) {
                     throw new Error("Generated scale must include all letter of A to G");
@@ -98,7 +98,7 @@ const blackkey_height = octave_height / 12;
 const background = SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651097 + "%" }, "", SVG.g({ class: "melody-background" }, "", [
     Math.Range(3, 7).map(e => SVG.svg({ y: (6 - e) * 75 }, "", SVG.g({}, "", [
         Math.Range(0, 12).map(e2 => [
-            SVG.rect({ x: 0 + "%", y: e2 * 6.25, fill: "#eeeeee", width: 100 + "%", height: 6.25, opacity: 1 - 0.5 * (e2 + (e2 < 7 ? 1 : 0)).mod(2) }),
+            SVG.rect({ x: 0 + "%", y: e2 * 6.25, fill: "#eeeeee", width: 100 + "%", height: 6.25, opacity: 1 - 0.5 * Math.mod(e2 + (e2 < 7 ? 1 : 0), 2) }),
             SVG.line({ x1: 0 + "%", y1: (e2 + 1) * 6.25, x2: 100 + "%", y2: (e2 + 1) * 6.25, "stroke-width": e2 == 11 ? 2 : 1 }),
             SVG.line({ x1: 0 + "%", y1: e2 * 6.25, x2: 100 + "%", y2: e2 * 6.25, "stroke-width": 1 }),
         ]),
