@@ -7,6 +7,7 @@
   "env": {
     "browser": true
   },
+  "plugins": ["deprecation"],
   "parserOptions": {
     "ecmaVersion": 13,
     "sourceType": "module"
@@ -15,6 +16,7 @@
   "rules": {
     "block-scoped-var": "warn",
     "curly": "warn",
+    "deprecation/deprecation": "warn",
     "init-declarations": ["off", "always"],
     "multiline-ternary": ["warn", "never"],
     "no-lone-blocks": "warn",
@@ -34,8 +36,8 @@
     "no-extra-parens": ["warn", "all"],
     "no-unexpected-multiline": "warn",
     "no-unreachable": "warn",
-    "no-unused-vars":"warn",
-    "no-use-before-define":"error",
+    "no-unused-vars": "warn",
+    "no-use-before-define": "error",
     "one-var": ["warn", "never"],
     "semi": ["error", "always"],
     "switch-colon-spacing": "warn",
@@ -47,7 +49,7 @@
       }
     ],
     "vars-on-top": "warn",
-    "yoda":"error"
+    "yoda": ["error", "never", { "onlyEquality": true }]
   },
   "overrides": [
     // for TypeScript
@@ -62,7 +64,8 @@
       "parserOptions": {
         "sourceType": "module",
         "project": "./tsconfig.json"
-      }
+      },
+      "rules": {}
     }
   ]
 }
