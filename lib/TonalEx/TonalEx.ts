@@ -1,4 +1,5 @@
-import { Chord, Chord_default, Scale } from "../adapters/Tonal.js";
+import { Chord, Chord_default, Interval, Note, NoteLiteral, Scale } from "../adapters/Tonal.js";
+import { assertNonNullable, castToNumber } from "../StdLib/stdlib.js";
 
 export class RomanChord {
     readonly scale: Scale;
@@ -33,4 +34,12 @@ export const getChord = (chord_string: string): Chord => {
     if (root != '' && !chord.notes.includes(root)) { chord.notes.push(root); }
 
     return chord;
+};
+
+export const getIntervalDegree = (src: NoteLiteral, dst: NoteLiteral) => {
+    return castToNumber(Interval.distance(src, dst).slice(0, 1));
+};
+
+export const getNonNullableChroma = (note: NoteLiteral) => {
+    return assertNonNullable(Note.chroma(note));
 };
