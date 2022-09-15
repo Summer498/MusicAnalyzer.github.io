@@ -25,6 +25,13 @@ export const hasSameValue = (o1: any, o2: any) => {
     return true;
 };
 
+// エラーを期待するテストのための, 予想外のエラーを受け取った時のエラー
+export class UnexpectedErrorThrownError extends Error{
+    constructor(message?: string|undefined){
+        super(message);
+    }
+}
+
 export const assertNotNull = <T>(value: T | null) => {
     if (value === null) {
         throw new TypeError("null value received");
