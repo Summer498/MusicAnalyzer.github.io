@@ -59,11 +59,6 @@ export const vFunc = (a: number[], b: number | number[], f: (a: number, b: numbe
     if (b instanceof Array) { return a.map((_, i) => f(a[i], b[i])); }
     throw TypeError("arguments of vFunc must be (a:number[], b:number, f:(a:number,b:number)=>number");
 };
-export const v_sum = (...arrs: number[][]) => {
-    let s: number[] = Zeros(arrs[0].length);
-    arrs.forEach(arr => { s = s.v_add(arr); });
-    return s;
-};
 
 /**
  * @brief generate array
@@ -73,6 +68,47 @@ export const v_sum = (...arrs: number[][]) => {
  * @detail Given n = 5, f = i=>10*i, genArr generates [0,10,20,30,40]
  */
 export const genArr = (n: number, f: (i: number) => number) => [...Array(n)].map((_, i) => f(i));
+export const matTrans = (matrix: number[][]) => Range(0, matrix[0].length).map(i => Range(0, matrix.length).map(j => matrix[j][i]));
+export const forAll = <T>(set: T[], condition: (element: T) => boolean) => {
+    for (const e of set) { if (condition(e) == false) { return false; } }
+    return true;
+};
+export const forSome = <T>(set: T[], condition: (element: T) => boolean) => {
+    for (const e of set) { if (condition(e)) { return true; } }
+    return false;
+};
+
+export const sameArray = <T>(arr1: T[], arr2: T[]) => hasSameValue(arr1, arr2);
+
+/** @brief avoid bug from negative value */
+export const mod = (n: number, m: number): number => (Number(n) % m + m) % m;
+export const bool2number = (b: boolean) => b ? 1 : 0;
+export const removeFromArray = (array: unknown[], rmv: unknown[]) => array.filter(e => not(rmv.includes(e)));
+export const ringShift = (array: unknown[], b: number) => {
+    const N = array.length; const bm = mod(b, N);
+    return array.concat(this).slice(N - bm, 2 * N - bm);
+};
+export const v_add = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a + b);
+export const v_sub = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a - b);
+export const v_mul = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a * b);
+export const v_div = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a / b);
+export const v_mod = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => mod(a, b));
+export const v_get = (array: unknown[], indexes: number[]) => indexes.map(e => array[e]);
+
+export const getOnehot = (positionOfOnes: number[], n = 0) => [...Array(Math.max(Math.max(...positionOfOnes) + 1, n))].map((_, i) => bool2number(positionOfOnes.includes(i)));
+export const getOnehotInMod = (positionOfOnes: number[] | number, m = 1) => {
+    if (typeof positionOfOnes === "number") { return getOnehot(v_mod([positionOfOnes], m), m); }
+    return getOnehot(v_mod(positionOfOnes, m), m);
+};
+export const v_sum = (...arrays: number[][]) => {
+    let s: number[] = Zeros(arrays[0].length);
+    arrays.forEach(arr => { s = v_add(s, arr); });
+    return s;
+};
+
+
+
+
 declare global {
     interface Number {
         /** @deprecated */
@@ -98,7 +134,7 @@ declare global {
         /** @deprecated */
         v_sub: (b: number | number[]) => number[]
         /** @deprecated */
-        v_mult: (b: number | number[]) => number[]
+        v_mul: (b: number | number[]) => number[]
         /** @deprecated */
         v_div: (b: number | number[]) => number[]
         /** @deprecated */
@@ -108,66 +144,31 @@ declare global {
     }
 }
 
-export const matTrans = (matrix: number[][]) => Range(0, matrix[0].length).map(i => Range(0, matrix.length).map(j => matrix[j][i]));
-export const forAll = <T>(set: T[], condition: (element: T) => boolean) => {
-    for (const e of set) { if (condition(e) == false) { return false; } }
-    return true;
-};
-export const forSome = <T>(set: T[], condition: (element: T) => boolean) => {
-    for (const e of set) { if (condition(e)) { return true; } }
-    return false;
-};
-
-export const sameArray = <T>(arr1: T[], arr2: T[]) => hasSameValue(arr1, arr2);
-
-/** @brief avoid bug from negative value */
-export const mod = (n: number, m: number): number => (Number(n) % m + m) % m;
+/* eslint-disable deprecation/deprecation */
 /** @deprecated */
 Number.prototype.mod = function (m: number): number { return mod(Number(this), m); };
-export const bool2number = (b: boolean) => b ? 1 : 0;
 /** @deprecated */
 Boolean.prototype.toNumber = function (): number { return bool2number(Boolean(this)); };
-export const onehot = (array: number[], n = 0) => [...Array(Math.max(Math.max(...array) + 1, n))].map((_, i) => array.includes(i).toNumber());
-/** @deprecated */
-Array.prototype.onehot = function (n = 0) { return onehot(this, n); };
-export const onehotInMod = (array: number[], m = 1) => array.v_mod(m).onehot(m);
-/** @deprecated */
-Array.prototype.onehotInMod = function (m = 1) { return this.v_mod(m).onehot(m); };
-export const removeFromArray = (array: unknown[], rmv: unknown[]) => array.filter(e => not(rmv.includes(e)));
 /** @deprecated */
 Array.prototype.remove = function (rmv) { return removeFromArray(this, rmv); };
-
-export const ringShift = (array: unknown[], b: number) => {
-    const l = array.length; const bm = b.mod(l);
-    return array.concat(this).slice(l - bm, 2 * l - bm);
-};
 /** @deprecated */
 Array.prototype.ringShift = function (b) { return ringShift(this, b); };
-
 /** @deprecated this method is only do:  this[i] = v*/
 Array.prototype.change = function (i, v) { this[i] = v; return this; };
-
-export const v_add = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a + b);
 /** @deprecated */
 Array.prototype.v_add = function (b) { return v_add(this, b); };
-
-export const v_sub = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a - b);
 /** @deprecated */
 Array.prototype.v_sub = function (b) { return v_sub(this, b); };
-
-export const v_mult = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a * b);
 /** @deprecated */
-Array.prototype.v_mult = function (b) { return v_mult(this, b); };
-
-export const v_div = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a / b);
+Array.prototype.v_mul = function (b) { return v_mul(this, b); };
 /** @deprecated */
 Array.prototype.v_div = function (b) { return v_div(this, b); };
-
-export const v_mod = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a.mod(b));
 /** @deprecated */
 Array.prototype.v_mod = function (b) { return v_mod(this, b); };
-
-export const v_get = (array: unknown[], indexes: number[]) => indexes.map(e => array[e]);
+/** @deprecated */
+Array.prototype.onehot = function (n = 0) { return getOnehot(this, n); };
+/** @deprecated */
+Array.prototype.onehotInMod = function (m = 1) { return this.v_mod(m).onehot(m); };
 /** @deprecated */
 Array.prototype.v_get = function (b) { return b.map(e => this[e]); };
 
