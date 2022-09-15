@@ -25,21 +25,25 @@ export const hasSameValue = (o1: any, o2: any) => {
     return true;
 };
 
-export const excludeNull = <T>(value: T | null) => {
-    if (value == null) {
+export const assertNotNull = <T>(value: T | null) => {
+    if (value === null) {
         throw new TypeError("null value received");
     }
     return value;
 };
 
-export const excludeUndefined = <T>(value: T | undefined) => {
-    if (value == undefined) {
+export const assertNotUndefined = <T>(value: T | undefined) => {
+    if (value === undefined) {
         throw new TypeError("undefined value received");
     }
     return value;
 };
 
-export const excludeNaN = (value: number) => {
+export const assertNonNullable = <T>(value: T | null | undefined): NonNullable<T> => {
+    return assertNotNull(assertNotUndefined(value));
+};
+
+export const assertNotNaN = (value: number) => {
     if (isNaN(value)) {
         throw new TypeError("NaN value received");
     }
@@ -47,5 +51,5 @@ export const excludeNaN = (value: number) => {
 };
 
 export const castToNumber = (value: string) => {
-    return excludeNaN(Number(value));
+    return assertNotNaN(Number(value));
 };
