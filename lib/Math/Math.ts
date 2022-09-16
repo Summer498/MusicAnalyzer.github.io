@@ -88,6 +88,14 @@ export const ringShift = <T>(array: T[], b: number) => {
     const N = array.length; const bm = mod(b, N);
     return array.concat(array).slice(N - bm, 2 * N - bm);
 };
+export const sum = (numbers: number[]) => {
+    let s = 0;
+    for(const e of numbers){
+        s += e;
+    }
+    return s;
+};
+
 export const v_add = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a + b);
 export const v_sub = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a - b);
 export const v_mul = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a * b);
