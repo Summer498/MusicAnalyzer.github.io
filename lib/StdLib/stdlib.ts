@@ -46,7 +46,7 @@ export const assertNotUndefined = <T>(value: T | undefined) => {
     return value;
 };
 
-export const assertNonNullable = <T>(value: T | null | undefined): NonNullable<T> => {
+export const assertNonNullable = <T>(value: T | null | undefined) => {
     return assertNotNull(assertNotUndefined(value));
 };
 

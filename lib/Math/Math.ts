@@ -83,17 +83,17 @@ export const sameArray = <T>(arr1: T[], arr2: T[]) => hasSameValue(arr1, arr2);
 /** @brief avoid bug from negative value */
 export const mod = (n: number, m: number): number => (Number(n) % m + m) % m;
 export const bool2number = (b: boolean) => b ? 1 : 0;
-export const removeFromArray = (array: unknown[], rmv: unknown[]) => array.filter(e => not(rmv.includes(e)));
-export const ringShift = (array: unknown[], b: number) => {
+export const removeFromArray = <T>(array: T[], rmv: T[]) => array.filter(e => not(rmv.includes(e)));
+export const ringShift = <T>(array: T[], b: number) => {
     const N = array.length; const bm = mod(b, N);
-    return array.concat(this).slice(N - bm, 2 * N - bm);
+    return array.concat(array).slice(N - bm, 2 * N - bm);
 };
 export const v_add = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a + b);
 export const v_sub = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a - b);
 export const v_mul = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a * b);
 export const v_div = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => a / b);
 export const v_mod = (vector1: number[], vector2: number | number[]) => vFunc(vector1, vector2, (a, b) => mod(a, b));
-export const v_get = (array: unknown[], indexes: number[]) => indexes.map(e => array[e]);
+export const v_get = <T>(array: T[], indexes: number[]) => indexes.map(e => array[e]);
 
 export const getOnehot = (positionOfOnes: number[], n = 0) => [...Array(Math.max(Math.max(...positionOfOnes) + 1, n))].map((_, i) => bool2number(positionOfOnes.includes(i)));
 export const getOnehotInMod = (positionOfOnes: number[] | number, m = 1) => {

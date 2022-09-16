@@ -2,12 +2,13 @@ import * as Math from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
 import { Chord_default, Midi } from "./lib/adapters/Tonal.js";
+import { assertNonNullable } from "./lib/StdLib/stdlib.js";
 //TODO: もっとスマートに書く
 function print(msg) {
     let _printable = null;
     const getPrintable = () => {
         _printable !== null && _printable !== void 0 ? _printable : (_printable = document.querySelector(".print"));
-        return _printable;
+        return assertNonNullable(_printable);
     };
     getPrintable().innerHTML = "<span class=\"print\">" + msg + "</span>";
 }
@@ -28,7 +29,7 @@ const background = SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651
     Math.Range(3, 7).map(e => SVG.svg({ y: (6 - e) * 75 }, "", SVG.g({}, "", [
         Math.Range(0, 12).map(e2 => [
             SVG.rect({
-                x: 0 + "%", y: e2 * 6.25, fill: "#ffffff", width: 100 + "%", height: 6.25, opacity: (e2 * 7).mod(12) < 7 ? 0 : 1
+                x: 0 + "%", y: e2 * 6.25, fill: "#ffffff", width: 100 + "%", height: 6.25, opacity: Math.mod(e2 * 7, 12) < 7 ? 0 : 1
             }),
             SVG.line({
                 x1: 0 + "%", y1: (e2 + 1) * 6.25, x2: 100 + "%", y2: (e2 + 1) * 6.25, "stroke-width": e2 == 11 ? 2 : 1
@@ -110,10 +111,10 @@ self.onSongleAPIReady = (Songle) => {
         */
         // Tonal.js に渡してパース
         const chord_tone = getChordTone(chord).notes;
-        const chord_tone_number = chord_tone.map(e => Midi.toMidi(e + "4")); // eslint-disable-line no-undef
+        const chord_tone_number = chord_tone.map((e) => Midi.toMidi(e + "4")); // eslint-disable-line no-undef
         console.log(chord_tone);
         console.log(chord_tone_number);
-        chord_tone_number.forEach(e => {
+        chord_tone_number.forEach((e) => {
             /*
             melody_timeline.appendChild(
                 SVG.rect({ class: "note", x: 0, y: black_key_height * (e - 36), width: 100, height: black_key_height })
