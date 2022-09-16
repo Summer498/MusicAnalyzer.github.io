@@ -32,6 +32,12 @@ export class UnexpectedErrorThrownError extends Error{
     }
 }
 
+export class NotImplementedError extends Error{
+    constructor(message?: string|undefined){
+        super(message);
+    }
+}
+
 export const assertNotNull = <T>(value: T | null) => {
     if (value === null) {
         throw new TypeError("null value received");

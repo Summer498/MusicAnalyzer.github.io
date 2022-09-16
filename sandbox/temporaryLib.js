@@ -102,3 +102,4 @@ export const str_interval = (interval) => {
     const table = [1, 4, 5, 8].indexOf(interval[1]) >= 0 ? ["ddd", "dd", "d", "P", "A", "AA", "AAA"] : ["ddd", "dd", "d", "m", "M", "A", "AA", "AAA"];
     return table[interval[0] + 3] + String(interval[1]);
 };
+//# sourceMappingURL=temporaryLib.js.map

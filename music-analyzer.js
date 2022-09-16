@@ -152,3 +152,4 @@ self.onSongleAPIReady = (Songle) => {
     movableObjectsQueue.forEach(e => e.update());
     setTimeout(mainRoutine, 1000 / 60);
 })();
+//# sourceMappingURL=music-analyzer.js.map

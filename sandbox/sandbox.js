@@ -88,3 +88,4 @@ const chord2roman = (chords) => {
     // TODO: キーを求める = TPS の出番
     return Progression.toRomanNumerals(key, chords);
 };
+//# sourceMappingURL=sandbox.js.map
