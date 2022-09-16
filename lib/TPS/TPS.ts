@@ -1,10 +1,10 @@
 import * as Math from "../Math/Math.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord } from "../TonalEx/TonalEx.js";
 import { Scale_default, Pcset_default, Chord_default, Chord, Scale } from "../adapters/Tonal.js";
-import { assertNonNullable } from "../StdLib/stdlib.js";
+import { assertNonNullable, NotImplementedError } from "../StdLib/stdlib.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-const regionDistance_in_chroma_number = (src: number, dst: number) => {
+const regionDistanceInChromaNumber = (src: number, dst: number) => {
 	return Math.abs(Math.mod((dst - src) * 7 + 6, 12) - 6);
 };
 
@@ -12,15 +12,15 @@ export const regionDistance = (src: Scale, dst: Scale) => {
 	const src_chroma = getNonNullableChroma(assertNonNullable(src.tonic));
 	const dst_chroma = getNonNullableChroma(assertNonNullable(dst.tonic));
 
-	const region_dist = regionDistance_in_chroma_number(src_chroma, dst_chroma);
+	const region_dist = regionDistanceInChromaNumber(src_chroma, dst_chroma);
 	return region_dist;
 };
 
-const rootDistance_in_chroma_number = (src: number, dst: number) => {
+const tonicDistanceInChromaNumber = (src: number, dst: number) => {
 	return Math.abs(Math.mod((dst - src) * 3 + 3, 7) - 3);
 };
 
-export const rootDistance = (src: Chord, dst: Chord) => {
+export const tonicDistance = (src: Chord, dst: Chord) => {
 	const interval = getIntervalDegree(
 		assertNonNullable(src.tonic),
 		assertNonNullable(dst.tonic)
@@ -29,7 +29,7 @@ export const rootDistance = (src: Chord, dst: Chord) => {
 	return Math.min(dist_in_circle_of_3rd, 7 - dist_in_circle_of_3rd);
 };
 
-const get_basic_space = (roman: RomanChord) => {
+export const getBasicSpace = (roman: RomanChord) => {
 	if (roman.scale.empty) {
 		console.log(`chord: ${roman.scale}`);
 		throw new Error("scale must not be empty");
@@ -41,9 +41,12 @@ const get_basic_space = (roman: RomanChord) => {
 	const onehot = Math.getOnehot;
 	const chroma = getNonNullableChroma;
 
-	const level_root = onehot([chroma(roman.chord.root)], 12);
+	console.log(roman.chord.tonic);
+	const tonic = assertNonNullable(roman.chord.tonic);
+	const tonic_chroma = chroma(tonic);
+	const level_root = onehot([tonic_chroma], 12);
 
-	const fifths = roman.chord.notes.filter(note => getIntervalDegree(roman.chord.root, note) == 5);
+	const fifths = roman.chord.notes.filter(note => getIntervalDegree(tonic, note) == 5);
 	if (fifths.length != 1) {
 		console.log(`chord.note: ${roman.chord.notes}`);
 		throw new Error("received chord must have just one 5th code.");
@@ -55,6 +58,12 @@ const get_basic_space = (roman: RomanChord) => {
 
 	// TODO: 借用和音に伴うスケール構成音の変異をどう扱うか?
 	const scale_chroma = roman.scale.notes.map(note => chroma(note));
+	if (Math.forSome(notes_chroma,
+		(note) => !scale_chroma.includes(note))
+	) {
+		console.log(`received roman: ${roman}`);
+		throw new NotImplementedError("借用和音はまだ実装されていません. 入力ローマ数字コードは, コード構成音がスケール内に収まるようにしてください.");
+	}
 	const level_scale = onehot(scale_chroma, 12);
 
 	const basic_space = Math.v_sum(level_root, level_power, level_chord, level_scale);
@@ -74,8 +83,8 @@ export const getDistance = (src_chord_string: RomanChord, dst_chord_string: Roma
 	console.log(src, dst);
 	const region_dist = regionDistance(src.scale, dst.scale);
 	console.log("region_dist", region_dist);
-	const root_dist = rootDistance(src.chord, dst.chord);
-	console.log("root_dist", root_dist);
+	const tonic_dist = tonicDistance(src.chord, dst.chord);
+	console.log("root_dist", tonic_dist);
 	const basic_space_dist = basicSpaceDistance(src, dst);
 	console.log("basic_space_dist", basic_space_dist);
 	// TODO: ベーシックスペース間の距離を求める

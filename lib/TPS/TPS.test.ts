@@ -3,7 +3,7 @@ import { mod } from "../Math/Math.js";
 import { RomanChord, } from "../TonalEx/TonalEx.js";
 import {
     getDistance,
-    rootDistance,
+    tonicDistance,
     regionDistance,
 } from "./TPS.js";
 
@@ -45,7 +45,7 @@ for (let i = 0; i < 21; i++) {
 const AtoG = ["A", "B", "C", "D", "E", "F", "G"];
 for (let i = 0; i < 21; i++) {
     for (let j = 0; j < 21; j++) {
-        const distance = rootDistance(
+        const distance = tonicDistance(
             Chord_default.get(chromaToScale[i]),
             Chord_default.get(chromaToScale[j])
         );
@@ -65,6 +65,9 @@ for (let i = 0; i < 21; i++) {
         }
     }
 }
+
+//TODO: create test of getBasicSpace
+//TODO: create test of basicSpaceDistance
 
 console.log(getDistance(
     new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
