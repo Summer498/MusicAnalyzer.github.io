@@ -56,7 +56,7 @@ export const getBasicSpace = (roman: RomanChord) => {
 	const notes_chroma = roman.chord.notes.map(note => chroma(note));
 	const level_chord = onehot(notes_chroma, 12);
 
-	// TODO: 借用和音に伴うスケール構成音の変異をどう扱うか?
+	// TODO: 借用和音に伴いスケール構成音を変異させる
 	const scale_chroma = roman.scale.notes.map(note => chroma(note));
 	if (Math.forSome(notes_chroma,
 		(note) => !scale_chroma.includes(note))
@@ -70,10 +70,13 @@ export const getBasicSpace = (roman: RomanChord) => {
 	return basic_space;
 };
 
-
-const basicSpaceDistance = (src_chord: RomanChord, dst_chord: RomanChord) => {
-	// TODO:
-	return 0;
+export const basicSpaceDistance = (src: RomanChord, dst: RomanChord) => {
+	const src_bs = getBasicSpace(src);
+	const dst_bs = getBasicSpace(dst);
+	const incremented = Math.v_sub(dst_bs, src_bs)
+		.filter(e => e > 0);
+	return Math.sum(incremented);
+	// TODO: 遠隔調の例外処理 (がそもそも必要なのか?)
 };
 
 
@@ -87,10 +90,7 @@ export const getDistance = (src_chord_string: RomanChord, dst_chord_string: Roma
 	console.log("root_dist", tonic_dist);
 	const basic_space_dist = basicSpaceDistance(src, dst);
 	console.log("basic_space_dist", basic_space_dist);
-	// TODO: ベーシックスペース間の距離を求める
-	// TODO: ベーシックスペースを求める
-
-	return -99; //dummy
+	return region_dist + tonic_dist + basic_space_dist; //dummy
 };
 
 
@@ -184,7 +184,8 @@ export const Alt5 = {
  * @return {number[]} Basic Space of chord
  */
 /** @deprecated */
-export const getBasicSpace = (
+/*
+export const oldGetBasicSpace = (
 	key: number,
 	key_quality: number[],
 	degree: number,
@@ -208,6 +209,7 @@ export const getBasicSpace = (
 	const levela = Math.getOnehot([c[0]], 12);
 	return Math.v_sum(leveld, levelc, levelb, levela);
 };
+*/
 
 /**
  * @brief distance of BS in chord distance function
@@ -216,13 +218,16 @@ export const getBasicSpace = (
  * @return {number} count of additional pitch class in dst from src
  */
 /** @deprecated */
+/*
 export const basicSpaceDist = (src: number[], dst: number[]) => {
 	let sum = 0;
-	Math.v_sub(dst,src).map(e => { sum += Math.max(0, e); return sum; });
+	Math.v_sub(dst, src).map(e => { sum += Math.max(0, e); return sum; });
 	return sum;
 };
+*/
 
 /** @deprecated */
+/*
 export const chordDist = (
 	src: {
 		key: number,
@@ -240,13 +245,14 @@ export const chordDist = (
 	}
 ) => {
 	// TODO: 遠隔調の例外処理
-	return regionDistance_in_chroma_number(src.key, dst.key)
-		+ rootDistance_in_chroma_number(src.degree, dst.degree)
+	return regionDistanceInChromaNumber(src.key, dst.key)
+		+ tonicDistanceInChromaNumber(src.degree, dst.degree)
 		+ basicSpaceDist(
-			getBasicSpace(src.key, src.quality, src.degree, src.indexes, src.alt5),
-			getBasicSpace(dst.key, dst.quality, dst.degree, dst.indexes, dst.alt5)
+			oldGetBasicSpace(src.key, src.quality, src.degree, src.indexes, src.alt5),
+			oldGetBasicSpace(dst.key, dst.quality, dst.degree, dst.indexes, dst.alt5)
 		);
 };
+*/
 // TODO: もう少し Tonaljs friendly に書く
 
 

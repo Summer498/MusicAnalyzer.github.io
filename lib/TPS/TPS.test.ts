@@ -79,9 +79,9 @@ console.log(getDistance(
 ));
 console.log(getDistance(
     new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
-    new RomanChord(Scale_default.get("C major"), Chord_default.get("E"))
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("Em"))
 ));
 console.log(getDistance(
     new RomanChord(Scale_default.get("C major"), Chord_default.get("Dm")),
-    new RomanChord(Scale_default.get("C major"), Chord_default.get("Fm"))
+    new RomanChord(Scale_default.get("C major"), Chord_default.get("F"))
 ));
