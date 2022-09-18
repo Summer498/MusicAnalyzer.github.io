@@ -38,6 +38,18 @@ export class NotImplementedError extends Error{
     }
 }
 
+export class Assertion {
+    #assertion: boolean;
+    constructor(assertion: boolean){
+        this.#assertion = assertion;
+    }
+    onFailed(errorExcecution: ()=>void){
+        if(!this.#assertion){
+            errorExcecution();
+        }
+    }
+}
+
 export const assertNotNull = <T>(value: T | null) => {
     if (value === null) {
         throw new TypeError("null value received");

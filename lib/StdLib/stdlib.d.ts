@@ -7,6 +7,11 @@ export declare class UnexpectedErrorThrownError extends Error {
 export declare class NotImplementedError extends Error {
     constructor(message?: string | undefined);
 }
+export declare class Assertion {
+    #private;
+    constructor(assertion: boolean);
+    onFailed(errorExcecution: () => void): void;
+}
 export declare const assertNotNull: <T>(value: T | null) => T;
 export declare const assertNotUndefined: <T>(value: T | undefined) => T;
 export declare const assertNonNullable: <T>(value: T | null | undefined) => T;
