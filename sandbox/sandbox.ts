@@ -48,10 +48,10 @@ const blackkey_height = octave_height / 12;
 const background =
     SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651097 + "%" }, "",
         SVG.g({ class: "melody-background" }, "", [
-            Math.Range(3, 7).map(e =>
+            Math.getRange(3, 7).map(e =>
                 SVG.svg({ y: (6 - e) * 75 }, "",
                     SVG.g({}, "", [
-                        Math.Range(0, 12).map(e2 => [
+                        Math.getRange(0, 12).map(e2 => [
                             SVG.rect({ x: 0 + "%", y: e2 * 6.25, fill: "#eeeeee", width: 100 + "%", height: 6.25, opacity: 1 - 0.5 * Math.mod(e2 + (e2 < 7 ? 1 : 0),2) }),
                             SVG.line({ x1: 0 + "%", y1: (e2 + 1) * 6.25, x2: 100 + "%", y2: (e2 + 1) * 6.25, "stroke-width": e2 == 11 ? 2 : 1 }),
                             SVG.line({ x1: 0 + "%", y1: e2 * 6.25, x2: 100 + "%", y2: e2 * 6.25, "stroke-width": 1 }),
@@ -66,11 +66,11 @@ const background =
 const piano_roll =
     SVG.g({ class: "piano-roll" }, "", [
         SVG.rect({ class: "shadow", x: 40, y: 0, width: 3, height: 300 }),
-        Math.Range(3, 7).map(e =>
+        Math.getRange(3, 7).map(e =>
             SVG.svg({ y: (6 - e) * 75 }, "",
                 SVG.g({ id: "octave" }, "", [
-                    Math.Range(0, 7).map(e2 => SVG.rect({ class: "white-key", x: 0, y: e2 * whitekey_height, width: whitekey_width, height: whitekey_height })),
-                    Math.Range(0, 5).map(e2 => SVG.rect({ class: "black-key", x: 0, y: (2 * e2 + (e2 > 2 ? 2 : 1)) * blackkey_height, width: blackkey_width, height: blackkey_height })),
+                    Math.getRange(0, 7).map(e2 => SVG.rect({ class: "white-key", x: 0, y: e2 * whitekey_height, width: whitekey_width, height: whitekey_height })),
+                    Math.getRange(0, 5).map(e2 => SVG.rect({ class: "black-key", x: 0, y: (2 * e2 + (e2 > 2 ? 2 : 1)) * blackkey_height, width: blackkey_width, height: blackkey_height })),
                     SVG.text({ class: "label", x: 25, y: 72 }, "C" + String(e))
                 ])
             )

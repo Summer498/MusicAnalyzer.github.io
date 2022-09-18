@@ -52,8 +52,8 @@ export const tan = Math.tan;
 // End of "export all of Math"
 
 export const not = (b: boolean): boolean => !b;
-export const Range = (begin: number, end: number, step = 1): number[] => [...Array(Math.abs(end - begin))].map((_, i) => i * step + begin);
-export const Zeros = (length: number): number[] => [...Array(length)].map(e => 0);  // eslint-disable-line @typescript-eslint/no-unused-vars
+export const getRange = (begin: number, end: number, step = 1): number[] => [...Array(Math.abs(end - begin))].map((_, i) => i * step + begin);
+export const getZeros = (length: number): number[] => [...Array(length)].map(e => 0);  // eslint-disable-line @typescript-eslint/no-unused-vars
 export const vFunc = (a: number[], b: number | number[], f: (a: number, b: number) => number) => {
     if (typeof b == "number") { return a.map(e => f(e, Number(b))); }
     if (b instanceof Array) { return a.map((_, i) => f(a[i], b[i])); }
@@ -68,7 +68,7 @@ export const vFunc = (a: number[], b: number | number[], f: (a: number, b: numbe
  * @detail Given n = 5, f = i=>10*i, genArr generates [0,10,20,30,40]
  */
 export const genArr = (n: number, f: (i: number) => number) => [...Array(n)].map((_, i) => f(i));
-export const matTrans = (matrix: number[][]) => Range(0, matrix[0].length).map(i => Range(0, matrix.length).map(j => matrix[j][i]));
+export const matTrans = (matrix: number[][]) => getRange(0, matrix[0].length).map(i => getRange(0, matrix.length).map(j => matrix[j][i]));
 export const forAll = <T>(set: T[], condition: (element: T) => boolean) => {
     for (const e of set) { if (condition(e) == false) { return false; } }
     return true;
@@ -115,7 +115,7 @@ export const getOnehotInMod = (positionOfOnes: number[] | number, m = 1) => {
     return getOnehot(v_mod(positionOfOnes, m), m);
 };
 export const v_sum = (...arrays: number[][]) => {
-    let s: number[] = Zeros(arrays[0].length);
+    let s: number[] = getZeros(arrays[0].length);
     arrays.forEach(arr => { s = v_add(s, arr); });
     return s;
 };

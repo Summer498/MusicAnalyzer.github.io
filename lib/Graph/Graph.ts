@@ -1,4 +1,4 @@
-import { forSome, matTrans, Range, Zeros } from "../Math/Math.js";
+import { forSome, matTrans, getRange, getZeros } from "../Math/Math.js";
 
 //TODO: 未実装
 class Tree {
@@ -166,9 +166,9 @@ export function dynamicLogViterbi(
     const Y = observation_sequence;
     const S = pi.length;
     const T = Y.length;
-    const T1 = Zeros(T).map(_ => Zeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
-    const T2 = Zeros(T).map(_ => Zeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
-    const states = new MaxCalculableArray(Range(0, S));
+    const T1 = getZeros(T).map(_ => getZeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
+    const T2 = getZeros(T).map(_ => getZeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
+    const states = new MaxCalculableArray(getRange(0, S));
     let memo_AT: number[][] = [[0]];
     const memo_BT: number[][] = [[0]];
     let memo_A: number[][] = [[0]];
@@ -200,7 +200,7 @@ export function dynamicLogViterbi(
     states.forEach(s => { T1[0][s] = pi[s] + B[Y[0]][s]; });
     states.forEach(s => { T2[0][s] = 0; });
     // 帰納
-    Range(1, T).forEach(t => {
+    getRange(1, T).forEach(t => {
         const A = getA(t);
         const B = getB(t);
         states.forEach(s => {
@@ -210,10 +210,10 @@ export function dynamicLogViterbi(
         });
     });
     // 終了
-    const state_trace = Zeros(T);
+    const state_trace = getZeros(T);
     // trace back
     state_trace[T - 1] = states.argMax((k: number) => T1[T - 1][k]);
-    Range(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
+    getRange(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
     return {
         log_probability: T1[T - 1][state_trace[T - 1]],
         trace: state_trace
