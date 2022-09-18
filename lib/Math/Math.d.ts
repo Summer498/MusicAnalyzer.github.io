@@ -56,6 +56,8 @@ export declare const genArr: (n: number, f: (i: number) => number) => number[];
 export declare const matTrans: (matrix: number[][]) => number[][];
 export declare const forAll: <T>(set: T[], condition: (element: T) => boolean) => boolean;
 export declare const forSome: <T>(set: T[], condition: (element: T) => boolean) => boolean;
+export declare const isSubSet: <T>(set: T[], superset: T[]) => boolean;
+export declare const isSuperSet: <T>(set: T[], subset: T[]) => boolean;
 export declare const sameArray: <T>(arr1: T[], arr2: T[]) => boolean;
 /** @brief avoid bug from negative value */
 export declare const mod: (n: number, m: number) => number;

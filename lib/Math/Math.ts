@@ -77,6 +77,12 @@ export const forSome = <T>(set: T[], condition: (element: T) => boolean) => {
     for (const e of set) { if (condition(e)) { return true; } }
     return false;
 };
+export const isSubSet = <T>(set: T[], superset: T[]) => {
+    return forAll(set, (e) => superset.includes(e));
+};
+export const isSuperSet = <T>(set: T[], subset: T[]) => {
+    return isSubSet(subset, set);
+};
 
 export const sameArray = <T>(arr1: T[], arr2: T[]) => hasSameValue(arr1, arr2);
 
@@ -90,7 +96,7 @@ export const ringShift = <T>(array: T[], b: number) => {
 };
 export const sum = (numbers: number[]) => {
     let s = 0;
-    for(const e of numbers){
+    for (const e of numbers) {
         s += e;
     }
     return s;
