@@ -5,6 +5,7 @@ import {
     getDistance,
     tonicDistance,
     regionDistance,
+    getBasicSpace,
 } from "./TPS.js";
 
 /*
@@ -19,7 +20,7 @@ console.log(basicSpaceDist(Cmaj, G7));
 console.log(basicSpaceDist(G7, Cmaj));
 */
 
-const chromaToScale = [
+const allSymbols = [
     "Ab", "A", "A#",
     "Bb", "B", "B#",
     "Cb", "C", "C#",
@@ -32,11 +33,11 @@ const chromaToScale = [
 for (let i = 0; i < 21; i++) {
     for (let j = 0; j < 21; j++) {
         const distance = regionDistance(
-            Scale_default.get(`${chromaToScale[i]} major`),
-            Scale_default.get(chromaToScale[j] + " major")
+            Scale_default.get(`${allSymbols[i]} major`),
+            Scale_default.get(`${allSymbols[j]} major`)
         );
         if (distance < -6 || 6 < distance) {
-            throw new Error("regionDistance must be in range [0, 6]. received is regionDistance(" + i + "," + j + ") = " + distance);
+            throw new Error(`regionDistance must be in range [0, 6]. received is regionDistance(${i}, ${j}) = ${distance}`);
         }
     }
 }
@@ -46,25 +47,26 @@ const AtoG = ["A", "B", "C", "D", "E", "F", "G"];
 for (let i = 0; i < 21; i++) {
     for (let j = 0; j < 21; j++) {
         const distance = tonicDistance(
-            Chord_default.get(chromaToScale[i]),
-            Chord_default.get(chromaToScale[j])
+            Chord_default.get(allSymbols[i]),
+            Chord_default.get(allSymbols[j])
         );
         if (distance < -3 || 3 < distance) {
-            throw new Error("rootDistance must be in range [0, 3] received is rootDistance(" + i + "," + j + ") = " + distance);
+            throw new Error(`rootDistance must be in range [0, 3] received is rootDistance(${i}, ${j}) = ${distance}`);
         }
         const diff
-            = AtoG.indexOf(chromaToScale[i].slice(0, 1))
-            - AtoG.indexOf(chromaToScale[j].slice(0, 1));
+            = AtoG.indexOf(allSymbols[i].slice(0, 1))
+            - AtoG.indexOf(allSymbols[j].slice(0, 1));
         const correctDistance = ((diff) => {
             const dist_in_circle_of_3rd = mod(diff * 3, 7);
             return Math.min(dist_in_circle_of_3rd, 7 - dist_in_circle_of_3rd);
         })(diff);
         if (distance !== correctDistance) {
-            console.log(`i: ${chromaToScale[i]}, j: ${chromaToScale[j]}, ${distance} !== ${correctDistance}`);
+            console.log(`i: ${allSymbols[i]}, j: ${allSymbols[j]}, ${distance} !== ${correctDistance}`);
             throw new Error("distance value is wrong");
         }
     }
 }
+
 
 //TODO: create test of getBasicSpace
 //TODO: create test of basicSpaceDistance

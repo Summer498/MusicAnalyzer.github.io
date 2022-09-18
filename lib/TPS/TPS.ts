@@ -1,7 +1,7 @@
 import * as Math from "../Math/Math.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord } from "../TonalEx/TonalEx.js";
 import { Scale_default, Pcset_default, Chord_default, Chord, Scale } from "../adapters/Tonal.js";
-import { assertNonNullable, NotImplementedError } from "../StdLib/stdlib.js";
+import { assertNonNullable, Assertion, NotImplementedError } from "../StdLib/stdlib.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 const regionDistanceInChromaNumber = (src: number, dst: number) => {
@@ -29,44 +29,55 @@ export const tonicDistance = (src: Chord, dst: Chord) => {
 	return Math.min(dist_in_circle_of_3rd, 7 - dist_in_circle_of_3rd);
 };
 
-export const getBasicSpace = (roman: RomanChord) => {
-	if (roman.scale.empty) {
-		console.log(`chord: ${roman.scale}`);
-		throw new Error("scale must not be empty");
-	}
-	if (roman.chord.empty) {
-		console.log(`chord: ${roman.chord}`);
-		throw new Error("chord must not be empty");
-	}
-	const onehot = Math.getOnehot;
-	const chroma = getNonNullableChroma;
+const getTonicChroma = (chord: Chord) => {
+	const tonic = assertNonNullable(chord.tonic);
+	return [getNonNullableChroma(tonic)];
+};
 
-	console.log(roman.chord.tonic);
-	const tonic = assertNonNullable(roman.chord.tonic);
-	const tonic_chroma = chroma(tonic);
-	const level_root = onehot([tonic_chroma], 12);
+const getPowerChroma = (chord: Chord) => {
+	const tonic2 = assertNonNullable(chord.tonic);
+	const fifths = chord.notes
+		.filter(note => getIntervalDegree(tonic2, note) == 5);
+	new Assertion(fifths.length == 1)
+		.onFailed(() => {
+			console.log(`received: ${chord.notes}`);
+			throw new Error("received chord must have just one 5th code.");
+		});
+	return [tonic2, fifths[0]].map(note => getNonNullableChroma(note));
+};
 
-	const fifths = roman.chord.notes.filter(note => getIntervalDegree(tonic, note) == 5);
-	if (fifths.length != 1) {
-		console.log(`chord.note: ${roman.chord.notes}`);
-		throw new Error("received chord must have just one 5th code.");
-	}
-	const level_power = onehot([chroma(fifths[0])], 12);
+const getChordChroma = (chord: Chord) => {
+	return chord.notes.map(note => getNonNullableChroma(note));
+};
 
-	const notes_chroma = roman.chord.notes.map(note => chroma(note));
-	const level_chord = onehot(notes_chroma, 12);
-
+const getScaleChroma = (roman: RomanChord) => {
 	// TODO: 借用和音に伴いスケール構成音を変異させる
-	const scale_chroma = roman.scale.notes.map(note => chroma(note));
-	if (Math.forSome(notes_chroma,
-		(note) => !scale_chroma.includes(note))
-	) {
-		console.log(`received roman: ${roman}`);
-		throw new NotImplementedError("借用和音はまだ実装されていません. 入力ローマ数字コードは, コード構成音がスケール内に収まるようにしてください.");
-	}
-	const level_scale = onehot(scale_chroma, 12);
+	new Assertion(Math.isSubSet(roman.chord.notes, roman.scale.notes))
+		.onFailed(() => {
+			console.log(`received: ${roman}`);
+			throw new NotImplementedError("借用和音はまだ実装されていません. 入力ローマ数字コードは, コード構成音がスケール内に収まるようにしてください.");
+		});
+	return roman.scale.notes.map(note => getNonNullableChroma(note));
+};
 
-	const basic_space = Math.v_sum(level_root, level_power, level_chord, level_scale);
+export const getBasicSpace = (roman: RomanChord) => {
+	new Assertion(!roman.scale.empty)
+		.onFailed(() => {
+			console.log(`received: ${roman.scale}`);
+			throw new Error("scale must not be empty");
+		});
+	new Assertion(!roman.chord.empty)
+		.onFailed(() => {
+			console.log(`received: ${roman.chord}`);
+			throw new Error("chord must not be empty");
+		});
+
+	const basic_space = Math.v_sum(
+		Math.getOnehot(getTonicChroma(roman.chord), 12),
+		Math.getOnehot(getPowerChroma(roman.chord), 12),
+		Math.getOnehot(getChordChroma(roman.chord), 12),
+		Math.getOnehot(getScaleChroma(roman), 12)
+	);
 	return basic_space;
 };
 
@@ -210,7 +221,7 @@ export const oldGetBasicSpace = (
 /**
  * @brief distance of BS in chord distance function
  * @param {number[]} src pitch class of source chord's BS
- * @param {number[]} dst pitch class of destination chord's BS 
+ * @param {number[]} dst pitch class of destination chord's BS
  * @return {number} count of additional pitch class in dst from src
  */
 /** @deprecated */
