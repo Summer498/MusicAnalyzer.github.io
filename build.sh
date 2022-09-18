@@ -1,0 +1,2 @@
+./copyHTML.sh
+tsc
