@@ -1,6 +1,5 @@
-import { Key, Scale } from "@tonaljs/tonal";
 import { Chord_default, Key_default, Scale_default } from "../adapters/Tonal.js";
-import { mod, getRange, ringShift, v_add, v_mod, getZeros, sameArray } from "../Math/Math.js";
+import { mod, getZeros, sameArray } from "../Math/Math.js";
 import { Assertion, assertNonNullable } from "../StdLib/stdlib.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord, } from "../TonalEx/TonalEx.js";
 import {
@@ -72,61 +71,62 @@ for (let i = 0; i < 21; i++) {
 
 // Basic Space Test (No Transpose)
 for (const note_symbol of all_note_symbols) {
-    const key = Key_default.majorKey(note_symbol);  // TODO: minor key も
-    new Assertion(key.chords.length != 0)
-        .onFailed(() => {
-            console.log(`received: ${key}`);
-            throw new TypeError("empty key received.");
-        });
-    const scale = Scale_default.get(key.chordScales[0]);
-
-    const chords = key.chords
-        .map((chord_str:any) => Chord_default.get(chord_str));
-
-    for (const chord of chords) {
-        const tonic = assertNonNullable(chord.tonic);
-        const fifths = chord.notes
-            .filter((note:any) => getIntervalDegree(tonic, note) == 5);
-        new Assertion(fifths.length == 1)
+    for (const key of [Key_default.majorKey(note_symbol), Key_default.minorKey(note_symbol).natural]) {
+        new Assertion(key.chords.length != 0)
             .onFailed(() => {
-                console.log(`received: ${fifths}`);
-                throw new Error(`Expected just one "fifth note"`);
+                console.log(`received: ${key}`);
+                throw new TypeError("empty key received.");
             });
+        const scale = Scale_default.get(key.chordScales[0]);
 
-        const expected_BS = getZeros(12)
-            .map((_, i) => {
-                // tonic
-                if (getNonNullableChroma(tonic) == i) {
-                    return 4;
-                }
-                // fifth
-                if (getNonNullableChroma(fifths[0]) == i) {
-                    return 3;
-                }
-                // chord notes
-                if (chord.notes
-                    .map((note:any) => getNonNullableChroma(note))
-                    .includes(i)) {
-                    return 2;
-                }
-                // scale notes
-                if (key.scale
-                    .map((note:any) => getNonNullableChroma(note))
-                    .includes(i)) {
-                    return 1;
-                }
-                // non scale notes
-                return 0;
-            });
-        const received_BS = getBasicSpace(new RomanChord(scale, chord));
-        new Assertion(sameArray(received_BS, expected_BS))
-            .onFailed(() => {
-                console.log(`received: ${received_BS}`);
-                console.log(`expected: ${expected_BS}`);
-                throw new Error(`basic space is wrong`);
-            });
+        const chords = key.chords
+            .map((chord_str: any) => Chord_default.get(chord_str));
+
+        for (const chord of chords) {
+            const tonic = assertNonNullable(chord.tonic);
+            const fifths = chord.notes
+                .filter((note: any) => getIntervalDegree(tonic, note) == 5);
+            new Assertion(fifths.length == 1)
+                .onFailed(() => {
+                    console.log(`received: ${fifths}`);
+                    throw new Error(`Expected just one "fifth note"`);
+                });
+
+            const expected_BS = getZeros(12)
+                .map((_, i) => {
+                    switch (i) {
+                        // tonic
+                        case getNonNullableChroma(tonic):
+                            return 4;
+                        // fifth
+                        case getNonNullableChroma(fifths[0]):
+                            return 3;
+                    }
+                    // chord notes
+                    if (chord.notes
+                        .map((note: any) => getNonNullableChroma(note))
+                        .includes(i)) {
+                        return 2;
+                    }
+                    // scale notes
+                    if (key.scale
+                        .map((note: any) => getNonNullableChroma(note))
+                        .includes(i)) {
+                        return 1;
+                    }
+                    // non scale notes
+                    return 0;
+                });
+            const received_BS = getBasicSpace(new RomanChord(scale, chord));
+            new Assertion(sameArray(received_BS, expected_BS))
+                .onFailed(() => {
+                    console.log(`received: ${received_BS}`);
+                    console.log(`expected: ${expected_BS}`);
+                    throw new Error(`basic space is wrong`);
+                });
+        }
     }
-    console.log(`done`);   
+    console.log(`done`);
 }
 
 
