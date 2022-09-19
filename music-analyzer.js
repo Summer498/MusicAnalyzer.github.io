@@ -26,8 +26,8 @@ const white_key_height = octave_height / 7;
 const black_key_width = white_key_width / 2;
 const black_key_height = octave_height / 12;
 const background = SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651097 + "%" }, "", SVG.g({ class: "melody-background" }, "", [
-    Math.Range(3, 7).map(e => SVG.svg({ y: (6 - e) * 75 }, "", SVG.g({}, "", [
-        Math.Range(0, 12).map(e2 => [
+    Math.getRange(3, 7).map(e => SVG.svg({ y: (6 - e) * 75 }, "", SVG.g({}, "", [
+        Math.getRange(0, 12).map(e2 => [
             SVG.rect({
                 x: 0 + "%", y: e2 * 6.25, fill: "#ffffff", width: 100 + "%", height: 6.25, opacity: Math.mod(e2 * 7, 12) < 7 ? 0 : 1
             }),
@@ -41,9 +41,9 @@ const background = SVG.svg({ x: -150.86931316534526 + "%", width: 649.2850333651
 ]));
 const piano_roll = SVG.g({ class: "piano-roll" }, "", [
     SVG.rect({ class: "shadow", x: 40, y: 0, width: 3, height: 300 }),
-    Math.Range(3, 7).map(e => SVG.svg({ y: (6 - e) * 75 }, "", SVG.g({ id: "octave" }, "", [
-        Math.Range(0, 7).map(e2 => SVG.rect({ class: "white-key", x: 0, y: e2 * white_key_height, width: white_key_width, height: white_key_height })),
-        Math.Range(0, 5).map(e2 => SVG.rect({
+    Math.getRange(3, 7).map(e => SVG.svg({ y: (6 - e) * 75 }, "", SVG.g({ id: "octave" }, "", [
+        Math.getRange(0, 7).map(e2 => SVG.rect({ class: "white-key", x: 0, y: e2 * white_key_height, width: white_key_width, height: white_key_height })),
+        Math.getRange(0, 5).map(e2 => SVG.rect({
             class: "black-key", x: 0, y: (2 * e2 + (e2 > 2 ? 2 : 1)) * black_key_height, width: black_key_width, height: black_key_height
         })),
         SVG.text({ class: "label", x: 25, y: 72 }, "C" + String(e))

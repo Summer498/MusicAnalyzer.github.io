@@ -42,8 +42,8 @@ export declare const sin: (x: number) => number;
 export declare const sqrt: (x: number) => number;
 export declare const tan: (x: number) => number;
 export declare const not: (b: boolean) => boolean;
-export declare const Range: (begin: number, end: number, step?: number) => number[];
-export declare const Zeros: (length: number) => number[];
+export declare const getRange: (begin: number, end: number, step?: number) => number[];
+export declare const getZeros: (length: number) => number[];
 export declare const vFunc: (a: number[], b: number | number[], f: (a: number, b: number) => number) => number[];
 /**
  * @brief generate array
