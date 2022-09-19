@@ -177,9 +177,32 @@ export declare type InvalidTimeSignature = {
 };
 export declare type TimeSignature = ValidTimeSignature | InvalidTimeSignature;
 
+interface ICore{
+    Chord:any,
+    ChordType:any,
+    DurationValue:any,
+    Key:any,
+    Mode:any,
+    Pcset:any,
+    RomanNumeral:any,
+    Scale:any,
+    ScaleType:any,
+    TimeSignature:any,
+    
+    Note:any,
+    Interval:any,
+    Midi:any,
+    Progression:any,        
+}
 
-declare let window: any;
-declare let globalThis: any;
+declare const Core: ICore;
+
+interface TonalWindow extends Window{
+    Tonal: typeof Core;
+}
+
+declare let window: TonalWindow;
+declare let globalThis: TonalWindow;
 if (window.Tonal === undefined) { throw ReferenceError('Tonal.js を HTML からインポートする必要があります. HTML ファイル内に, "<script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>" と記述してください.'); }
 export const Tonal = globalThis.Tonal;  // eslint-disable-line no-undef
 

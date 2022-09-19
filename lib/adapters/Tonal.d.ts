@@ -98,7 +98,23 @@ export declare type InvalidTimeSignature = {
     readonly additive: [];
 };
 export declare type TimeSignature = ValidTimeSignature | InvalidTimeSignature;
-export declare const Tonal: any;
+interface ICore {
+    Chord: any;
+    ChordType: any;
+    DurationValue: any;
+    Key: any;
+    Mode: any;
+    Pcset: any;
+    RomanNumeral: any;
+    Scale: any;
+    ScaleType: any;
+    TimeSignature: any;
+    Note: any;
+    Interval: any;
+    Midi: any;
+    Progression: any;
+}
+export declare const Tonal: ICore;
 export declare const Chord_default: any;
 export declare const ChordType_default: any;
 export declare const DurationValue_default: any;
