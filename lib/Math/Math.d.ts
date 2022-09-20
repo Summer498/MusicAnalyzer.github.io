@@ -2,13 +2,6 @@ declare const not: (b: boolean) => boolean;
 declare const getRange: (begin: number, end: number, step?: number) => number[];
 declare const getZeros: (length: number) => number[];
 declare const vFunc: (a: number[], b: number | number[], f: (a: number, b: number) => number) => number[];
-/**
- * @brief generate array
- * @param n count of elements
- * @param f generate function like (i => i*2)
- * @return generated array
- * @detail Given n = 5, f = i=>10*i, genArr generates [0,10,20,30,40]
- */
 declare const genArr: (n: number, f: (i: number) => number) => number[];
 declare const matTrans: (matrix: number[][]) => number[][];
 declare const forAll: <T>(set: T[], condition: (element: T) => boolean) => boolean;
@@ -32,12 +25,19 @@ declare const getOnehotInMod: (positionOfOnes: number[] | number, m?: number) =>
 declare const vSum: (...arrays: number[][]) => number[];
 declare const totalSum: (array: number[]) => number;
 declare const totalProd: (array: number[]) => number;
-declare type BMath = typeof Math;
-interface IMath extends BMath {
+declare type IBMath = typeof Math;
+interface IMath extends IBMath {
     not: typeof not;
     getRange: typeof getRange;
     getZeros: typeof getZeros;
     vFunc: typeof vFunc;
+    /**
+     * @brief generate array
+     * @param n count of elements
+     * @param f generate function like (i => i*2)
+     * @return generated array
+     * @detail Given n = 5, f = i=>10*i, genArr generates [0,10,20,30,40]
+     */
     genArr: typeof genArr;
     matTrans: typeof matTrans;
     forAll: typeof forAll;
