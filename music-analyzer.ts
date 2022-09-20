@@ -1,4 +1,4 @@
-import * as Math from "./lib/Math/Math.js";
+import { Math } from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
 import { Chord_default, Midi } from "./lib/adapters/Tonal.js";
@@ -11,7 +11,7 @@ export declare const self: SongleWindow;
 
 //TODO: もっとスマートに書く
 function print(msg: string) {
-	let _printable:HTMLElement | null = null;
+	let _printable: HTMLElement | null = null;
 	const getPrintable = () => {
 		_printable ??= document.querySelector(".print");
 		return assertNonNullable(_printable);

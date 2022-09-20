@@ -1,4 +1,4 @@
-import * as Math from "./lib/Math/Math.js";
+import { Math } from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
 import { Chord_default, Midi } from "./lib/adapters/Tonal.js";

@@ -1,7 +1,7 @@
 import { Progression } from "../lib/adapters/Tonal.js"; // Tonal のインポートを外部ファイルに任せる
 import { SongleWidgetAPI } from "../lib/adapters/SongleWidget.js"; // SongleWidget のインポートを外部ファイルに任せる
 import { HTML, SVG } from "../lib/HTML/HTML.js";
-import * as Math from "../lib/Math/Math.js";
+import { Math } from "../lib/Math/Math.js";
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
 HTML.head.appendChildren([

@@ -1,4 +1,4 @@
-import * as Math from "../Math/Math.js";
+import { Math } from "../Math/Math.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord } from "../TonalEx/TonalEx.js";
 import { Scale_default, Pcset_default, Chord_default, Chord, Scale } from "../adapters/Tonal.js";
 import { assertNonNullable, Assertion, NotImplementedError } from "../StdLib/stdlib.js";
@@ -72,7 +72,7 @@ export const getBasicSpace = (roman: RomanChord) => {
 			throw new Error("chord must not be empty");
 		});
 
-	const basic_space = Math.v_sum(
+	const basic_space = Math.vSum(
 		Math.getOnehot(getTonicChroma(roman.chord), 12),
 		Math.getOnehot(getPowerChroma(roman.chord), 12),
 		Math.getOnehot(getChordChroma(roman.chord), 12),
@@ -84,9 +84,9 @@ export const getBasicSpace = (roman: RomanChord) => {
 export const basicSpaceDistance = (src: RomanChord, dst: RomanChord) => {
 	const src_bs = getBasicSpace(src);
 	const dst_bs = getBasicSpace(dst);
-	const incremented = Math.v_sub(dst_bs, src_bs)
+	const incremented = Math.vSub(dst_bs, src_bs)
 		.filter(e => e > 0);
-	return Math.sum(incremented);
+	return Math.totalSum(incremented);
 	// TODO: 遠隔調の例外処理 (がそもそも必要なのか?)
 };
 

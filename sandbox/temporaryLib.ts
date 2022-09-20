@@ -1,4 +1,4 @@
-import * as Math from "../lib/Math/Math.js";
+import { Math } from "../lib/Math/Math.js";
 "use strict";
 
 /* eslint-disable deprecation/deprecation */

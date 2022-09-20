@@ -1,6 +1,6 @@
 import { hasSameValue } from "../StdLib/stdlib.js";
 import { dynamicLogViterbi, logViterbi, viterbi } from "./Graph.js";
-import * as Math from "../Math/Math.js";
+import { Math } from "../Math/Math.js";
 
 /* Viterbi アルゴリズム */
 const initial_probabilities = [0.6, 0.4];

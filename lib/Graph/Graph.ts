@@ -1,4 +1,4 @@
-import { forSome, matTrans, getRange, getZeros } from "../Math/Math.js";
+import { Math } from "../Math/Math.js";
 
 //TODO: 未実装
 class Tree {
@@ -166,9 +166,9 @@ export function dynamicLogViterbi(
     const Y = observation_sequence;
     const S = pi.length;
     const T = Y.length;
-    const T1 = getZeros(T).map(_ => getZeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
-    const T2 = getZeros(T).map(_ => getZeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
-    const states = new MaxCalculableArray(getRange(0, S));
+    const T1 = Math.getZeros(T).map(_ => Math.getZeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
+    const T2 = Math.getZeros(T).map(_ => Math.getZeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
+    const states = new MaxCalculableArray(Math.getRange(0, S));
     let memo_AT: number[][] = [[0]];
     const memo_BT: number[][] = [[0]];
     let memo_A: number[][] = [[0]];
@@ -178,8 +178,8 @@ export function dynamicLogViterbi(
         const AT = transitionLogProbabilities(Y[t - 1], Y[t], pi);  // transitionLogProbabilities が定関数の場合は, 行列が参照渡しされて O(1)
         if (AT != memo_AT) {
             memo_AT = AT;
-            const A = matTrans(AT);
-            if (S !== A.length || forSome(A, e => S !== e.length)) { throw new RangeError("log_transition_probabilities must be " + S + " X " + S + "matrix. (same as state space size X state space size)"); }
+            const A = Math.matTrans(AT);
+            if (S !== A.length || Math.forSome(A, e => S !== e.length)) { throw new RangeError("log_transition_probabilities must be " + S + " X " + S + "matrix. (same as state space size X state space size)"); }
             memo_A = A;
         }
         return memo_A;
@@ -187,8 +187,8 @@ export function dynamicLogViterbi(
     const getB = (t: number) => {
         const BT = emissionLogProbabilities(Y[t], pi);  // emissionLogProbabilities が定関数の場合は, 行列が参照渡しされて O(1)
         if (BT != memo_BT) {
-            const B = matTrans(BT);
-            if (T !== B.length || forSome(B, e => S !== e.length)) { throw new RangeError("log_emission_probabilities must be " + S + " x " + T + "matrix. (same as state space size X observation sequence length size)"); }
+            const B = Math.matTrans(BT);
+            if (T !== B.length || Math.forSome(B, e => S !== e.length)) { throw new RangeError("log_emission_probabilities must be " + S + " x " + T + "matrix. (same as state space size X observation sequence length size)"); }
             memo_B = B;
         }
         return memo_B;
@@ -200,7 +200,7 @@ export function dynamicLogViterbi(
     states.forEach(s => { T1[0][s] = pi[s] + B[Y[0]][s]; });
     states.forEach(s => { T2[0][s] = 0; });
     // 帰納
-    getRange(1, T).forEach(t => {
+    Math.getRange(1, T).forEach(t => {
         const A = getA(t);
         const B = getB(t);
         states.forEach(s => {
@@ -210,10 +210,10 @@ export function dynamicLogViterbi(
         });
     });
     // 終了
-    const state_trace = getZeros(T);
+    const state_trace = Math.getZeros(T);
     // trace back
     state_trace[T - 1] = states.argMax((k: number) => T1[T - 1][k]);
-    getRange(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
+    Math.getRange(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
     return {
         log_probability: T1[T - 1][state_trace[T - 1]],
         trace: state_trace

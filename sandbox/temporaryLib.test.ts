@@ -1,4 +1,4 @@
-import * as Math from "../lib/Math/Math.js";
+import { Math } from "../lib/Math/Math.js";
 import { chroma, interval, keySignature, note_symbol, str_interval, str_key_signature } from "./temporaryLib";
 
 const major = [0, 2, 4, 5, 7, 9, 11];

@@ -1,5 +1,5 @@
 import { Chord, Chord_default, Key_default, Scale_default } from "../adapters/Tonal.js";
-import { mod, getZeros, sameArray, v_sub, total_sum, max } from "../Math/Math.js";
+import { Math } from "../Math/Math.js";
 import { Assertion, assertNonNullable } from "../StdLib/stdlib.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord, } from "../TonalEx/TonalEx.js";
 import {
@@ -59,7 +59,7 @@ for (let i = 0; i < 21; i++) {
             = AtoG.indexOf(all_note_symbols[i].slice(0, 1))
             - AtoG.indexOf(all_note_symbols[j].slice(0, 1));
         const correctDistance = ((diff) => {
-            const dist_in_circle_of_3rd = mod(diff * 3, 7);
+            const dist_in_circle_of_3rd = Math.mod(diff * 3, 7);
             return Math.min(dist_in_circle_of_3rd, 7 - dist_in_circle_of_3rd);
         })(diff);
         if (distance !== correctDistance) {
@@ -99,7 +99,7 @@ for (const key of
             throw new Error(`chords.length must be 7`);
         });
     for (const chord of chords) {
-        const expected_BS = getZeros(12)
+        const expected_BS = Math.getZeros(12)
             .map((_, i) => {
                 switch (i) {
                     // tonic
@@ -126,7 +126,7 @@ for (const key of
             });
         const received_BS = getBasicSpace(new RomanChord(scale, chord));
 
-        new Assertion(sameArray(received_BS, expected_BS))
+        new Assertion(Math.sameArray(received_BS, expected_BS))
             .onFailed(() => {
                 console.log(`received: ${received_BS}`);
                 console.log(`expected: ${expected_BS}`);
@@ -161,8 +161,8 @@ for (const src_key of [
             const dst_roman = new RomanChord(dst_scale, dst_chord);
             // getBasicSpace はテスト済み関数として信用する
             const dst_BS = getBasicSpace(dst_roman);
-            const expected_dist = total_sum(
-                v_sub(dst_BS, src_BS).map(e => max(e, 0))
+            const expected_dist = Math.totalSum(
+                Math.vSub(dst_BS, src_BS).map(e => Math.max(e, 0))
             );
 
             const received_dist = basicSpaceDistance(src_roman, dst_roman);
@@ -181,35 +181,35 @@ new Assertion(
     getDistance(
         new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
         new RomanChord(Scale_default.get("C major"), Chord_default.get("F"))
-    )==6
-).onFailed(()=>{throw new Error();});
+    ) == 6
+).onFailed(() => { throw new Error(); });
 new Assertion(
     getDistance(
         new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
         new RomanChord(Scale_default.get("C major"), Chord_default.get("G"))
-    )==6
-).onFailed(()=>{throw new Error();});
+    ) == 6
+).onFailed(() => { throw new Error(); });
 new Assertion(
     getDistance(
         new RomanChord(Scale_default.get("C major"), Chord_default.get("Dm")),
         new RomanChord(Scale_default.get("C major"), Chord_default.get("Am"))
-    )==6
-).onFailed(()=>{throw new Error();});
+    ) == 6
+).onFailed(() => { throw new Error(); });
 new Assertion(
     getDistance(
         new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
         new RomanChord(Scale_default.get("C major"), Chord_default.get("Am"))
-    )==5
-).onFailed(()=>{throw new Error();});
+    ) == 5
+).onFailed(() => { throw new Error(); });
 new Assertion(
     getDistance(
         new RomanChord(Scale_default.get("C major"), Chord_default.get("C")),
         new RomanChord(Scale_default.get("C major"), Chord_default.get("Em"))
-    )==5
-).onFailed(()=>{throw new Error();});
+    ) == 5
+).onFailed(() => { throw new Error(); });
 new Assertion(
     getDistance(
         new RomanChord(Scale_default.get("C major"), Chord_default.get("Dm")),
         new RomanChord(Scale_default.get("C major"), Chord_default.get("F"))
-    )==5
-).onFailed(()=>{throw new Error();});
+    ) == 5
+).onFailed(() => { throw new Error(); });

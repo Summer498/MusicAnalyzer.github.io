@@ -5,7 +5,7 @@ import { Songle } from "../lib/adapters/Songle.js";  // Songle のインポー�
 import { SongleWidgetAPI, SongleWidgetConstructor } from "../lib/adapters/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
 
 import { HTML, SVG } from "../lib/HTML/HTML.js";
-import * as Math from "../lib/Math/Math.js";
+import { Math } from "../lib/Math/Math.js";
 interface SongleWidgetWindow extends Window {
     onSongleWidgetReady: any;
 }
@@ -52,7 +52,7 @@ const background =
                 SVG.svg({ y: (6 - e) * 75 }, "",
                     SVG.g({}, "", [
                         Math.getRange(0, 12).map(e2 => [
-                            SVG.rect({ x: 0 + "%", y: e2 * 6.25, fill: "#eeeeee", width: 100 + "%", height: 6.25, opacity: 1 - 0.5 * Math.mod(e2 + (e2 < 7 ? 1 : 0),2) }),
+                            SVG.rect({ x: 0 + "%", y: e2 * 6.25, fill: "#eeeeee", width: 100 + "%", height: 6.25, opacity: 1 - 0.5 * Math.mod(e2 + (e2 < 7 ? 1 : 0), 2) }),
                             SVG.line({ x1: 0 + "%", y1: (e2 + 1) * 6.25, x2: 100 + "%", y2: (e2 + 1) * 6.25, "stroke-width": e2 == 11 ? 2 : 1 }),
                             SVG.line({ x1: 0 + "%", y1: e2 * 6.25, x2: 100 + "%", y2: e2 * 6.25, "stroke-width": 1 }),
                         ]),
