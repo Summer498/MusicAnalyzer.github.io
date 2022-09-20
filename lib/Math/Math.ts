@@ -119,3 +119,13 @@ export const v_sum = (...arrays: number[][]) => {
     arrays.forEach(arr => { s = v_add(s, arr); });
     return s;
 };
+export const total_sum = (array: number[]) => {
+    let s = 0;
+    array.forEach(e => s += e);
+    return s;
+};
+export const total_prod = (array: number[]) => {
+    let s = 0;
+    array.forEach(e => s *= e);
+    return s;
+};

@@ -74,3 +74,5 @@ export declare const v_get: <T>(array: T[], indexes: number[]) => T[];
 export declare const getOnehot: (positionOfOnes: number[], n?: number) => (1 | 0)[];
 export declare const getOnehotInMod: (positionOfOnes: number[] | number, m?: number) => (1 | 0)[];
 export declare const v_sum: (...arrays: number[][]) => number[];
+export declare const total_sum: (array: number[]) => number;
+export declare const total_prod: (array: number[]) => number;
