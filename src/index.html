@@ -1,0 +1,49 @@
+<html>
+
+<head>
+	<title> Music Analyzer extending Songle </title>
+	<meta charset="utf-8" lang="ja">
+	<meta http-equiv="content-language" content="ja">
+	<link href="design.css" rel="stylesheet" type="text/css">
+	<link href="css3.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<div class="media" style="position:fixed; left:5px; bottom:5px;">
+		<div id="songle-yt"></div>
+		<div id="songle-sw"></div>
+	</div>
+	<div>
+		<section class="beat">
+			<span class="info1"> - </span>
+			<span> / </span>
+			<span class="info2"> - </span>
+		</section>
+		<section class="chord">
+			<span class="name"> - </span>
+		</section>
+	</div>
+	<div>
+		<section class="sandbox">
+			<span class="print"> print </span>
+			<br>
+			<span>
+				<a href="sandbox">sandbox page</a>
+			</span>
+		</section>
+	</div>
+</body>
+<!--
+<script src="https://api.songle.jp/v2/api.js"></script>
+-->
+<!-- 
+	TODO: CDN から読み込まないようにする 
+		songle を node.js から読み込めるようにする
+-->
+<!--
+<script src="./songle-api/lib/api.js"></script>
+-->
+<script src="./lib/local_downloaded/songle_api.js"></script>
+<script type="module" src="music-analyzer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
+</html>
