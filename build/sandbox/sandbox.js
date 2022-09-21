@@ -1,5 +1,5 @@
 import { Progression } from "../lib/adapters/Tonal.js"; // Tonal のインポートを外部ファイルに任せる
-import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget.js"; // SongleWidget のインポートを外部ファイルに任せる
+import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget/SongleWidget.js"; // SongleWidget のインポートを外部ファイルに任せる
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import { Math } from "../lib/Math/Math.js";
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
@@ -66,9 +66,10 @@ songle_widget_window.onload =
     };
 songle_widget_window.onSongleWidgetReady =
     function (apiKey, songleWidget) {
+        console.log(songleWidget);
         songleWidget.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
         songleWidget.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
-        const chords = songleWidget.song.scene.chords.map((e) => e.name); // コードをすべて取り出す
+        const chords = songleWidget.song.scene.chords.map(e => e.name); // コードをすべて取り出す
         /*
         console.log(chords);
         console.log(chord2roman(chords));  // Cキーを基準としたローマ数字を呼び出すだけのダミー関数

@@ -2,7 +2,8 @@
 import { TreeModel } from "../lib/adapters/Tree.js";  // Tree のインポートを外部ファイルに任せる
 import { Progression, Tonal } from "../lib/adapters/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
 import { Songle } from "../lib/adapters/Songle.js";  // Songle のインポートを外部ファイルに任せる
-import { SongleWidgetAPI, SongleWidgetConstructor, songle_widget_window } from "../lib/adapters/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
+import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
+import { ISongleWidget } from "../lib/adapters/SongleWidget/ISongleWidget.js";
 
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import { Math } from "../lib/Math/Math.js";
@@ -96,10 +97,11 @@ songle_widget_window.onload =
     };
 
 songle_widget_window.onSongleWidgetReady =
-    function (apiKey: any, songleWidget: SongleWidgetConstructor) {
+    function (apiKey: string, songleWidget: ISongleWidget) {
+        console.log(songleWidget);
         songleWidget.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
         songleWidget.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
-        const chords = songleWidget.song.scene.chords.map((e: any) => e.name); // コードをすべて取り出す
+        const chords = songleWidget.song.scene.chords.map(e => e.name); // コードをすべて取り出す
         /*
         console.log(chords);
         console.log(chord2roman(chords));  // Cキーを基準としたローマ数字を呼び出すだけのダミー関数

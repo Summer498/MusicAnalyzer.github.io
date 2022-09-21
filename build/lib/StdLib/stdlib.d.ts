@@ -12,8 +12,8 @@ export declare class Assertion {
     constructor(assertion: boolean);
     onFailed(errorExcecution: () => void): void;
 }
-export declare const assertNotNull: <T>(value: T | null) => T;
-export declare const assertNotUndefined: <T>(value: T | undefined) => T;
-export declare const assertNonNullable: <T>(value: T | null | undefined) => T;
+export declare const assertNotNull: <T>(value: T | null) => T & ({} | undefined);
+export declare const assertNotUndefined: <T>(value: T | undefined) => T & ({} | null);
+export declare const assertNonNullable: <T>(value: T | null | undefined) => T & {};
 export declare const assertNotNaN: (value: number) => number;
 export declare const castToNumber: (value: string) => number;
