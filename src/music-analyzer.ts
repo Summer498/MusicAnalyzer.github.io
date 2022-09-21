@@ -2,12 +2,9 @@ import { Math } from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
 import { Chord_default, Midi } from "./lib/adapters/Tonal.js";
-import { BeatEvent, SongleConstructor, ChordEvent, SectionEvent } from "./lib/adapters/Songle.js";
+import { BeatEvent, SongleConstructor, ChordEvent, SectionEvent, songle_window } from "./lib/adapters/Songle.js";
 import { assertNonNullable } from "./lib/StdLib/stdlib.js";
-interface SongleWindow extends Window {
-	onSongleAPIReady: any;
-}
-export declare const self: SongleWindow;
+
 
 //TODO: もっとスマートに書く
 function print(msg: string) {
@@ -119,7 +116,7 @@ class Note extends MoveObject {
 	}
 }
 
-self.onSongleAPIReady = (Songle: SongleConstructor) => {
+songle_window.onSongleAPIReady = (Songle: SongleConstructor) => {
 	const player = new Songle.Player({ mediaElement: "#songle-yt" });
 
 	player.addPlugin(new Songle.Plugin.Beat());

@@ -2,6 +2,7 @@ import { Math } from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
 import { Chord_default, Midi } from "./lib/adapters/Tonal.js";
+import { songle_window } from "./lib/adapters/Songle.js";
 import { assertNonNullable } from "./lib/StdLib/stdlib.js";
 //TODO: もっとスマートに書く
 function print(msg) {
@@ -75,7 +76,7 @@ class Note extends MoveObject {
         movableObjectsQueue;
     }
 }
-self.onSongleAPIReady = (Songle) => {
+songle_window.onSongleAPIReady = (Songle) => {
     const player = new Songle.Player({ mediaElement: "#songle-yt" });
     player.addPlugin(new Songle.Plugin.Beat());
     player.addPlugin(new Songle.Plugin.Chord());
