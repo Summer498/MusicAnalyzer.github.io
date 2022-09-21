@@ -2,14 +2,10 @@
 import { TreeModel } from "../lib/adapters/Tree.js";  // Tree のインポートを外部ファイルに任せる
 import { Progression, Tonal } from "../lib/adapters/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
 import { Songle } from "../lib/adapters/Songle.js";  // Songle のインポートを外部ファイルに任せる
-import { SongleWidgetAPI, SongleWidgetConstructor } from "../lib/adapters/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
+import { SongleWidgetAPI, SongleWidgetConstructor, songle_widget_window } from "../lib/adapters/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
 
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import { Math } from "../lib/Math/Math.js";
-interface SongleWidgetWindow extends Window {
-    onSongleWidgetReady: any;
-}
-export declare const window: SongleWidgetWindow;
 
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
@@ -88,7 +84,7 @@ insert_here.appendChild(melody_timeline);
 
 
 /* SongleWidget を使う練習 */
-window.onload =
+songle_widget_window.onload =
     function () {
         const songleWidgetElement =
             SongleWidgetAPI.createSongleWidgetElement({
@@ -99,7 +95,7 @@ window.onload =
         document.body.appendChild(songleWidgetElement);
     };
 
-window.onSongleWidgetReady =
+songle_widget_window.onSongleWidgetReady =
     function (apiKey: any, songleWidget: SongleWidgetConstructor) {
         songleWidget.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
         songleWidget.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.

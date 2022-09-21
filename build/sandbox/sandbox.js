@@ -1,5 +1,5 @@
 import { Progression } from "../lib/adapters/Tonal.js"; // Tonal のインポートを外部ファイルに任せる
-import { SongleWidgetAPI } from "../lib/adapters/SongleWidget.js"; // SongleWidget のインポートを外部ファイルに任せる
+import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget.js"; // SongleWidget のインポートを外部ファイルに任せる
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import { Math } from "../lib/Math/Math.js";
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
@@ -56,7 +56,7 @@ const melody_timeline = SVG.svg({ width: 100 + "%", height: 300 }, "", [
 insert_here.appendChild(melody_timeline);
 /* キーボードを描画する練習 */
 /* SongleWidget を使う練習 */
-window.onload =
+songle_widget_window.onload =
     function () {
         const songleWidgetElement = SongleWidgetAPI.createSongleWidgetElement({
             api: "songle-widget-api-example",
@@ -64,7 +64,7 @@ window.onload =
         });
         document.body.appendChild(songleWidgetElement);
     };
-window.onSongleWidgetReady =
+songle_widget_window.onSongleWidgetReady =
     function (apiKey, songleWidget) {
         songleWidget.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
         songleWidget.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
