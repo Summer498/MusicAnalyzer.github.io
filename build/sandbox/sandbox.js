@@ -64,6 +64,26 @@ songle_widget_window.onload =
         });
         document.body.appendChild(songleWidgetElement);
     };
+songle_widget_window.onSongleWidgetCreate =
+    function (apiKey, songleWidget) {
+        console.log(`onSongleWidgetCreated, songleWidget is:`);
+        console.log(songleWidget);
+    };
+songle_widget_window.onSongleWidgetError =
+    function (apiKey, songleWidget) {
+        console.log(`onSongleWidgetError, songleWidget is:`);
+        console.log(songleWidget);
+    };
+songle_widget_window.onSongleWidgetReload =
+    function (apiKey, songleWidget) {
+        console.log(`onSongleWidgetReload, songleWidget is:`);
+        console.log(songleWidget);
+    };
+songle_widget_window.onSongleWidgetRemove =
+    function (apiKey, songleWidget) {
+        console.log(`onSongleWidgetRemove, songleWidget is:`);
+        console.log(songleWidget);
+    };
 songle_widget_window.onSongleWidgetReady =
     function (apiKey, songleWidget) {
         console.log(songleWidget);

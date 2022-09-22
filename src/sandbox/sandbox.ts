@@ -3,10 +3,11 @@ import { TreeModel } from "../lib/adapters/Tree.js";  // Tree のインポート
 import { Progression, Tonal } from "../lib/adapters/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
 import { Songle } from "../lib/adapters/Songle.js";  // Songle のインポートを外部ファイルに任せる
 import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
-import { ISongleWidget } from "../lib/adapters/SongleWidget/ISongleWidget.js";
+import { ISongleWidget } from "../lib/adapters/SongleWidget/ISongleWidget/ISongleWidget.js";
 
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import { Math } from "../lib/Math/Math.js";
+import { ICreatedSongleWidget } from "../lib/adapters/SongleWidget/ICreatedSongleWidget.js";
 
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
@@ -95,6 +96,29 @@ songle_widget_window.onload =
 
         document.body.appendChild(songleWidgetElement);
     };
+
+songle_widget_window.onSongleWidgetCreate =
+    function (apiKey: string, songleWidget: ICreatedSongleWidget) {
+        console.log(`onSongleWidgetCreated, songleWidget is:`)
+        console.log(songleWidget)
+    }
+
+songle_widget_window.onSongleWidgetError =
+    function (apiKey: string, songleWidget: ISongleWidget) {
+        console.log(`onSongleWidgetError, songleWidget is:`)
+        console.log(songleWidget)
+    }
+
+songle_widget_window.onSongleWidgetReload =
+    function (apiKey: string, songleWidget: ISongleWidget) {
+        console.log(`onSongleWidgetReload, songleWidget is:`)
+        console.log(songleWidget)
+    }
+songle_widget_window.onSongleWidgetRemove =
+    function (apiKey: string, songleWidget: ISongleWidget) {
+        console.log(`onSongleWidgetRemove, songleWidget is:`)
+        console.log(songleWidget)
+    }
 
 songle_widget_window.onSongleWidgetReady =
     function (apiKey: string, songleWidget: ISongleWidget) {

@@ -3,8 +3,8 @@ export interface IChorusSegment {
     index: number;
     isChorus: number;
     repeats: {
-        duration: number,
-        index: number,
-        start: number
-    }[]
+        duration: number;
+        index: number;
+        start: number;
+    }[];
 }
