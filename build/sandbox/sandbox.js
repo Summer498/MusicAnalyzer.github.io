@@ -1,4 +1,4 @@
-import { Progression } from "../lib/adapters/Tonal.js"; // Tonal のインポートを外部ファイルに任せる
+import { songle_window } from "../lib/adapters/Songle/Songle.js"; // Songle のインポートを外部ファイルに任せる
 import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget/SongleWidget.js"; // SongleWidget のインポートを外部ファイルに任せる
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import { Math } from "../lib/Math/Math.js";
@@ -55,6 +55,12 @@ const melody_timeline = SVG.svg({ width: 100 + "%", height: 300 }, "", [
 ]);
 insert_here.appendChild(melody_timeline);
 /* キーボードを描画する練習 */
+/* Songle を使う */
+songle_window.onSongleAPIReady =
+    function (Songle) {
+        console.log(`Songle`);
+        console.log(Songle);
+    };
 /* SongleWidget を使う練習 */
 songle_widget_window.onload =
     function () {
@@ -102,11 +108,4 @@ songle_widget_window.onSongleWidgetReady =
         console.log(e);
         //*/
     };
-/* コードからローマ数字表記を求める */
-const chord2roman = (chords) => {
-    const key = "C"; // TODO: キーを求める
-    const codes2 = ["CMaj7", "Dm7", "G7"];
-    // TODO: キーを求める = TPS の出番
-    return Progression.toRomanNumerals(key, chords);
-};
 //# sourceMappingURL=sandbox.js.map

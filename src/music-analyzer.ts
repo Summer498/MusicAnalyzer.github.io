@@ -2,8 +2,9 @@ import { Math } from "./lib/Math/Math.js";
 import { HTML } from "./lib/HTML/HTML.js";
 import { SVG } from "./lib/HTML/HTML.js";
 import { Chord_default, Midi } from "./lib/adapters/Tonal.js";
-import { BeatEvent, ISongle, ChordEvent, SectionEvent, songle_window } from "./lib/adapters/Songle.js";
+import { songle_window } from "./lib/adapters/Songle/Songle.js";
 import { assertNonNullable } from "./lib/StdLib/stdlib.js";
+import { BeatEvent, ChordEvent, ISongle, SectionEvent } from "./lib/adapters/Songle/ISongle.js";
 
 
 //TODO: もっとスマートに書く

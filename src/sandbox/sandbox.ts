@@ -1,7 +1,7 @@
 // テスト関数をまとめておくところ
 import { TreeModel } from "../lib/adapters/Tree.js";  // Tree のインポートを外部ファイルに任せる
 import { Progression, Tonal } from "../lib/adapters/Tonal.js";  // Tonal のインポートを外部ファイルに任せる
-import { Songle } from "../lib/adapters/Songle.js";  // Songle のインポートを外部ファイルに任せる
+import { songle_window } from "../lib/adapters/Songle/Songle.js";  // Songle のインポートを外部ファイルに任せる
 import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget/SongleWidget.js";  // SongleWidget のインポートを外部ファイルに任せる
 import { ISongleWidget } from "../lib/adapters/SongleWidget/ISongleWidget/ISongleWidget.js";
 
@@ -84,6 +84,13 @@ insert_here.appendChild(melody_timeline);
 /* キーボードを描画する練習 */
 
 
+/* Songle を使う */
+songle_window.onSongleAPIReady = 
+    function(Songle: any){
+        console.log(`Songle`);
+        console.log(Songle);
+    };
+
 
 /* SongleWidget を使う練習 */
 songle_widget_window.onload =
@@ -99,26 +106,26 @@ songle_widget_window.onload =
 
 songle_widget_window.onSongleWidgetCreate =
     function (apiKey: string, songleWidget: ICreatedSongleWidget) {
-        console.log(`onSongleWidgetCreated, songleWidget is:`)
-        console.log(songleWidget)
-    }
+        console.log(`onSongleWidgetCreated, songleWidget is:`);
+        console.log(songleWidget);
+    };
 
 songle_widget_window.onSongleWidgetError =
     function (apiKey: string, songleWidget: ISongleWidget) {
-        console.log(`onSongleWidgetError, songleWidget is:`)
-        console.log(songleWidget)
-    }
+        console.log(`onSongleWidgetError, songleWidget is:`);
+        console.log(songleWidget);
+    };
 
 songle_widget_window.onSongleWidgetReload =
     function (apiKey: string, songleWidget: ISongleWidget) {
-        console.log(`onSongleWidgetReload, songleWidget is:`)
-        console.log(songleWidget)
-    }
+        console.log(`onSongleWidgetReload, songleWidget is:`);
+        console.log(songleWidget);
+    };
 songle_widget_window.onSongleWidgetRemove =
     function (apiKey: string, songleWidget: ISongleWidget) {
-        console.log(`onSongleWidgetRemove, songleWidget is:`)
-        console.log(songleWidget)
-    }
+        console.log(`onSongleWidgetRemove, songleWidget is:`);
+        console.log(songleWidget);
+    };
 
 songle_widget_window.onSongleWidgetReady =
     function (apiKey: string, songleWidget: ISongleWidget) {
@@ -143,12 +150,3 @@ songle_widget_window.onSongleWidgetReady =
 
 
 
-
-/* コードからローマ数字表記を求める */
-
-const chord2roman = (chords: string[]) => {
-    const key = "C";  // TODO: キーを求める
-    const codes2 = ["CMaj7", "Dm7", "G7"];
-    // TODO: キーを求める = TPS の出番
-    return Progression.toRomanNumerals(key, chords);
-};
