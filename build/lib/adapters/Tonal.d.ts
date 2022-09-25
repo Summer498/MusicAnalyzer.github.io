@@ -109,6 +109,7 @@ interface ICore {
     Scale: any;
     ScaleType: any;
     TimeSignature: any;
+    ChordDictionary: any;
     Note: any;
     Interval: any;
     Midi: any;
@@ -125,6 +126,7 @@ export declare const RomanNumeral_default: any;
 export declare const Scale_default: any;
 export declare const ScaleType_default: any;
 export declare const TimeSignature_default: any;
+export declare const ChordDictionary: any;
 export declare const Note: any;
 export declare const Interval: any;
 export declare const Midi: any;

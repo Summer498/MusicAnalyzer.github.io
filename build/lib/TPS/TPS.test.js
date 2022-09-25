@@ -1,8 +1,8 @@
-import { Chord_default, Key_default, Scale_default } from "../adapters/Tonal.js";
+import { ChordDictionary, Chord_default, Key_default, Note, Scale_default } from "../adapters/Tonal.js";
 import { Math } from "../Math/Math.js";
 import { Assertion, assertNonNullable } from "../StdLib/stdlib.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord, } from "../TonalEx/TonalEx.js";
-import { getDistance, tonicDistance, regionDistance, getBasicSpace, basicSpaceDistance, } from "./TPS.js";
+import { getDistance, tonicDistance, regionDistance, getBasicSpace, basicSpaceDistance, getKeysIncludeTheChord, } from "./TPS.js";
 /*
 const Cmaj = getBasicSpace(Chroma.C, Key_quality.major, 1);
 const Gmaj = getBasicSpace(Chroma.C, Key_quality.major, 5);
@@ -115,6 +115,7 @@ for (const key of all_note_symbols.map(key_tonic => [
 }
 // BasicSpace distance test (no borrowing)
 // I/C から任意のキーの任意の固有和音までの距離についてテストする
+// 出発点 I/C も任意の Roman Chord にすると, 計算量があまりにも多くなる.
 for (const src_key of [
     Key_default.majorKey("C"),
     Key_default.minorKey("C").natural
@@ -153,4 +154,33 @@ new Assertion(getDistance(new RomanChord(Scale_default.get("C major"), Chord_def
 new Assertion(getDistance(new RomanChord(Scale_default.get("C major"), Chord_default.get("C")), new RomanChord(Scale_default.get("C major"), Chord_default.get("Am"))) == 5).onFailed(() => { throw new Error(); });
 new Assertion(getDistance(new RomanChord(Scale_default.get("C major"), Chord_default.get("C")), new RomanChord(Scale_default.get("C major"), Chord_default.get("Em"))) == 5).onFailed(() => { throw new Error(); });
 new Assertion(getDistance(new RomanChord(Scale_default.get("C major"), Chord_default.get("Dm")), new RomanChord(Scale_default.get("C major"), Chord_default.get("F"))) == 5).onFailed(() => { throw new Error(); });
+const chord_types = ChordDictionary.all()
+    .flatMap((chord_type) => chord_type.aliases); // 要素数 100 以上
+for (const note of all_note_symbols) {
+    for (const chord_type of chord_types) {
+        // |all_note_symbols| * |chord_types| > 12 * 100 = 1200
+        const chord = Chord_default.get(note + chord_type);
+        const chord_chromas = chord.notes.map((note) => Note.chroma(note));
+        const keys = getKeysIncludeTheChord(chord);
+        new Assertion(Math.forAll(keys, key => Math.isSuperSet(key.notes.map((note) => Note.chroma(note)), chord_chromas))).onFailed(() => {
+            console.log(`getKeyIncludesTheChord got a key which does not include the chord`);
+            console.log(`chord:`);
+            console.log(chord);
+            console.log(`keys:`);
+            console.log(keys);
+        });
+    }
+}
+console.log(`getKeyIncludesTheChord("C")`);
+console.log(getKeysIncludeTheChord(Chord_default.get("C")) // TODO: getKeyIncludesTheChord のテスト作成    
+);
+console.log(`getKeyIncludesTheChord("Am7")`);
+console.log(getKeysIncludeTheChord(Chord_default.get("Am7")) // TODO: getKeyIncludesTheChord のテスト作成    
+);
+console.log(`getKeyIncludesTheChord("CM7")`);
+console.log(getKeysIncludeTheChord(Chord_default.get("CM7")) // TODO: getKeyIncludesTheChord のテスト作成    
+);
+console.log(`getKeyIncludesTheChord("G7")`);
+console.log(getKeysIncludeTheChord(Chord_default.get("G7")) // TODO: getKeyIncludesTheChord のテスト作成    
+);
 //# sourceMappingURL=TPS.test.js.map

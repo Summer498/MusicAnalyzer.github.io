@@ -1,6 +1,6 @@
 import { Math } from "../Math/Math.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord } from "../TonalEx/TonalEx.js";
-import { Scale_default, Pcset_default, Chord_default, Chord, Scale } from "../adapters/Tonal.js";
+import { Scale_default, Chord, Scale, Key_default, Note, } from "../adapters/Tonal.js";
 import { assertNonNullable, Assertion, NotImplementedError } from "../StdLib/stdlib.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
@@ -100,23 +100,33 @@ export const getDistance = (src_chord_string: RomanChord, dst_chord_string: Roma
 	return region_dist + tonic_dist + basic_space_dist; //dummy
 };
 
+const c_minor = Key_default.minorKey("C").natural;
+type KeyScale = typeof c_minor;
+const isKeyIncludesTheChord = (key: KeyScale, chord: Chord) => {
+	const key_note_chromas = key.scale.map((note: any) => Note.chroma(note));
+	const chord_note_chromas = chord.notes.map(note => Note.chroma(note));
+	return Math.isSuperSet(key_note_chromas, chord_note_chromas);
+};
 
 // 最も尤もらしいコード進行を見つける
 const major_keys = ['Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B',].map(key => Scale_default.get(key + " major"));
 const minor_keys = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#',].map(key => Scale_default.get(key + " minor"));
 const keys = major_keys.concat(minor_keys);
+const chroma2symbol = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
-export const getScaleIncludesTheChord = (chord_string: string) => {
-	const chord_notes = Chord_default.get(chord_string).notes;
-	const keys_includes_the_chord = keys.filter(key => Math.forAll(chord_notes, (note) => Pcset_default.isNoteIncludedIn(key.notes)(note)));
-	return keys_includes_the_chord.map(key => {
-		return { name: key.name.replace('aeolian', 'minor'), tonic: key.tonic, notes: key.notes };
-	});
+export const getKeysIncludeTheChord = (chord: Chord) => {
+	const keys_includes_the_chord = chroma2symbol
+		.flatMap(symbol => [Key_default.majorKey(symbol), Key_default.minorKey(symbol).natural])
+		.filter(key => isKeyIncludesTheChord(key, chord))
+		.map(key => Scale_default.get(key.chordScales[0]));
+	return keys_includes_the_chord;
 };
 
 const getMostLikelyChordProgression = (chord_progression: string[]) => {
-	const possible_keys = chord_progression.forEach(chord => getScaleIncludesTheChord(chord));
+	/*
+	const possible_keys = chord_progression.forEach(chord => getKeyIncludesTheChord(chord));
 	return undefined;
+	*/
 };
 
 

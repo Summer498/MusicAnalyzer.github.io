@@ -86,6 +86,7 @@ export const RomanNumeral_default = Tonal.RomanNumeral;
 export const Scale_default = Tonal.Scale;
 export const ScaleType_default = Tonal.ScaleType;
 export const TimeSignature_default = Tonal.TimeSignature;
+export const ChordDictionary = Tonal.ChordDictionary;
 export const Note = Tonal.Note;
 export const Interval = Tonal.Interval;
 export const Midi = Tonal.Midi;

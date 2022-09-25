@@ -5,11 +5,7 @@ export declare const tonicDistance: (src: Chord, dst: Chord) => number;
 export declare const getBasicSpace: (roman: RomanChord) => number[];
 export declare const basicSpaceDistance: (src: RomanChord, dst: RomanChord) => number;
 export declare const getDistance: (src_chord_string: RomanChord, dst_chord_string: RomanChord) => number;
-export declare const getScaleIncludesTheChord: (chord_string: string) => {
-    name: any;
-    tonic: any;
-    notes: any;
-}[];
+export declare const getKeysIncludeTheChord: (chord: Chord) => any[];
 /** @deprecated */
 export declare const Key_quality: {
     major: number[];
