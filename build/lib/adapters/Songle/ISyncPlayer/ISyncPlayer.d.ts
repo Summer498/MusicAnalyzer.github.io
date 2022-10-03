@@ -1,3 +1,3 @@
-import { PlayerBase } from "../IPlayer/IPlayer";
-export interface ISyncPlayer extends PlayerBase {
+import { Player } from "../IPlayer/IPlayer";
+export interface ISyncPlayer extends Player {
 }

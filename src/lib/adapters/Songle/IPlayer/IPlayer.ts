@@ -1,11 +1,14 @@
-export type PlayerBase = any;
+import { EventBase } from "../Events/EventBase.js";
+import { PluginBase } from "../IPlugin/PluginBase.js";
 
-/*
-export abstract class PlayerBase {
-    abstract new(): PlayerBase
-    abstract get MaxVolume(): number
-    abstract get MinVolume(): number
-    abstract get Name(): string
-    abstract get Type(): string
+export declare class Player {
+    constructor(arg
+        : { mediaElement: string }
+    );
+    addPlugin(plugin: PluginBase): void;
+    useMedia(url: string): void;
+    on(
+        event_name: string,
+        onEventInvoked: (e: EventBase) => void
+    ): void;
 }
-*/
