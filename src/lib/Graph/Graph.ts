@@ -119,28 +119,48 @@ function dijkstra(graph: Graph<Node>, source: Node): [{ [key: NodeId]: number },
 
 
 export class MaxCalculableArray<T> extends Array<T> {
-    arg_max = this[0];
-    val_max = -Infinity;
-    memo_func: ((i: T) => number) | undefined;
+    #arg_min = this[0];
+    #arg_max = this[0];
+    #val_min = Infinity;
+    #val_max = -Infinity;
+    #memo_func_min: ((i: T) => number) | undefined;
+    #memo_func_max: ((i: T) => number) | undefined;
 
-
-    private renewMax(f: (i: T) => number) {
-        this.arg_max = this[0];
-        this.val_max = f(this.arg_max);
+    private renewMin(f: (i: T) => number) {
+        this.#arg_min = this[0];
+        this.#val_min = f(this.#arg_min);
         for (const i of this) {
             const val = f(i);
-            if (val < this.val_max) { continue; }
-            this.arg_max = i;
-            this.val_max = val;
+            if (this.#val_min < val) { continue; }
+            this.#arg_min = i;
+            this.#val_min = val;
         }
     }
+    private renewMax(f: (i: T) => number) {
+        this.#arg_max = this[0];
+        this.#val_max = f(this.#arg_max);
+        for (const i of this) {
+            const val = f(i);
+            if (val < this.#val_max) { continue; }
+            this.#arg_max = i;
+            this.#val_max = val;
+        }
+    }
+    min(f: (i: T) => number) {
+        if (this.#memo_func_min !== f) { this.renewMin(f); this.#memo_func_min = f; }
+        return this.#val_min;
+    }
     max(f: (i: T) => number) {
-        if (this.memo_func !== f) { this.renewMax(f); this.memo_func = f; }
-        return this.val_max;
+        if (this.#memo_func_max !== f) { this.renewMax(f); this.#memo_func_max = f; }
+        return this.#val_max;
+    }
+    argMin(f: (i: T) => number) {
+        if (this.#memo_func_min !== f) { this.renewMin(f); this.#memo_func_min = f; }
+        return this.#arg_min;
     }
     argMax(f: (i: T) => number) {
-        if (this.memo_func !== f) { this.renewMax(f); this.memo_func = f; }
-        return this.arg_max;
+        if (this.#memo_func_max !== f) { this.renewMax(f); this.#memo_func_max = f; }
+        return this.#arg_max;
     }
 }
 

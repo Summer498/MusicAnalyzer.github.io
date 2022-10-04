@@ -1,9 +1,10 @@
 export declare class MaxCalculableArray<T> extends Array<T> {
-    arg_max: T;
-    val_max: number;
-    memo_func: ((i: T) => number) | undefined;
+    #private;
+    private renewMin;
     private renewMax;
+    min(f: (i: T) => number): number;
     max(f: (i: T) => number): number;
+    argMin(f: (i: T) => number): T;
     argMax(f: (i: T) => number): T;
 }
 /**

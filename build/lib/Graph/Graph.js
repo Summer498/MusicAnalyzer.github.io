@@ -1,5 +1,18 @@
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _MaxCalculableArray_arg_min, _MaxCalculableArray_arg_max, _MaxCalculableArray_val_min, _MaxCalculableArray_val_max, _MaxCalculableArray_memo_func_min, _MaxCalculableArray_memo_func_max;
 import { Math } from "../Math/Math.js";
 //TODO: 未実装
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 class Tree {
     constructor(value) {
         this.value = value;
@@ -8,6 +21,7 @@ class Tree {
     set right(node) { this._right = node; }
 }
 //TODO: 未実装
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 class Heap {
     constructor(value, priorityFunction = (a, b) => a < b) {
         this.value = value;
@@ -21,7 +35,9 @@ class Heap {
         }
         return this._left.appendMostLeft(value);
     }
-    swapTo(dst) { }
+    swapTo(dst) {
+        //TODO:
+    }
     append(value) {
         if (this._left == undefined) {
             this._left = new Heap(value);
@@ -47,6 +63,7 @@ class Graph {
     constructor() {
         this.vertices = [];
     }
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     cost(u, v) {
         const result = 0;
         if (result < 0) {
@@ -58,12 +75,16 @@ class Graph {
 //TODO: 未実装
 class PriorityQueue {
     get is_empty() { return true; }
-    add_with_priority(v, priority) { }
-    decrease_priority(v, priority) { }
+    add_with_priority(v, priority) {
+        //TODO:
+    }
+    decrease_priority(v, priority) {
+    }
     extract_min() { return Node.TORIAEZU; }
 }
 //TODO: 未実装
 /* dijkstra 法 */
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 function dijkstra(graph, source) {
     // Initialization
     const Q = new PriorityQueue(); // create vertex priority queue
@@ -99,36 +120,67 @@ function dijkstra(graph, source) {
 export class MaxCalculableArray extends Array {
     constructor() {
         super(...arguments);
-        this.arg_max = this[0];
-        this.val_max = -Infinity;
+        _MaxCalculableArray_arg_min.set(this, this[0]);
+        _MaxCalculableArray_arg_max.set(this, this[0]);
+        _MaxCalculableArray_val_min.set(this, Infinity);
+        _MaxCalculableArray_val_max.set(this, -Infinity);
+        _MaxCalculableArray_memo_func_min.set(this, void 0);
+        _MaxCalculableArray_memo_func_max.set(this, void 0);
     }
-    renewMax(f) {
-        this.arg_max = this[0];
-        this.val_max = f(this.arg_max);
+    renewMin(f) {
+        __classPrivateFieldSet(this, _MaxCalculableArray_arg_min, this[0], "f");
+        __classPrivateFieldSet(this, _MaxCalculableArray_val_min, f(__classPrivateFieldGet(this, _MaxCalculableArray_arg_min, "f")), "f");
         for (const i of this) {
             const val = f(i);
-            if (val < this.val_max) {
+            if (__classPrivateFieldGet(this, _MaxCalculableArray_val_min, "f") < val) {
                 continue;
             }
-            this.arg_max = i;
-            this.val_max = val;
+            __classPrivateFieldSet(this, _MaxCalculableArray_arg_min, i, "f");
+            __classPrivateFieldSet(this, _MaxCalculableArray_val_min, val, "f");
         }
+    }
+    renewMax(f) {
+        __classPrivateFieldSet(this, _MaxCalculableArray_arg_max, this[0], "f");
+        __classPrivateFieldSet(this, _MaxCalculableArray_val_max, f(__classPrivateFieldGet(this, _MaxCalculableArray_arg_max, "f")), "f");
+        for (const i of this) {
+            const val = f(i);
+            if (val < __classPrivateFieldGet(this, _MaxCalculableArray_val_max, "f")) {
+                continue;
+            }
+            __classPrivateFieldSet(this, _MaxCalculableArray_arg_max, i, "f");
+            __classPrivateFieldSet(this, _MaxCalculableArray_val_max, val, "f");
+        }
+    }
+    min(f) {
+        if (__classPrivateFieldGet(this, _MaxCalculableArray_memo_func_min, "f") !== f) {
+            this.renewMin(f);
+            __classPrivateFieldSet(this, _MaxCalculableArray_memo_func_min, f, "f");
+        }
+        return __classPrivateFieldGet(this, _MaxCalculableArray_val_min, "f");
     }
     max(f) {
-        if (this.memo_func !== f) {
+        if (__classPrivateFieldGet(this, _MaxCalculableArray_memo_func_max, "f") !== f) {
             this.renewMax(f);
-            this.memo_func = f;
+            __classPrivateFieldSet(this, _MaxCalculableArray_memo_func_max, f, "f");
         }
-        return this.val_max;
+        return __classPrivateFieldGet(this, _MaxCalculableArray_val_max, "f");
+    }
+    argMin(f) {
+        if (__classPrivateFieldGet(this, _MaxCalculableArray_memo_func_min, "f") !== f) {
+            this.renewMin(f);
+            __classPrivateFieldSet(this, _MaxCalculableArray_memo_func_min, f, "f");
+        }
+        return __classPrivateFieldGet(this, _MaxCalculableArray_arg_min, "f");
     }
     argMax(f) {
-        if (this.memo_func !== f) {
+        if (__classPrivateFieldGet(this, _MaxCalculableArray_memo_func_max, "f") !== f) {
             this.renewMax(f);
-            this.memo_func = f;
+            __classPrivateFieldSet(this, _MaxCalculableArray_memo_func_max, f, "f");
         }
-        return this.arg_max;
+        return __classPrivateFieldGet(this, _MaxCalculableArray_arg_max, "f");
     }
 }
+_MaxCalculableArray_arg_min = new WeakMap(), _MaxCalculableArray_arg_max = new WeakMap(), _MaxCalculableArray_val_min = new WeakMap(), _MaxCalculableArray_val_max = new WeakMap(), _MaxCalculableArray_memo_func_min = new WeakMap(), _MaxCalculableArray_memo_func_max = new WeakMap();
 /*  c.f. Viterbi algorithm - Wikipedia
  *  https://en.wikipedia.org/wiki/Viterbi_algorithm#Pseudocode
  */
@@ -184,7 +236,7 @@ export function dynamicLogViterbi(initial_log_probabilities, getStatesOnTheTime,
  */
 export const logViterbi = (initial_log_probabilities, transition_log_probabilities, emission_log_probabilities, observation_sequence) => {
     const states = new MaxCalculableArray(...Math.getRange(0, initial_log_probabilities.length));
-    return dynamicLogViterbi(initial_log_probabilities, t => states, (prev_state, state) => transition_log_probabilities[prev_state][state], (state, observation) => emission_log_probabilities[state][observation], observation_sequence);
+    return dynamicLogViterbi(initial_log_probabilities, () => states, (prev_state, state) => transition_log_probabilities[prev_state][state], (state, observation) => emission_log_probabilities[state][observation], observation_sequence);
 };
 export const viterbi = (initial_probabilities, transition_probabilities, emission_probabilities, observation_sequence) => {
     const log_viterbi = logViterbi(initial_probabilities.map(e => Math.log(e)), transition_probabilities.map(e => e.map(e => Math.log(e))), emission_probabilities.map(e => e.map(e => Math.log(e))), observation_sequence);
