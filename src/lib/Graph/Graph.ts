@@ -181,6 +181,7 @@ export function dynamicLogViterbi(
     transitionLogProbabilities: (prev_state: number, state: number) => number,
     emissionLogProbabilities: (state: number, observation: number) => number,
     observation_sequence: number[],
+    will_find_min = false
 ) {
     const pi = initial_log_probabilities;
     const Y = observation_sequence;
@@ -203,14 +204,25 @@ export function dynamicLogViterbi(
         const p_t1 = [...t1];
         states.forEach(i => {
             const f = (k: number) => p_t1[k] + transitionLogProbabilities(k, i);
-            t1[i] = p_states.max(f) + emissionLogProbabilities(i, Y[t]);
-            T2[t][i] = p_states.argMax(f);
+            if (will_find_min) {
+                t1[i] = p_states.min(f) + emissionLogProbabilities(i, Y[t]);
+                T2[t][i] = p_states.argMin(f);
+            }
+            else {
+                t1[i] = p_states.max(f) + emissionLogProbabilities(i, Y[t]);
+                T2[t][i] = p_states.argMax(f);
+            }
         });
     });
     // 終了
     const state_trace = Math.getZeros(T);
     // trace back
-    state_trace[T - 1] = states.argMax(k => t1[k]);
+    if (will_find_min) {
+        state_trace[T - 1] = states.argMin(k => t1[k]);
+    }
+    else {
+        state_trace[T - 1] = states.argMax(k => t1[k]);
+    }
     Math.getRange(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
     return {
         log_probability: t1[state_trace[T - 1]],

@@ -15,7 +15,7 @@ export declare class MaxCalculableArray<T> extends Array<T> {
  * @param observation_sequence
  * @returns Probability of the most likely transition trace and the trace
  */
-export declare function dynamicLogViterbi(initial_log_probabilities: number[], getStatesOnTheTime: (time: number) => MaxCalculableArray<number>, transitionLogProbabilities: (prev_state: number, state: number) => number, emissionLogProbabilities: (state: number, observation: number) => number, observation_sequence: number[]): {
+export declare function dynamicLogViterbi(initial_log_probabilities: number[], getStatesOnTheTime: (time: number) => MaxCalculableArray<number>, transitionLogProbabilities: (prev_state: number, state: number) => number, emissionLogProbabilities: (state: number, observation: number) => number, observation_sequence: number[], will_find_min?: boolean): {
     log_probability: number;
     trace: number[];
 };
