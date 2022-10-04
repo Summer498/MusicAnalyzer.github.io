@@ -147,30 +147,30 @@ export function dynamicLogViterbi(initial_log_probabilities, getStatesOnTheTime,
     const T = Y.length;
     // TODO: T1T2 は可変長.
     // 最大長に合わせると大きすぎる. 1次元にできそうなので, 1次元にする
-    const T1 = Math.getZeros(T).map(_ => Math.getZeros(S)); // eslint-disable-line @typescript-eslint/no-unused-vars
+    const t1 = Math.getZeros(S);
     const T2 = Math.getZeros(T).map(_ => Math.getZeros(S)); // eslint-disable-line @typescript-eslint/no-unused-vars
     let states = getStatesOnTheTime(0);
-    let p_states = states;
     // initialize
-    states.forEach(s => { T1[0][s] = pi[s] + emissionLogProbabilities(Y[0], s); });
+    states.forEach(s => { t1[s] = pi[s] + emissionLogProbabilities(Y[0], s); });
     states.forEach(s => { T2[0][s] = 0; });
     // 帰納
     Math.getRange(1, T).forEach(t => {
-        p_states = states;
+        const p_states = new MaxCalculableArray(...states); // TODO: Array constructor 起因バグを修正
         states = getStatesOnTheTime(t);
+        const p_t1 = [...t1];
         states.forEach(i => {
-            const f = (k) => T1[t - 1][k] + transitionLogProbabilities(k, i);
-            T1[t][i] = p_states.max(f) + emissionLogProbabilities(i, Y[t]);
+            const f = (k) => p_t1[k] + transitionLogProbabilities(k, i);
+            t1[i] = p_states.max(f) + emissionLogProbabilities(i, Y[t]);
             T2[t][i] = p_states.argMax(f);
         });
     });
     // 終了
     const state_trace = Math.getZeros(T);
     // trace back
-    state_trace[T - 1] = states.argMax(k => T1[T - 1][k]);
+    state_trace[T - 1] = states.argMax(k => t1[k]);
     Math.getRange(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
     return {
-        log_probability: T1[T - 1][state_trace[T - 1]],
+        log_probability: t1[state_trace[T - 1]],
         trace: state_trace
     };
 }
