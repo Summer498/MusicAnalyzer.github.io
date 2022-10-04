@@ -1,5 +1,5 @@
-import { hasSameValue } from "../StdLib/stdlib.js";
-import { dynamicLogViterbi, logViterbi, viterbi } from "./Graph.js";
+import { Assertion, hasSameValue } from "../StdLib/stdlib.js";
+import { dynamicLogViterbi, logViterbi, MaxCalculableArray, viterbi } from "./Graph.js";
 import { Math } from "../Math/Math.js";
 /* Viterbi アルゴリズム */
 const initial_probabilities = [0.6, 0.4];
@@ -15,16 +15,30 @@ const emission_probabilities = [
 ];
 const emission_log_probabilities = emission_probabilities.map(e => e.map(e => Math.log(e)));
 const observation_sequence = [0, 1, 2];
-const dynamic_log_viterbi = dynamicLogViterbi(initial_log_probabilities, () => transition_log_probabilities, () => emission_log_probabilities, observation_sequence);
+const states = new MaxCalculableArray(...Math.getRange(0, initial_log_probabilities.length));
+const dynamic_log_viterbi = dynamicLogViterbi(initial_log_probabilities, t => states, (i, j) => transition_log_probabilities[i][j], (i, j) => emission_log_probabilities[i][j], observation_sequence);
 const log_viterbi = logViterbi(initial_log_probabilities, transition_log_probabilities, emission_log_probabilities, observation_sequence);
 const viterbied = viterbi(initial_probabilities, transition_probabilities, emission_probabilities, observation_sequence);
-if (!hasSameValue(dynamic_log_viterbi, log_viterbi)) {
+new Assertion(hasSameValue(dynamic_log_viterbi, log_viterbi))
+    .onFailed(() => {
     throw new Error("Both result of dynamicLogViterbi and logViterbi must be same value. ");
-}
-if (Math.exp(log_viterbi.log_probability) != viterbied.probability) {
+});
+new Assertion(Math.exp(log_viterbi.log_probability) == viterbied.probability)
+    .onFailed(() => {
     throw new Error("logViterbi(...).log_probability must be equal to Math.log(viterbi(...).probability) . ");
-}
-if (!Math.sameArray(log_viterbi.trace, viterbied.trace)) {
+});
+new Assertion(Math.sameArray(log_viterbi.trace, viterbied.trace))
+    .onFailed(() => {
     throw new Error("logViterbi(...).trace and viterbi(...).trace must be same value");
-}
+});
+const expected_probability = 0.01512;
+new Assertion(Math.abs(viterbied.probability - expected_probability) < Math.pow(10, -15))
+    .onFailed(() => {
+    throw new Error(`Assertion failed: (viterbied.probability = ${viterbied.probability}) != ${expected_probability}`);
+});
+const expected_trace = [0, 0, 1];
+new Assertion(Math.sameArray(viterbied.trace, expected_trace))
+    .onFailed(() => {
+    throw new Error(`Assertion failed: (viterbied.trace = ${viterbied.trace}) != ${expected_trace}`);
+});
 //# sourceMappingURL=Graph.test.js.map

@@ -96,16 +96,16 @@ function dijkstra(graph, source) {
     }
     return [dist, prev];
 }
-class MaxCalculableArray {
-    constructor(arr) {
-        this.arg_max = 0;
+export class MaxCalculableArray extends Array {
+    constructor() {
+        super(...arguments);
+        this.arg_max = this[0];
         this.val_max = -Infinity;
-        this.arr = arr;
     }
     renewMax(f) {
-        this.arg_max = this.arr[0];
+        this.arg_max = this[0];
         this.val_max = f(this.arg_max);
-        for (const i of this.arr) {
+        for (const i of this) {
             const val = f(i);
             if (val < this.val_max) {
                 continue;
@@ -114,7 +114,6 @@ class MaxCalculableArray {
             this.val_max = val;
         }
     }
-    get length() { return this.arr.length; }
     max(f) {
         if (this.memo_func !== f) {
             this.renewMax(f);
@@ -129,12 +128,6 @@ class MaxCalculableArray {
         }
         return this.arg_max;
     }
-    forEach(callbackfn, 
-    // eslint-disable-next-line
-    thisArg) { return this.arr.forEach(callbackfn, thisArg); }
-    *[Symbol.iterator]() { for (const e of this.arr) {
-        yield e;
-    } }
 }
 /*  c.f. Viterbi algorithm - Wikipedia
  *  https://en.wikipedia.org/wiki/Viterbi_algorithm#Pseudocode
@@ -147,60 +140,34 @@ class MaxCalculableArray {
  * @param observation_sequence
  * @returns Probability of the most likely transition trace and the trace
  */
-export function dynamicLogViterbi(initial_log_probabilities, transitionLogProbabilities, emissionLogProbabilities, observation_sequence) {
+export function dynamicLogViterbi(initial_log_probabilities, getStatesOnTheTime, transitionLogProbabilities, emissionLogProbabilities, observation_sequence) {
     const pi = initial_log_probabilities;
     const Y = observation_sequence;
     const S = pi.length;
     const T = Y.length;
+    // TODO: T1T2 は可変長.
+    // 最大長に合わせると大きすぎる. 1次元にできそうなので, 1次元にする
     const T1 = Math.getZeros(T).map(_ => Math.getZeros(S)); // eslint-disable-line @typescript-eslint/no-unused-vars
     const T2 = Math.getZeros(T).map(_ => Math.getZeros(S)); // eslint-disable-line @typescript-eslint/no-unused-vars
-    const states = new MaxCalculableArray(Math.getRange(0, S));
-    let memo_AT = [[0]];
-    const memo_BT = [[0]];
-    let memo_A = [[0]];
-    let memo_B = [[0]];
-    const getA = (t) => {
-        const AT = transitionLogProbabilities(Y[t - 1], Y[t], pi); // transitionLogProbabilities が定関数の場合は, 行列が参照渡しされて O(1)
-        if (AT != memo_AT) {
-            memo_AT = AT;
-            const A = Math.matTrans(AT);
-            if (S !== A.length || Math.forSome(A, e => S !== e.length)) {
-                throw new RangeError("log_transition_probabilities must be " + S + " X " + S + "matrix. (same as state space size X state space size)");
-            }
-            memo_A = A;
-        }
-        return memo_A;
-    };
-    const getB = (t) => {
-        const BT = emissionLogProbabilities(Y[t], pi); // emissionLogProbabilities が定関数の場合は, 行列が参照渡しされて O(1)
-        if (BT != memo_BT) {
-            const B = Math.matTrans(BT);
-            if (T !== B.length || Math.forSome(B, e => S !== e.length)) {
-                throw new RangeError("log_emission_probabilities must be " + S + " x " + T + "matrix. (same as state space size X observation sequence length size)");
-            }
-            memo_B = B;
-        }
-        return memo_B;
-    };
+    let states = getStatesOnTheTime(0);
+    let p_states = states;
     // initialize
-    // 配列に順番にアクセスできるように転置しておく
-    const B = getB(0);
-    states.forEach(s => { T1[0][s] = pi[s] + B[Y[0]][s]; });
+    states.forEach(s => { T1[0][s] = pi[s] + emissionLogProbabilities(Y[0], s); });
     states.forEach(s => { T2[0][s] = 0; });
     // 帰納
     Math.getRange(1, T).forEach(t => {
-        const A = getA(t);
-        const B = getB(t);
-        states.forEach(s => {
-            const f = (k) => T1[t - 1][k] + A[s][k];
-            T1[t][s] = states.max(f) + B[Y[t]][s];
-            T2[t][s] = states.argMax(f);
+        p_states = states;
+        states = getStatesOnTheTime(t);
+        states.forEach(i => {
+            const f = (k) => T1[t - 1][k] + transitionLogProbabilities(k, i);
+            T1[t][i] = p_states.max(f) + emissionLogProbabilities(i, Y[t]);
+            T2[t][i] = p_states.argMax(f);
         });
     });
     // 終了
     const state_trace = Math.getZeros(T);
     // trace back
-    state_trace[T - 1] = states.argMax((k) => T1[T - 1][k]);
+    state_trace[T - 1] = states.argMax(k => T1[T - 1][k]);
     Math.getRange(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
     return {
         log_probability: T1[T - 1][state_trace[T - 1]],
@@ -215,7 +182,10 @@ export function dynamicLogViterbi(initial_log_probabilities, transitionLogProbab
  * @param observation_sequence
  * @returns Probability of the most likely transition trace and the trace
  */
-export const logViterbi = (initial_log_probabilities, transition_log_probabilities, emission_log_probabilities, observation_sequence) => dynamicLogViterbi(initial_log_probabilities, () => transition_log_probabilities, () => emission_log_probabilities, observation_sequence);
+export const logViterbi = (initial_log_probabilities, transition_log_probabilities, emission_log_probabilities, observation_sequence) => {
+    const states = new MaxCalculableArray(...Math.getRange(0, initial_log_probabilities.length));
+    return dynamicLogViterbi(initial_log_probabilities, t => states, (prev_state, state) => transition_log_probabilities[prev_state][state], (state, observation) => emission_log_probabilities[state][observation], observation_sequence);
+};
 export const viterbi = (initial_probabilities, transition_probabilities, emission_probabilities, observation_sequence) => {
     const log_viterbi = logViterbi(initial_probabilities.map(e => Math.log(e)), transition_probabilities.map(e => e.map(e => Math.log(e))), emission_probabilities.map(e => e.map(e => Math.log(e))), observation_sequence);
     return {
