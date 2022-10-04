@@ -19,7 +19,7 @@ const observation_sequence = [0, 1, 2];
 const states = new MaxCalculableArray(...Math.getRange(0, initial_log_probabilities.length));
 const dynamic_log_viterbi = dynamicLogViterbi(
     initial_log_probabilities,
-    t=>states,
+    ()=>states,
     (i,j) => transition_log_probabilities[i][j],
     (i,j) => emission_log_probabilities[i][j],
     observation_sequence
