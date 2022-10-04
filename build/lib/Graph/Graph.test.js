@@ -16,7 +16,7 @@ const emission_probabilities = [
 const emission_log_probabilities = emission_probabilities.map(e => e.map(e => Math.log(e)));
 const observation_sequence = [0, 1, 2];
 const states = new MaxCalculableArray(...Math.getRange(0, initial_log_probabilities.length));
-const dynamic_log_viterbi = dynamicLogViterbi(initial_log_probabilities, t => states, (i, j) => transition_log_probabilities[i][j], (i, j) => emission_log_probabilities[i][j], observation_sequence);
+const dynamic_log_viterbi = dynamicLogViterbi(initial_log_probabilities, () => states, (i, j) => transition_log_probabilities[i][j], (i, j) => emission_log_probabilities[i][j], observation_sequence);
 const log_viterbi = logViterbi(initial_log_probabilities, transition_log_probabilities, emission_log_probabilities, observation_sequence);
 const viterbied = viterbi(initial_probabilities, transition_probabilities, emission_probabilities, observation_sequence);
 new Assertion(hasSameValue(dynamic_log_viterbi, log_viterbi))

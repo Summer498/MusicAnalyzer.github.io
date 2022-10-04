@@ -1,9 +1,10 @@
 import { Math } from "../Math/Math.js";
 
 //TODO: 未実装
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 class Tree {
-    private _left: Tree | undefined;
-    private _right: Tree | undefined;
+    private _left: Tree | undefined;  // eslint-disable-line no-use-before-define
+    private _right: Tree | undefined;  // eslint-disable-line no-use-before-define
     public readonly value: number;
     constructor(value: number) {
         this.value = value;
@@ -13,10 +14,11 @@ class Tree {
 }
 
 //TODO: 未実装
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 class Heap {
-    private _parent: Heap | undefined;
-    private _left: Heap | undefined;
-    private _right: Heap | undefined;
+    private _parent: Heap | undefined;  // eslint-disable-line no-use-before-define
+    private _left: Heap | undefined;  // eslint-disable-line no-use-before-define
+    private _right: Heap | undefined;  // eslint-disable-line no-use-before-define
     readonly value: number;
     private _priorityFunction: (a: number, b: number) => boolean;
     constructor(value: number, priorityFunction: (a: number, b: number) => boolean = (a, b) => a < b) {
@@ -31,7 +33,9 @@ class Heap {
         }
         return this._left.appendMostLeft(value);
     }
-    swapTo(dst: Heap) { }
+    swapTo(dst: Heap) {    // eslint-disable-line @typescript-eslint/no-unused-vars
+        //TODO:
+    }
     append(value: number): Heap {
         if (this._left == undefined) {
             this._left = new Heap(value);
@@ -63,6 +67,7 @@ class Graph<T> {
     constructor() {
         this.vertices = [];
     }
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     cost(u: Node, v: Node): number {
         const result = 0;
         if (result < 0) { throw new RangeError("cost must be nonnegative number"); }
@@ -73,13 +78,18 @@ class Graph<T> {
 //TODO: 未実装
 class PriorityQueue {
     get is_empty(): boolean { return true; }
-    add_with_priority(v: Node, priority: number): void { }
-    decrease_priority(v: Node, priority: number): void { }
+    add_with_priority(v: Node, priority: number): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+        //TODO:
+    }
+    decrease_priority(v: Node, priority: number): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+
+    }
     extract_min(): Node | undefined { return Node.TORIAEZU; }
 }
 
 //TODO: 未実装
 /* dijkstra 法 */
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 function dijkstra(graph: Graph<Node>, source: Node): [{ [key: NodeId]: number }, { [key: NodeId]: Node }] {
     // Initialization
     const Q: PriorityQueue = new PriorityQueue();                     // create vertex priority queue
@@ -205,7 +215,7 @@ export const logViterbi = (
     const states = new MaxCalculableArray(...Math.getRange(0, initial_log_probabilities.length));
     return dynamicLogViterbi(
         initial_log_probabilities,
-        t => states,
+        () => states,
         (prev_state: number, state: number) => transition_log_probabilities[prev_state][state],
         (state: number, observation: number,) => emission_log_probabilities[state][observation],
         observation_sequence
