@@ -198,13 +198,17 @@ export function dynamicLogViterbi(initial_log_probabilities, getStatesOnTheTime,
     const Y = observation_sequence;
     const S = pi.length;
     const T = Y.length;
-    // TODO: T1T2 は可変長.
+    // TODO: T2 は可変長.
     // 最大長に合わせると大きすぎる. 1次元にできそうなので, 1次元にする
     const t1 = Math.getZeros(S);
     const T2 = Math.getZeros(T).map(_ => Math.getZeros(S)); // eslint-disable-line @typescript-eslint/no-unused-vars
     let states = new MaxCalculableArray(...getStatesOnTheTime(0));
     // initialize
-    states.forEach(s => { t1[s] = pi[s] + emissionLogProbabilities(Y[0], s); });
+    // TODO: s は state なので, t1 のサイズが大きくなってしまう. 
+    // state を小さくするか, 小さい s が得られるようにするか.
+    // -> array が内部で未登録の値はキーすら持たないようにしていれば心配無用になる.
+    // -> -> それなら Object を使っているのと同じではないか?
+    states.forEach(s => { t1[s] = (pi[s] || 0) + emissionLogProbabilities(s, Y[0]); }); // pi[s] が undefined の場合, 0 にする.
     states.forEach(s => { T2[0][s] = 0; });
     // 帰納
     Math.getRange(1, T).forEach(t => {
@@ -212,6 +216,10 @@ export function dynamicLogViterbi(initial_log_probabilities, getStatesOnTheTime,
         states = new MaxCalculableArray(...getStatesOnTheTime(t)); // TODO: ここで 空配列が帰ってくる
         const p_t1 = [...t1];
         states.forEach(i => {
+            // TODO: 同じ値が minimum として現れる.
+            // 両方を保持しておくと最悪計算量は O(2^T)?
+            // 同じ値が現れることそのものがバグかもしれない??? (可能性薄)
+            // C-dur と A-mor の区別ができないので, 同じ値の minimum はあり得る
             const f = (k) => p_t1[k] + transitionLogProbabilities(k, i);
             if (will_find_min) {
                 t1[i] = p_states.min(f) + emissionLogProbabilities(i, Y[t]);
