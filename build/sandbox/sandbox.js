@@ -2,6 +2,7 @@ import { songle_window } from "../lib/adapters/Songle/Songle.js"; // Songle の�
 import { SongleWidgetAPI, songle_widget_window } from "../lib/adapters/SongleWidget/SongleWidget.js"; // SongleWidget のインポートを外部ファイルに任せる
 import { HTML, SVG } from "../lib/HTML/HTML.js";
 import { Math } from "../lib/Math/Math.js";
+import { ChordProgression } from "../lib/TonalEx/TonalEx.js";
 // TODO: デバッグモードに応じて動的に読み込む目的は達成できないので消しておいてもよい
 // import stylesheets
 HTML.head.appendChildren([
@@ -96,6 +97,13 @@ songle_widget_window.onSongleWidgetReady =
         songleWidget.volume = SongleWidgetAPI.MIN_VOLUME; // Min volume.
         songleWidget.volume = SongleWidgetAPI.MAX_VOLUME; // Max volume.
         const chords = songleWidget.song.scene.chords.map(e => e.name); // コードをすべて取り出す
+        console.log(chords);
+        const progression = new ChordProgression(chords.map(e => e === "N" ? "" : e));
+        console.log(progression.debug().dict.showAll());
+        // TODO: mM7 に対応する
+        // TODO: ダイアトニックスケール外のコードに対する距離関数を作成
+        const min_path = progression.getMinimumPath();
+        console.log(min_path.map(roman => roman.scale.name));
         /*
         console.log(chords);
         console.log(chord2roman(chords));  // Cキーを基準としたローマ数字を呼び出すだけのダミー関数
