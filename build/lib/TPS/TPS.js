@@ -30,7 +30,8 @@ const getPowerChroma = (chord) => {
         .filter(note => getIntervalDegree(tonic, note) == 5);
     new Assertion(fifths.length == 1)
         .onFailed(() => {
-        console.log(`received: ${chord.notes}`);
+        console.log(`received:`);
+        console.log(chord.notes);
         throw new Error("received chord must have just one 5th code.");
     });
     return [tonic, fifths[0]].map(note => getNonNullableChroma(note));
@@ -40,9 +41,10 @@ const getChordChroma = (chord) => {
 };
 const getScaleChroma = (roman) => {
     // TODO: 借用和音に伴いスケール構成音を変異させる
-    new Assertion(Math.isSubSet(roman.chord.notes, roman.scale.notes))
+    new Assertion(Math.isSubSet(roman.chord.notes.map(note => getNonNullableChroma(note)), roman.scale.notes.map(note => getNonNullableChroma(note))))
         .onFailed(() => {
-        console.log(`received: ${roman}`);
+        console.log(`received:`);
+        console.log(roman);
         throw new NotImplementedError("借用和音はまだ実装されていません. 入力ローマ数字コードは, コード構成音がスケール内に収まるようにしてください.");
     });
     return roman.scale.notes.map(note => getNonNullableChroma(note));
@@ -50,12 +52,14 @@ const getScaleChroma = (roman) => {
 export const getBasicSpace = (roman) => {
     new Assertion(!roman.scale.empty)
         .onFailed(() => {
-        console.log(`received: ${roman.scale}`);
+        console.log(`received:`);
+        console.log(roman.scale);
         throw new Error("scale must not be empty");
     });
     new Assertion(!roman.chord.empty)
         .onFailed(() => {
-        console.log(`received: ${roman.chord}`);
+        console.log(`received:`);
+        console.log(roman.chord);
         throw new Error("chord must not be empty");
     });
     const basic_space = Math.vSum(Math.getOnehot(getTonicChroma(roman.chord), 12), Math.getOnehot(getPowerChroma(roman.chord), 12), Math.getOnehot(getChordChroma(roman.chord), 12), Math.getOnehot(getScaleChroma(roman), 12));
@@ -88,6 +92,7 @@ const major_keys = ['Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 
 const minor_keys = ['Eb', 'Bb', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#',].map(key => Scale_default.get(key + " minor"));
 const keys = major_keys.concat(minor_keys);
 const chroma2symbol = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+// TODO: minor Major 7 を受け取ることがあるので, 任意のキーを候補として使えるようにする. 
 export const getKeysIncludeTheChord = (chord) => {
     const keys_includes_the_chord = chroma2symbol
         .flatMap(symbol => [Key_default.majorKey(symbol), Key_default.minorKey(symbol).natural])

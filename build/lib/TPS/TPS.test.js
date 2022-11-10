@@ -3,17 +3,10 @@ import { Math } from "../Math/Math.js";
 import { Assertion, assertNonNullable } from "../StdLib/stdlib.js";
 import { getIntervalDegree, getNonNullableChroma, RomanChord, } from "../TonalEx/TonalEx.js";
 import { getDistance, tonicDistance, regionDistance, getBasicSpace, basicSpaceDistance, getKeysIncludeTheChord, } from "./TPS.js";
-/*
-const Cmaj = getBasicSpace(Chroma.C, Key_quality.major, 1);
-const Gmaj = getBasicSpace(Chroma.C, Key_quality.major, 5);
-const G7 = getBasicSpace(Chroma.C, Key_quality.major, 5, Chord_index.seventh);
-const F46 = getBasicSpace(Chroma.C, Key_quality.major, 4, Chord_index.added46);
-console.log(Cmaj, Gmaj, G7, F46);
-console.log(basicSpaceDist(Cmaj, Gmaj));
-console.log(basicSpaceDist(Gmaj, Cmaj));
-console.log(basicSpaceDist(Cmaj, G7));
-console.log(basicSpaceDist(G7, Cmaj));
-*/
+const NO_DEBUG = true;
+if (NO_DEBUG) {
+    console.warn(`軽量化のために一時的にテストを停止しています.`);
+}
 const all_note_symbols = [
     "Ab", "A", "A#",
     "Bb", "B", "B#",
@@ -25,6 +18,9 @@ const all_note_symbols = [
 ];
 // Range test for regionDistance
 for (let i = 0; i < 21; i++) {
+    if (NO_DEBUG) {
+        break;
+    }
     for (let j = 0; j < 21; j++) {
         const distance = regionDistance(Scale_default.get(`${all_note_symbols[i]} major`), Scale_default.get(`${all_note_symbols[j]} major`));
         if (distance < -6 || 6 < distance) {
@@ -35,6 +31,9 @@ for (let i = 0; i < 21; i++) {
 // Range tes for root Distances
 const AtoG = ["A", "B", "C", "D", "E", "F", "G"];
 for (let i = 0; i < 21; i++) {
+    if (NO_DEBUG) {
+        break;
+    }
     for (let j = 0; j < 21; j++) {
         const distance = tonicDistance(Chord_default.get(all_note_symbols[i]), Chord_default.get(all_note_symbols[j]));
         if (distance < -3 || 3 < distance) {
@@ -70,6 +69,9 @@ for (const key of all_note_symbols.map(key_tonic => [
     Key_default.majorKey(key_tonic),
     Key_default.minorKey(key_tonic).natural
 ]).flat()) {
+    if (NO_DEBUG) {
+        break;
+    }
     const scale = Scale_default.get(key.chordScales[0]);
     const chords = key.chords
         .map((chord_str) => Chord_default.get(chord_str));
@@ -120,6 +122,9 @@ for (const src_key of [
     Key_default.majorKey("C"),
     Key_default.minorKey("C").natural
 ]) {
+    if (NO_DEBUG) {
+        break;
+    }
     const src_scale = Scale_default.get(src_key.chordScales[0]);
     // 固有和音を取り出す
     const src_chord = Chord_default.get(src_key.chords[0]);
@@ -158,6 +163,9 @@ const chord_types = ChordDictionary.all()
     .flatMap((chord_type) => chord_type.aliases); // 要素数 100 以上
 for (const note of all_note_symbols) {
     for (const chord_type of chord_types) {
+        if (NO_DEBUG) {
+            break;
+        }
         // |all_note_symbols| * |chord_types| > 12 * 100 = 1200
         const chord = Chord_default.get(note + chord_type);
         const chord_chromas = chord.notes.map((note) => Note.chroma(note));
