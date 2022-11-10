@@ -26,25 +26,25 @@ export const hasSameValue = (o1: any, o2: any) => {
 };
 
 // エラーを期待するテストのための, 予想外のエラーを受け取った時のエラー
-export class UnexpectedErrorThrownError extends Error{
-    constructor(message?: string|undefined){
+export class UnexpectedErrorThrownError extends Error {
+    constructor(message?: string | undefined) {
         super(message);
     }
 }
 
-export class NotImplementedError extends Error{
-    constructor(message?: string|undefined){
+export class NotImplementedError extends Error {
+    constructor(message?: string | undefined) {
         super(message);
     }
 }
 
 export class Assertion {
     #assertion: boolean;
-    constructor(assertion: boolean){
+    constructor(assertion: boolean) {
         this.#assertion = assertion;
     }
-    onFailed(errorExcecution: ()=>void){
-        if(!this.#assertion){
+    onFailed(errorExcecution: () => void) {
+        if (!this.#assertion) {
             errorExcecution();
         }
     }
