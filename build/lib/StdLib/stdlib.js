@@ -1,15 +1,15 @@
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Assertion_assertion;
+var _IdDictionary_item2id, _IdDictionary_id2item, _Assertion_assertion;
 export function Arraying(e) {
     const concat = function (arr) {
         let res = [];
@@ -50,6 +50,45 @@ export const hasSameValue = (o1, o2) => {
     }
     return true;
 };
+export class IdDictionary {
+    constructor() {
+        _IdDictionary_item2id.set(this, {}); // eslint-disable-line @typescript-eslint/no-explicit-any
+        _IdDictionary_id2item.set(this, []);
+    }
+    get length() {
+        return __classPrivateFieldGet(this, _IdDictionary_id2item, "f").length;
+    }
+    register(item) {
+        const id = __classPrivateFieldGet(this, _IdDictionary_item2id, "f")[item];
+        if (id !== undefined) {
+            return id;
+        }
+        else {
+            const i = __classPrivateFieldGet(this, _IdDictionary_id2item, "f").length;
+            __classPrivateFieldGet(this, _IdDictionary_item2id, "f")[item] = i;
+            __classPrivateFieldGet(this, _IdDictionary_id2item, "f")[i] = item;
+            return i;
+        }
+    }
+    getId(item) {
+        const id = __classPrivateFieldGet(this, _IdDictionary_item2id, "f")[item];
+        if (id === undefined) {
+            throw new ReferenceError(`key ${String(item)} not found`);
+        }
+        return id;
+    }
+    getItem(id) {
+        const item = __classPrivateFieldGet(this, _IdDictionary_id2item, "f")[id];
+        if (item === undefined) {
+            throw new ReferenceError(`id ${String(id)} not found`);
+        }
+        return item;
+    }
+    showAll() {
+        return __classPrivateFieldGet(this, _IdDictionary_id2item, "f");
+    }
+}
+_IdDictionary_item2id = new WeakMap(), _IdDictionary_id2item = new WeakMap();
 // エラーを期待するテストのための, 予想外のエラーを受け取った時のエラー
 export class UnexpectedErrorThrownError extends Error {
     constructor(message) {

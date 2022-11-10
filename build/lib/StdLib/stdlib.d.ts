@@ -1,6 +1,18 @@
 export declare type recurrentArray<T> = T | recurrentArray<T>[];
 export declare function Arraying<T>(e: recurrentArray<T>): T[];
 export declare const hasSameValue: (o1: any, o2: any) => boolean;
+export declare class IdDictionary<Key extends keyof any> {
+    #private;
+    get length(): number;
+    register(item: Key): number;
+    getId(item: Key): {
+        [key: string]: number;
+        [key: number]: number;
+        [key: symbol]: number;
+    }[Key];
+    getItem(id: number): Key;
+    showAll(): Key[];
+}
 export declare class UnexpectedErrorThrownError extends Error {
     constructor(message?: string | undefined);
 }
