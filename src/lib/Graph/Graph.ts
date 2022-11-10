@@ -118,7 +118,7 @@ function dijkstra(graph: Graph<Node>, source: Node): [{ [key: NodeId]: number },
 
 
 
-export class MaxCalculableArray<T> extends Array<T> {
+class MaxCalculableArray<T> extends Array<T> {
     #arg_min = this[0];
     #arg_max = this[0];
     #val_min = Infinity;
@@ -126,6 +126,10 @@ export class MaxCalculableArray<T> extends Array<T> {
     #memo_func_min: ((i: T) => number) | undefined;
     #memo_func_max: ((i: T) => number) | undefined;
 
+    constructor(...items: T[]) {
+        super(items.length);
+        items.forEach((_, i) => { this[i] = items[i]; });
+    }
     private renewMin(f: (i: T) => number) {
         this.#arg_min = this[0];
         this.#val_min = f(this.#arg_min);
@@ -177,7 +181,7 @@ export class MaxCalculableArray<T> extends Array<T> {
  */
 export function dynamicLogViterbi(
     initial_log_probabilities: number[],
-    getStatesOnTheTime: (time: number) => MaxCalculableArray<number>,
+    getStatesOnTheTime: (time: number) => number[],
     transitionLogProbabilities: (prev_state: number, state: number) => number,
     emissionLogProbabilities: (state: number, observation: number) => number,
     observation_sequence: number[],
@@ -191,15 +195,15 @@ export function dynamicLogViterbi(
     // 最大長に合わせると大きすぎる. 1次元にできそうなので, 1次元にする
     const t1 = Math.getZeros(S);
     const T2 = Math.getZeros(T).map(_ => Math.getZeros(S));  // eslint-disable-line @typescript-eslint/no-unused-vars
-    let states = getStatesOnTheTime(0);
+    let states = new MaxCalculableArray(...getStatesOnTheTime(0));
 
     // initialize
     states.forEach(s => { t1[s] = pi[s] + emissionLogProbabilities(Y[0], s); });
     states.forEach(s => { T2[0][s] = 0; });
     // 帰納
     Math.getRange(1, T).forEach(t => {
-        const p_states = new MaxCalculableArray(...states);  // TODO: Array constructor 起因バグを修正
-        states = getStatesOnTheTime(t);
+        const p_states = states;
+        states = new MaxCalculableArray(...getStatesOnTheTime(t));  // TODO: ここで 空配列が帰ってくる
 
         const p_t1 = [...t1];
         states.forEach(i => {
@@ -222,7 +226,7 @@ export function dynamicLogViterbi(
     }
     else {
         state_trace[T - 1] = states.argMax(k => t1[k]);
-    }
+    }    
     Math.getRange(T - 1, 0, -1).forEach(j => { state_trace[j - 1] = T2[j][state_trace[j]]; });
     return {
         log_probability: t1[state_trace[T - 1]],

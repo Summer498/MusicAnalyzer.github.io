@@ -117,15 +117,16 @@ function dijkstra(graph, source) {
     }
     return [dist, prev];
 }
-export class MaxCalculableArray extends Array {
-    constructor() {
-        super(...arguments);
+class MaxCalculableArray extends Array {
+    constructor(...items) {
+        super(items.length);
         _MaxCalculableArray_arg_min.set(this, this[0]);
         _MaxCalculableArray_arg_max.set(this, this[0]);
         _MaxCalculableArray_val_min.set(this, Infinity);
         _MaxCalculableArray_val_max.set(this, -Infinity);
         _MaxCalculableArray_memo_func_min.set(this, void 0);
         _MaxCalculableArray_memo_func_max.set(this, void 0);
+        items.forEach((_, i) => { this[i] = items[i]; });
     }
     renewMin(f) {
         __classPrivateFieldSet(this, _MaxCalculableArray_arg_min, this[0], "f");
@@ -201,14 +202,14 @@ export function dynamicLogViterbi(initial_log_probabilities, getStatesOnTheTime,
     // 最大長に合わせると大きすぎる. 1次元にできそうなので, 1次元にする
     const t1 = Math.getZeros(S);
     const T2 = Math.getZeros(T).map(_ => Math.getZeros(S)); // eslint-disable-line @typescript-eslint/no-unused-vars
-    let states = getStatesOnTheTime(0);
+    let states = new MaxCalculableArray(...getStatesOnTheTime(0));
     // initialize
     states.forEach(s => { t1[s] = pi[s] + emissionLogProbabilities(Y[0], s); });
     states.forEach(s => { T2[0][s] = 0; });
     // 帰納
     Math.getRange(1, T).forEach(t => {
-        const p_states = new MaxCalculableArray(...states); // TODO: Array constructor 起因バグを修正
-        states = getStatesOnTheTime(t);
+        const p_states = states;
+        states = new MaxCalculableArray(...getStatesOnTheTime(t)); // TODO: ここで 空配列が帰ってくる
         const p_t1 = [...t1];
         states.forEach(i => {
             const f = (k) => p_t1[k] + transitionLogProbabilities(k, i);

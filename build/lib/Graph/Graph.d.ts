@@ -1,12 +1,3 @@
-export declare class MaxCalculableArray<T> extends Array<T> {
-    #private;
-    private renewMin;
-    private renewMax;
-    min(f: (i: T) => number): number;
-    max(f: (i: T) => number): number;
-    argMin(f: (i: T) => number): T;
-    argMax(f: (i: T) => number): T;
-}
 /**
  * @brief dynamic changeable viterbi algorithm
  * @param initial_log_probabilities
@@ -15,7 +6,7 @@ export declare class MaxCalculableArray<T> extends Array<T> {
  * @param observation_sequence
  * @returns Probability of the most likely transition trace and the trace
  */
-export declare function dynamicLogViterbi(initial_log_probabilities: number[], getStatesOnTheTime: (time: number) => MaxCalculableArray<number>, transitionLogProbabilities: (prev_state: number, state: number) => number, emissionLogProbabilities: (state: number, observation: number) => number, observation_sequence: number[], will_find_min?: boolean): {
+export declare function dynamicLogViterbi(initial_log_probabilities: number[], getStatesOnTheTime: (time: number) => number[], transitionLogProbabilities: (prev_state: number, state: number) => number, emissionLogProbabilities: (state: number, observation: number) => number, observation_sequence: number[], will_find_min?: boolean): {
     log_probability: number;
     trace: number[];
 };
